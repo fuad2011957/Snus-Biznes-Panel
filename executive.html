@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Бизнес-панель · Executive Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  darkMode: ['class', '[data-theme="dark"]'],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Plus Jakarta Sans', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      }
+    }
+  }
+}
+</script>
+<style>
+:root {
+  --bg-body: #090b10;
+  --bg-sidebar: #0d1018;
+  --bg-card: #11151f;
+  --bg-card-alt: #161b28;
+  --bg-input: #171c29;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-gold: rgba(212, 175, 55, 0.32);
+  --text-main: #f8fafc;
+  --text-sub: #94a3b8;
+  --text-muted: #64748b;
+  --gold: #d4af37;
+  --gold-light: #f3d06b;
+  --emerald: #10b981;
+  --ruby: #ef4444;
+  --shadow-elevated: 0 14px 34px -10px rgba(0, 0, 0, 0.65);
+}
+
+:root[data-theme="light"] {
+  --bg-body: #f3f5f9;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f8fafc;
+  --bg-input: #f1f5f9;
+  --border-color: #e2e8f0;
+  --border-gold: rgba(180, 138, 28, 0.35);
+  --text-main: #0f172a;
+  --text-sub: #475569;
+  --text-muted: #64748b;
+  --gold: #b48a1c;
+  --gold-light: #9a7312;
+  --emerald: #059669;
+  --ruby: #dc2626;
+  --shadow-elevated: 0 10px 28px -8px rgba(15, 23, 42, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.num {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.panel-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: var(--shadow-elevated);
+}
+
+.panel-card-gold {
+  background: linear-gradient(155deg, var(--bg-card) 0%, var(--bg-card-alt) 100%);
+  border: 1px solid var(--border-gold);
+  border-radius: 20px;
+  box-shadow: var(--shadow-elevated);
+}
+
+.field-input, .field-select {
+  width: 100%;
+  min-height: 48px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 14px;
+  padding: 11px 14px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field-input:focus, .field-select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.16);
+}
+
+.btn-primary {
+  min-height: 48px;
+  background: linear-gradient(135deg, #d4af37 0%, #f3d06b 100%);
+  color: #090b10;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: 14px;
+  padding: 12px 20px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.25);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-ghost {
+  min-height: 44px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.btn-ghost:hover {
+  border-color: var(--gold);
+}
+
+.side-link {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-sub);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s ease;
+}
+
+.side-link:hover {
+  color: var(--text-main);
+  background-color: rgba(212, 175, 55, 0.06);
+}
+
+.side-link.active {
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.16) 0%, rgba(212, 175, 55, 0.03) 100%);
+  border-color: var(--border-gold);
+  color: var(--gold);
+}
+
+.step-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.22); border-radius: 99px; }
+
+/* Responsive Layout Rules */
+@media (max-width: 768px) {
+  .desktop-aside { display: none !important; }
+  .mobile-bottom-bar { display: flex !important; }
+  .workspace-main {
+    width: 100%;
+    max-width: 100vw;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+}
+@media (min-width: 769px) {
+  .desktop-aside { display: flex !important; }
+  .mobile-bottom-bar { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Toast Notification Area -->
+<div id="toasts" class="fixed top-4 right-4 z-50 flex flex-col gap-2.5 max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
+
+<!-- Universal Modal -->
+<div id="modal-backdrop" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4" onclick="if(event.target===this) closeModal()">
+  <div id="modal-box" class="panel-card-gold w-full max-w-lg p-6"></div>
+</div>
+
+<!-- Hidden File Input for JSON Import -->
+<input type="file" id="json-import-input" accept=".json,application/json" class="hidden" onchange="importJsonBackup(event)">
+
+<div class="flex min-h-screen w-full overflow-x-hidden">
+  <!-- DESKTOP SIDEBAR (240px) -->
+  <aside class="desktop-aside hidden md:flex w-[240px] flex-none border-r flex-col justify-between sticky top-0 h-screen p-4" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
+    <div>
+      <!-- Brand -->
+      <div class="flex items-center gap-3 px-2 py-2 mb-6">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#d4af37] to-[#f3d06b] text-[#090b10] shadow-md">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div>
+          <div class="font-extrabold text-base tracking-tight leading-none">БИЗНЕС<span style="color: var(--gold);">ПАНЕЛЬ</span></div>
+          <div class="text-[11px] font-medium mt-1" style="color: var(--text-muted);">Учёт и финансы · ₼</div>
+        </div>
+      </div>
+
+      <!-- 5 Clear Tabs -->
+      <nav id="desktop-menu" class="space-y-1.5"></nav>
+    </div>
+
+    <!-- Auto-Save Status Footer -->
+    <div class="p-3.5 rounded-2xl border" style="background: rgba(16, 185, 129, 0.06); border-color: rgba(16, 185, 129, 0.22);">
+      <div class="flex items-center gap-2 text-xs font-bold text-emerald-400">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Автосохранение</span>
+      </div>
+      <div id="sidebar-save-time" class="text-[11px] mt-1 num" style="color: var(--text-sub);">Сохранено: только что</div>
+      <button onclick="switchTab('settings')" class="mt-2.5 w-full py-1.5 px-2.5 rounded-lg text-[11px] font-semibold border transition-colors cursor-pointer hover:border-amber-400/50" style="background-color: var(--bg-card); border-color: var(--border-color); color: var(--text-main);">
+        Резервная копия →
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="flex-1 flex flex-col min-w-0 w-full">
+    <!-- TOP HEADER -->
+    <header id="top-header" class="sticky top-0 z-30 border-b px-4 sm:px-8 py-3.5 flex items-center justify-between gap-3 backdrop-blur-xl" style="background-color: rgba(9, 11, 16, 0.85); border-color: var(--border-color);">
+      <div class="min-w-0">
+        <h1 id="page-title" class="text-lg sm:text-xl font-extrabold tracking-tight truncate">Сводка бизнеса</h1>
+        <p id="page-subtitle" class="text-xs truncate hidden sm:block mt-0.5" style="color: var(--text-sub);">Главные финансовые показатели без лишних деталей</p>
+      </div>
+
+      <div class="flex items-center gap-2.5 flex-none">
+        <button id="quick-sell-cta" onclick="switchTab('sell')" class="btn-primary !min-h-[40px] !py-2 !px-3.5 sm:!px-4 text-xs sm:text-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Продать</span>
+        </button>
+
+        <button onclick="toggleTheme()" id="theme-toggle-btn" class="btn-ghost !min-h-[40px] !w-[40px] !p-0" title="Сменить тему оформления">
+          <svg id="theme-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT CONTAINER -->
+    <main id="app-content" class="workspace-main flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-8 py-6"></main>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAVIGATION BAR -->
+<nav id="mobile-menu" class="mobile-bottom-bar fixed bottom-0 left-0 right-0 z-40 border-t px-1 py-1.5 justify-around items-center backdrop-blur-xl" style="background-color: rgba(13, 16, 24, 0.94); border-color: var(--border-color); padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));"></nav>
+
+<script>
+/**
+ * ============================================================================
+ * EXECUTIVE BUSINESS DASHBOARD · CLEAN ARCHITECTURE & DUAL STORAGE
+ * ============================================================================
+ */
+
+const LS_KEY = "biz1"; // Совместимость со старой базой пользователя
+const IDB_NAME = "BizPanelDB";
+const IDB_STORE = "vault";
+const THEME_STORAGE = "biz_exec_theme";
+
+let activeTab = "dash";
+let periodFilter = 7; // 1 = Сегодня, 7 = 7 дней, 30 = 30 дней, 0 = Всё время
+let stockSubTab = "buy"; // 'buy' = Пополнить склад, 'items' = Мои товары и цены
+let salesSearchQuery = "";
+let idb = null;
+
+let DB = {
+  products: [
+    { id: 1, name: "Товар 1 (пример)", cost: 13.5, pcs: 20, pw: 17, pp: 1, stock: 200, min: 40 }
+  ],
+  sales: [],
+  buys: [],
+  exps: [],
+  tiers: [[2, 5], [3, 8], [5, 10], [10, 15]],
+  seq: 2
+};
+
+// --- CRISP SVG ICONS ---
+const SVG = {
+  dash: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+  sell: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+  stock: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+  exp: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+  settings: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  check: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  trash: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  edit: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  plus: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  download: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  upload: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
+  shield: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  alert: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+};
+
+const TABS = [
+  { id: "dash", short: "Сводка", title: "Сводка бизнеса", subtitle: "Главные финансовые показатели без лишних деталей", icon: SVG.dash },
+  { id: "sell", short: "Продать", title: "Продать товар", subtitle: "Оформление сделки по шагам с авторасчётом прибыли", icon: SVG.sell },
+  { id: "stock", short: "Склад", title: "Склад и Закупки", subtitle: "Пополнение остатков и управление ценами товаров", icon: SVG.stock },
+  { id: "exp", short: "Расходы", title: "Учёт расходов", subtitle: "Аренда, транспорт, реклама и прочие затраты", icon: SVG.exp },
+  { id: "settings", short: "Скидки и База", title: "Скидки и Резервная база", subtitle: "Оптовые скидки от объёма и надёжное хранение данных", icon: SVG.settings }
+];
+
+// --- DUAL STORAGE ENGINE (LocalStorage + IndexedDB) ---
+function openVaultDB() {
+  return new Promise((resolve) => {
+    if (!window.indexedDB) return resolve(null);
+    try {
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(IDB_STORE)) {
+          db.createObjectStore(IDB_STORE);
+        }
+      };
+      req.onsuccess = (e) => {
+        idb = e.target.result;
+        resolve(idb);
+      };
+      req.onerror = () => resolve(null);
+    } catch (e) {
+      resolve(null);
+    }
+  });
+}
+
+function getFromVault() {
+  return new Promise((resolve) => {
+    if (!idb) return resolve(null);
+    try {
+      const tx = idb.transaction(IDB_STORE, "readonly");
+      const req = tx.objectStore(IDB_STORE).get(LS_KEY);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    } catch (e) {
+      resolve(null);
+    }
+  });
+}
+
+function saveToVault(data) {
+  if (!idb) return;
+  try {
+    const tx = idb.transaction(IDB_STORE, "readwrite");
+    tx.objectStore(IDB_STORE).put(data, LS_KEY);
+  } catch (e) {}
+}
+
+async function initData() {
+  let local = null;
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) local = JSON.parse(raw);
+  } catch (e) {}
+
+  await openVaultDB();
+  const vault = await getFromVault();
+
+  if (local && Array.isArray(local.products)) {
+    DB = normalizeDB(local);
+    saveToVault(DB);
+  } else if (vault && Array.isArray(vault.products)) {
+    DB = normalizeDB(vault);
+    try { localStorage.setItem(LS_KEY, JSON.stringify(DB)); } catch (e) {}
+    notify("Данные восстановлены из защищённого хранилища", "ok");
+  } else {
+    persistData(false);
+  }
+  updateSaveClock();
+}
+
+function normalizeDB(raw) {
+  return {
+    products: Array.isArray(raw.products) && raw.products.length ? raw.products : DB.products,
+    sales: Array.isArray(raw.sales) ? raw.sales : [],
+    buys: Array.isArray(raw.buys) ? raw.buys : [],
+    exps: Array.isArray(raw.exps) ? raw.exps : [],
+    tiers: Array.isArray(raw.tiers) ? raw.tiers : [[2, 5], [3, 8], [5, 10], [10, 15]],
+    seq: Number(raw.seq) || 100
+  };
+}
+
+function persistData(updateClock = true) {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(DB));
+  } catch (e) {}
+  saveToVault(DB);
+  if (updateClock) updateSaveClock();
+}
+
+function updateSaveClock() {
+  const now = new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  const sideEl = document.getElementById("sidebar-save-time");
+  const tabEl = document.getElementById("settings-save-time");
+  if (sideEl) sideEl.textContent = `Сохранено: ${now}`;
+  if (tabEl) tabEl.textContent = `Все данные надёжно сохранены в браузере (${now})`;
+}
+
+// --- BACKUP & RESTORE ---
+function exportJsonBackup() {
+  try {
+    const blob = new Blob([JSON.stringify(DB, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `BizPanel_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    notify("Файл резервной копии (.json) сохранён на устройство", "ok");
+  } catch (e) {
+    notify("Не удалось создать резервную копию", "err");
+  }
+}
+
+function triggerJsonImport() {
+  document.getElementById("json-import-input").click();
+}
+
+function importJsonBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (parsed && Array.isArray(parsed.products)) {
+        DB = normalizeDB(parsed);
+        persistData();
+        renderApp();
+        notify("База успешно загружена из файла!", "ok");
+      } else {
+        notify("Ошибка: выбран неподходящий файл", "err");
+      }
+    } catch (err) {
+      notify("Не удалось прочитать JSON-файл", "err");
+    }
+    event.target.value = "";
+  };
+  reader.readAsText(file);
+}
+
+// --- THEME ---
+function initTheme() {
+  const saved = localStorage.getItem(THEME_STORAGE) || "dark";
+  applyTheme(saved);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  const next = current === "dark" ? "light" : "dark";
+  localStorage.setItem(THEME_STORAGE, next);
+  applyTheme(next);
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  const header = document.getElementById("top-header");
+  const mobBar = document.getElementById("mobile-menu");
+  const svg = document.getElementById("theme-svg");
+
+  if (theme === "light") {
+    if (header) header.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
+    if (mobBar) mobBar.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
+    if (svg) svg.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  } else {
+    if (header) header.style.backgroundColor = "rgba(9, 11, 16, 0.85)";
+    if (mobBar) mobBar.style.backgroundColor = "rgba(13, 16, 24, 0.94)";
+    if (svg) svg.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  }
+}
+
+// --- FORMATTERS & HELPERS ---
+function money(val) {
+  const n = Number(val) || 0;
+  return n.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₼";
+}
+
+function signedMoney(val) {
+  const n = Number(val) || 0;
+  return (n > 0 ? "+" : "") + money(n);
+}
+
+function esc(str) {
+  return String(str ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function findProduct(id) {
+  return DB.products.find((p) => p.id == id);
+}
+
+function sumBy(list, fn) {
+  return list.reduce((acc, item) => acc + (Number(fn(item)) || 0), 0);
+}
+
+function stockText(p) {
+  if (!p) return "0 шт.";
+  const perCan = Math.max(1, Number(p.pcs) || 1);
+  const cans = Math.floor(p.stock / perCan);
+  const rem = p.stock % perCan;
+  return `${cans} банк. + ${rem} шт.`;
+}
+
+function calcDiscount(cansQty) {
+  let best = 0;
+  DB.tiers.forEach((t) => {
+    if (cansQty >= t[0] && t[1] > best) best = t[1];
+  });
+  return best;
+}
+
+function periodStartDate() {
+  if (!periodFilter) return "0000-00-00";
+  const d = new Date();
+  d.setDate(d.getDate() - periodFilter + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+// --- NOTIFICATIONS & MODALS (No alert/confirm) ---
+function notify(text, type = "ok") {
+  const container = document.getElementById("toasts");
+  if (!container) return;
+  const id = "t_" + Date.now() + Math.random().toString(36).slice(2, 6);
+  const isErr = type === "err";
+  const html = `
+    <div id="${id}" class="pointer-events-auto flex items-center gap-3 p-3.5 rounded-2xl border shadow-2xl backdrop-blur-xl transition-all duration-300" style="background: rgba(15, 19, 29, 0.96); border-color: ${isErr ? "rgba(239, 68, 68, 0.45)" : "rgba(16, 185, 129, 0.45)"}; color: #f8fafc;">
+      <div class="${isErr ? "text-red-400" : "text-emerald-400"} flex-none">${isErr ? SVG.alert : SVG.check}</div>
+      <div class="text-xs sm:text-sm font-semibold leading-snug">${esc(text)}</div>
+    </div>
+  `;
+  container.insertAdjacentHTML("beforeend", html);
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(-6px)";
+      setTimeout(() => el.remove(), 250);
+    }
+  }, 3400);
+}
+
+function openModal(html) {
+  const backdrop = document.getElementById("modal-backdrop");
+  document.getElementById("modal-box").innerHTML = html;
+  backdrop.classList.remove("hidden");
+  backdrop.classList.add("flex");
+}
+
+function closeModal() {
+  const backdrop = document.getElementById("modal-backdrop");
+  backdrop.classList.add("hidden");
+  backdrop.classList.remove("flex");
+}
+
+// --- NAVIGATION ---
+function switchTab(tabId) {
+  activeTab = tabId;
+  renderApp();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderNav() {
+  const current = TABS.find((t) => t.id === activeTab) || TABS[0];
+  document.getElementById("page-title").textContent = current.title;
+  document.getElementById("page-subtitle").textContent = current.subtitle;
+
+  const quickCta = document.getElementById("quick-sell-cta");
+  if (quickCta) quickCta.style.display = activeTab === "sell" ? "none" : "inline-flex";
+
+  document.getElementById("desktop-menu").innerHTML = TABS.map((t) => `
+    <button onclick="switchTab('${t.id}')" class="side-link ${t.id === activeTab ? "active" : ""}">
+      <span class="flex-none">${t.icon}</span>
+      <span>${t.short}</span>
+    </button>
+  `).join("");
+
+  document.getElementById("mobile-menu").innerHTML = TABS.map((t) => {
+    const isActive = t.id === activeTab;
+    return `
+      <button onclick="switchTab('${t.id}')" class="flex flex-col items-center justify-center gap-1 py-1 px-1.5 rounded-xl transition-all cursor-pointer ${isActive ? "text-[#d4af37]" : "opacity-65"}">
+        <span>${t.icon}</span>
+        <span class="text-[10px] font-bold tracking-tight leading-none">${t.short}</span>
+      </button>
+    `;
+  }).join("");
+}
+
+// --- TAB RENDERERS ---
+const PAGES = {
+  // =========================================================================
+  // TAB 1: СВОДКА (ОБЗОР) — ONLY METRICS & VISUAL CHARTS, ZERO INPUT CLUTTER
+  // =========================================================================
+  dash: function () {
+    const start = periodStartDate();
+    const sales = DB.sales.filter((s) => s.date >= start);
+    const buys = DB.buys.filter((b) => b.date >= start);
+    const exps = DB.exps.filter((e) => e.date >= start);
+
+    const revenue = sumBy(sales, (s) => s.price);
+    const cogs = sumBy(sales, (s) => s.cogs);
+    const expTotal = sumBy(exps, (e) => e.amt);
+    const buysTotal = sumBy(buys, (b) => b.total);
+    const netProfit = revenue - cogs - expTotal;
+    const stockCostValue = sumBy(DB.products, (p) => (p.stock * p.cost) / Math.max(1, p.pcs));
+
+    // 7-Day Bar Chart Data
+    const chartDays = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const iso = d.toISOString().slice(0, 10);
+      const label = d.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" });
+      const dSales = DB.sales.filter((s) => s.date === iso);
+      const dExps = DB.exps.filter((e) => e.date === iso);
+      const rev = sumBy(dSales, (s) => s.price);
+      const prof = rev - sumBy(dSales, (s) => s.cogs) - sumBy(dExps, (e) => e.amt);
+      chartDays.push({ label, rev, prof });
+    }
+    const maxChart = Math.max(...chartDays.map((d) => Math.max(d.rev, d.prof)), 10);
+
+    const W = 680, H = 200, pL = 42, pR = 16, pT = 18, pB = 30;
+    const plotW = W - pL - pR;
+    const plotH = H - pT - pB;
+    const colW = plotW / 7;
+
+    let gridSvg = "";
+    for (let i = 0; i <= 3; i++) {
+      const y = pT + (plotH * i) / 3;
+      const val = Math.round(maxChart * (1 - i / 3));
+      gridSvg += `
+        <line x1="${pL}" y1="${y}" x2="${W - pR}" y2="${y}" stroke="rgba(148,163,184,0.12)" stroke-dasharray="4 4"/>
+        <text x="${pL - 8}" y="${y + 4}" text-anchor="end" font-size="10" font-family="JetBrains Mono" fill="#64748b">${val}</text>
+      `;
+    }
+
+    let barsSvg = "";
+    chartDays.forEach((d, idx) => {
+      const cx = pL + idx * colW + colW / 2;
+      const hRev = (d.rev / maxChart) * plotH;
+      const hProf = (Math.max(0, d.prof) / maxChart) * plotH;
+      barsSvg += `
+        <g>
+          <rect x="${cx - 18}" y="${pT + plotH - hRev}" width="16" height="${Math.max(hRev, 2)}" rx="4" fill="#d4af37"/>
+          <rect x="${cx + 2}" y="${pT + plotH - hProf}" width="16" height="${Math.max(hProf, 2)}" rx="4" fill="#10b981"/>
+          <text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="11" font-family="JetBrains Mono" fill="#94a3b8">${d.label}</text>
+        </g>
+      `;
+    });
+
+    const lowStockList = DB.products.filter((p) => p.stock <= p.min);
+    const topProducts = DB.products
+      .map((p) => {
+        const pSales = sales.filter((s) => s.pid == p.id);
+        const profit = sumBy(pSales, (s) => s.price - s.cogs);
+        return { name: p.name, profit };
+      })
+      .sort((a, b) => b.profit - a.profit);
+    const maxProdProfit = Math.max(...topProducts.map((t) => Math.abs(t.profit)), 1);
+
+    return `
+      <!-- Period Filter Pills -->
+      <div class="mb-6">
+        <div class="inline-flex flex-wrap gap-1.5 p-1.5 rounded-2xl border" style="background-color: var(--bg-card); border-color: var(--border-color);">
+          ${[[1, "Сегодня"], [7, "7 дней"], [30, "30 дней"], [0, "Всё время"]].map(([days, label]) => `
+            <button onclick="periodFilter=${days};renderApp()" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${periodFilter === days ? "bg-gradient-to-r from-[#d4af37] to-[#f3d06b] text-[#090b10] shadow-sm" : "opacity-75 hover:opacity-100"}">
+              ${label}
+            </button>
+          `).join("")}
+        </div>
+      </div>
+
+      <!-- 4 CLEAN KPI CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mb-6">
+        <!-- 1. Чистая прибыль -->
+        <div class="panel-card-gold p-5">
+          <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--gold);">1. Чистая прибыль</div>
+          <div class="text-2xl sm:text-3xl font-extrabold num ${netProfit >= 0 ? "text-emerald-400" : "text-red-400"}">
+            ${signedMoney(netProfit)}
+          </div>
+          <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-sub);">
+            Сколько реально осталось в кармане после закупок и расходов
+          </p>
+        </div>
+
+        <!-- 2. Выручка -->
+        <div class="panel-card p-5">
+          <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--text-sub);">2. Выручка</div>
+          <div class="text-2xl sm:text-3xl font-extrabold num">${money(revenue)}</div>
+          <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-sub);">
+            Сколько денег принесли продажи · Сделок: <b class="num" style="color: var(--gold);">${sales.length}</b>
+          </p>
+        </div>
+
+        <!-- 3. Расходы и Закупки -->
+        <div class="panel-card p-5">
+          <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--text-sub);">3. Расходы и Закупки</div>
+          <div class="text-2xl sm:text-3xl font-extrabold num text-red-400">${money(expTotal + buysTotal)}</div>
+          <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-sub);">
+            Закупки: <b class="num">${money(buysTotal)}</b> · Расходы: <b class="num">${money(expTotal)}</b>
+          </p>
+        </div>
+
+        <!-- 4. Товар на складе -->
+        <div class="panel-card p-5">
+          <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--text-sub);">4. Товар на складе</div>
+          <div class="text-2xl sm:text-3xl font-extrabold num">${money(stockCostValue)}</div>
+          <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-sub);">
+            На какую сумму лежит товара по цене закупки
+          </p>
+        </div>
+      </div>
+
+      <!-- 7-DAY BAR CHART -->
+      <div class="panel-card p-5 sm:p-6 mb-6">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 class="text-base font-bold">График за последние 7 дней</h2>
+            <p class="text-xs" style="color: var(--text-sub);">Сравнение общей выручки и чистой прибыли по дням</p>
+          </div>
+          <div class="flex items-center gap-4 text-xs font-semibold">
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm inline-block" style="background:#d4af37;"></span> Выручка</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm inline-block" style="background:#10b981;"></span> Чистая прибыль</span>
+          </div>
+        </div>
+        <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto select-none">
+          ${gridSvg}
+          ${barsSvg}
+        </svg>
+      </div>
+
+      <!-- TWO SIDE-BY-SIDE CARDS -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- Заканчивается на складе -->
+        <div class="panel-card p-5 sm:p-6">
+          <h2 class="text-base font-bold mb-1">Заканчивается на складе</h2>
+          <p class="text-xs mb-4" style="color: var(--text-sub);">Товары, которых осталось меньше минимального запаса</p>
+          ${lowStockList.length ? `
+            <div class="space-y-2.5">
+              ${lowStockList.map((p) => `
+                <div class="flex items-center justify-between p-3 rounded-2xl border border-red-500/25 bg-red-500/5">
+                  <span class="font-bold text-sm">${esc(p.name)}</span>
+                  <span class="px-3 py-1 rounded-xl text-xs font-extrabold num bg-red-500/20 text-red-400">${stockText(p)}</span>
+                </div>
+              `).join("")}
+            </div>
+          ` : `
+            <div class="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-xs sm:text-sm font-semibold text-emerald-400">
+              Всё отлично: на складе достаточно каждого товара.
+            </div>
+          `}
+        </div>
+
+        <!-- Топ товаров по прибыли -->
+        <div class="panel-card p-5 sm:p-6">
+          <h2 class="text-base font-bold mb-1">Топ товаров по прибыли</h2>
+          <p class="text-xs mb-4" style="color: var(--text-sub);">Сколько заработано на каждом товаре за период</p>
+          <div class="space-y-3.5">
+            ${topProducts.map((item) => {
+              const widthPct = Math.max((Math.abs(item.profit) / maxProdProfit) * 100, 4);
+              return `
+                <div>
+                  <div class="flex justify-between text-xs sm:text-sm font-bold mb-1.5">
+                    <span class="truncate pr-2">${esc(item.name)}</span>
+                    <span class="num ${item.profit >= 0 ? "text-emerald-400" : "text-red-400"}">${signedMoney(item.profit)}</span>
+                  </div>
+                  <div class="w-full h-2.5 rounded-full overflow-hidden" style="background-color: var(--bg-input);">
+                    <div class="h-full rounded-full bg-gradient-to-r from-[#d4af37] to-emerald-400" style="width: ${widthPct}%"></div>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // =========================================================================
+  // TAB 2: ПРОДАТЬ ТОВАР — STEP-BY-STEP 1-2-3 FLOW
+  // =========================================================================
+  sell: function () {
+    const options = DB.products.map((p) => {
+      return `<option value="${p.id}">${esc(p.name)} (На складе: ${stockText(p)})</option>`;
+    }).join("");
+
+    const q = salesSearchQuery.trim().toLowerCase();
+    const filteredSales = DB.sales
+      .slice()
+      .reverse()
+      .filter((s) => {
+        if (!q) return true;
+        const p = findProduct(s.pid);
+        const name = p ? p.name.toLowerCase() : "";
+        return name.includes(q) || s.date.includes(q);
+      })
+      .slice(0, 35);
+
+    return `
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- LEFT/TOP: 1-2-3 STEP FORM -->
+        <div class="lg:col-span-5">
+          <div class="panel-card-gold p-5 sm:p-6 space-y-5">
+            <!-- ШАГ 1 -->
+            <div>
+              <div class="flex items-center gap-2.5 mb-2">
+                <span class="step-badge">1</span>
+                <label class="text-sm font-bold">Что продаём?</label>
+              </div>
+              <select id="s-prod" class="field-select" onchange="updateSaleCalc()">
+                ${options}
+              </select>
+            </div>
+
+            <!-- ШАГ 2 -->
+            <div>
+              <div class="flex items-center gap-2.5 mb-2">
+                <span class="step-badge">2</span>
+                <label class="text-sm font-bold">Как продаём и сколько?</label>
+              </div>
+
+              <!-- Big Mode Toggle -->
+              <div class="grid grid-cols-2 gap-2.5 mb-3">
+                <button type="button" id="btn-mode-can" onclick="chooseSaleMode('can')" class="min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer bg-[#d4af37]/15 border-[#d4af37] text-[#d4af37]">
+                  Банкой целиком
+                </button>
+                <button type="button" id="btn-mode-pc" onclick="chooseSaleMode('pc')" class="min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer" style="background-color: var(--bg-input); border-color: var(--border-color); color: var(--text-sub);">
+                  Поштучно
+                </button>
+              </div>
+              <input type="hidden" id="s-mode" value="can">
+
+              <!-- Stepper [- 1 +] & Quick Add Buttons -->
+              <div class="flex items-center gap-2 mb-2.5">
+                <button type="button" onclick="stepSaleQty(-1)" class="btn-ghost !w-12 !px-0 text-lg font-extrabold">−</button>
+                <input id="s-qty" type="number" min="1" value="1" class="field-input text-center num font-extrabold text-lg" oninput="updateSaleCalc()">
+                <button type="button" onclick="stepSaleQty(1)" class="btn-ghost !w-12 !px-0 text-lg font-extrabold">+</button>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" onclick="stepSaleQty(1)" class="py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer hover:border-[#d4af37]" style="background-color: var(--bg-input); border-color: var(--border-color);">+1</button>
+                <button type="button" onclick="stepSaleQty(2)" class="py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer hover:border-[#d4af37]" style="background-color: var(--bg-input); border-color: var(--border-color);">+2</button>
+                <button type="button" onclick="stepSaleQty(5)" class="py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer hover:border-[#d4af37]" style="background-color: var(--bg-input); border-color: var(--border-color);">+5</button>
+              </div>
+            </div>
+
+            <!-- ШАГ 3 -->
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <div class="flex items-center gap-2.5">
+                  <span class="step-badge">3</span>
+                  <label class="text-sm font-bold">Итоговая цена и прибыль</label>
+                </div>
+                <span id="s-disc-badge" class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-[#d4af37]/20 text-[#d4af37] num">Скидка 0%</span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">Итого к оплате (₼)</label>
+                  <input id="s-price" type="number" step="0.1" class="field-input num font-extrabold text-lg" style="color: var(--gold);" oninput="updateManualProfit()">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">Дата продажи</label>
+                  <input id="s-date" type="date" value="${todayISO()}" class="field-input num text-sm">
+                </div>
+              </div>
+
+              <!-- Live Profit Box -->
+              <div class="p-4 rounded-2xl border" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.28);">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs sm:text-sm font-bold">Ваша чистая прибыль с этой продажи:</span>
+                  <span id="s-live-profit" class="text-lg sm:text-xl font-extrabold num text-emerald-400">+0.00 ₼</span>
+                </div>
+                <div class="text-[11px] mt-1.5 flex justify-between" style="color: var(--text-sub);">
+                  <span>Останется на складе после сделки:</span>
+                  <span id="s-after-stock" class="num font-bold">—</span>
+                </div>
+              </div>
+            </div>
+
+            <button onclick="confirmSale()" class="btn-primary w-full text-base">
+              ${SVG.check}
+              <span>Оформить продажу</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT/BOTTOM: SALES HISTORY -->
+        <div class="lg:col-span-7">
+          <div class="panel-card p-5 sm:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 class="text-base font-bold">История продаж</h2>
+                <p class="text-xs" style="color: var(--text-sub);">Удаление записи автоматически вернёт товар на склад</p>
+              </div>
+              <input type="text" placeholder="Поиск по товару или дате..." value="${esc(salesSearchQuery)}" oninput="salesSearchQuery=this.value;renderApp()" class="field-input !min-h-[40px] !py-1.5 sm:max-w-[230px] text-sm">
+            </div>
+
+            ${filteredSales.length ? `
+              <div class="overflow-x-auto -mx-2 px-2">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="border-b text-[11px] uppercase tracking-wider" style="border-color: var(--border-color); color: var(--text-muted);">
+                      <th class="py-3 px-2">Дата</th>
+                      <th class="py-3 px-2">Товар</th>
+                      <th class="py-3 px-2">Кол-во</th>
+                      <th class="py-3 px-2">Сумма</th>
+                      <th class="py-3 px-2">Прибыль</th>
+                      <th class="py-3 px-1 text-right"></th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y text-xs sm:text-sm" style="border-color: var(--border-color);">
+                    ${filteredSales.map((s) => {
+                      const p = findProduct(s.pid);
+                      const prof = s.price - s.cogs;
+                      return `
+                        <tr>
+                          <td class="py-3 px-2 num text-[11px] whitespace-nowrap" style="color: var(--text-sub);">${s.date.slice(5)}</td>
+                          <td class="py-3 px-2 font-bold max-w-[110px] sm:max-w-none truncate">${esc(p ? p.name : "Товар")}</td>
+                          <td class="py-3 px-2 num text-xs whitespace-nowrap">${s.qty} ${s.type === "can" ? "б." : "шт."}</td>
+                          <td class="py-3 px-2 num font-bold whitespace-nowrap">${money(s.price)}</td>
+                          <td class="py-3 px-2 num font-extrabold whitespace-nowrap ${prof >= 0 ? "text-emerald-400" : "text-red-400"}">${signedMoney(prof)}</td>
+                          <td class="py-3 px-1 text-right">
+                            <button onclick="removeSale(${s.id})" class="p-1.5 rounded-xl text-red-400 hover:bg-red-500/15 cursor-pointer" title="Отменить продажу и вернуть на склад">
+                              ${SVG.trash}
+                            </button>
+                          </td>
+                        </tr>
+                      `;
+                    }).join("")}
+                  </tbody>
+                </table>
+              </div>
+            ` : `
+              <div class="text-center py-12 px-4 rounded-2xl border border-dashed" style="border-color: var(--border-color);">
+                <p class="text-sm font-bold mb-1">Записей пока нет</p>
+                <p class="text-xs" style="color: var(--text-muted);">Оформите продажу по шагам 1–2–3, и она появится в этом списке.</p>
+              </div>
+            `}
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // =========================================================================
+  // TAB 3: СКЛАД И ЗАКУПКИ — STRICTLY SEPARATED INTO 2 CLEAR SUB-SECTIONS
+  // =========================================================================
+  stock: function () {
+    const subTabsHtml = `
+      <div class="grid grid-cols-2 gap-2.5 p-1.5 rounded-2xl border max-w-xl mb-6" style="background-color: var(--bg-card); border-color: var(--border-color);">
+        <button onclick="stockSubTab='buy';renderApp()" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${stockSubTab === "buy" ? "bg-gradient-to-r from-[#d4af37] to-[#f3d06b] text-[#090b10] shadow-sm" : "opacity-75 hover:opacity-100"}">
+          Пополнить склад (Закупка)
+        </button>
+        <button onclick="stockSubTab='items';renderApp()" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${stockSubTab === "items" ? "bg-gradient-to-r from-[#d4af37] to-[#f3d06b] text-[#090b10] shadow-sm" : "opacity-75 hover:opacity-100"}">
+          Мои товары и цены (${DB.products.length})
+        </button>
+      </div>
+    `;
+
+    if (stockSubTab === "buy") {
+      const prodOpts = DB.products.map((p) => `<option value="${p.id}">${esc(p.name)} (Сейчас: ${stockText(p)})</option>`).join("");
+      const recentBuys = DB.buys.slice().reverse().slice(0, 25);
+
+      return `
+        ${subTabsHtml}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Purchase Form -->
+          <div class="lg:col-span-5">
+            <div class="panel-card-gold p-5 sm:p-6 space-y-4">
+              <div>
+                <h2 class="text-base font-bold">Приход нового товара</h2>
+                <p class="text-xs mt-0.5" style="color: var(--text-sub);">Укажите сколько банок купили и общую сумму</p>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Выберите товар</label>
+                <select id="b-prod" class="field-select">${prodOpts}</select>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Куплено банок</label>
+                  <input id="b-qty" type="number" min="1" value="10" class="field-input num font-bold" oninput="updateBuyCalc()">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Заплатили всего (₼)</label>
+                  <input id="b-total" type="number" step="0.5" value="135" class="field-input num font-bold" style="color: var(--gold);" oninput="updateBuyCalc()">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Дата закупки</label>
+                <input id="b-date" type="date" value="${todayISO()}" class="field-input num">
+              </div>
+
+              <!-- Live Unit Cost Box -->
+              <div class="p-4 rounded-2xl border flex items-center justify-between" style="background: rgba(212, 175, 55, 0.08); border-color: var(--border-gold);">
+                <span class="text-xs sm:text-sm font-bold">Цена за 1 банку:</span>
+                <span id="b-unit-cost" class="text-lg font-extrabold num" style="color: var(--gold);">13.50 ₼</span>
+              </div>
+
+              <button onclick="confirmBuy()" class="btn-primary w-full">
+                ${SVG.plus}
+                <span>Добавить на склад</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Purchase History -->
+          <div class="lg:col-span-7">
+            <div class="panel-card p-5 sm:p-6">
+              <h2 class="text-base font-bold mb-1">История пополнений склада</h2>
+              <p class="text-xs mb-4" style="color: var(--text-sub);">Все закупки партии товаров</p>
+
+              ${recentBuys.length ? `
+                <div class="overflow-x-auto -mx-2 px-2">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="border-b text-[11px] uppercase tracking-wider" style="border-color: var(--border-color); color: var(--text-muted);">
+                        <th class="py-3 px-2">Дата</th>
+                        <th class="py-3 px-2">Товар</th>
+                        <th class="py-3 px-2">Партия</th>
+                        <th class="py-3 px-2">Сумма</th>
+                        <th class="py-3 px-2">За 1 б.</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y text-xs sm:text-sm" style="border-color: var(--border-color);">
+                      ${recentBuys.map((b) => {
+                        const p = findProduct(b.pid);
+                        return `
+                          <tr>
+                            <td class="py-3 px-2 num text-[11px] whitespace-nowrap" style="color: var(--text-sub);">${b.date.slice(5)}</td>
+                            <td class="py-3 px-2 font-bold max-w-[110px] sm:max-w-none truncate">${esc(p ? p.name : "Товар")}</td>
+                            <td class="py-3 px-2 num whitespace-nowrap">${b.qty} б.</td>
+                            <td class="py-3 px-2 num font-bold whitespace-nowrap">${money(b.total)}</td>
+                            <td class="py-3 px-2 num font-bold whitespace-nowrap" style="color: var(--gold);">${money(b.total / Math.max(1, b.qty))}</td>
+                          </tr>
+                        `;
+                      }).join("")}
+                    </tbody>
+                  </table>
+                </div>
+              ` : `
+                <div class="text-center py-12 px-4 rounded-2xl border border-dashed" style="border-color: var(--border-color);">
+                  <p class="text-sm font-bold mb-1">Закупок пока нет</p>
+                  <p class="text-xs" style="color: var(--text-muted);">Когда закупите товар, внесите его слева — склад обновится сам.</p>
+                </div>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // SUB-TAB: МОИ ТОВАРЫ И ЦЕНЫ (CLEAN UNCROWDED CARDS + MODAL EDIT)
+    return `
+      ${subTabsHtml}
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+        <p class="text-xs sm:text-sm" style="color: var(--text-sub);">Нажмите «Редактировать» на карточке, чтобы безопасно изменить цены или остаток.</p>
+        <button onclick="openProductFormModal(null)" class="btn-primary">
+          ${SVG.plus}
+          <span>Добавить новый товар</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        ${DB.products.map((p) => {
+          const profitCan = p.pw - p.cost;
+          const profitPcTotal = p.pp * p.pcs - p.cost;
+          const low = p.stock <= p.min;
+          return `
+            <div class="panel-card p-5 flex flex-col justify-between">
+              <div>
+                <!-- Header: Name + Stock Badge -->
+                <div class="flex items-start justify-between gap-3 pb-4 mb-4 border-b" style="border-color: var(--border-color);">
+                  <h3 class="text-base font-extrabold leading-snug">${esc(p.name)}</h3>
+                  <span class="px-3 py-1 rounded-xl text-xs font-extrabold num flex-none ${low ? "bg-red-500/15 text-red-400 border border-red-500/30" : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"}">
+                    ${stockText(p)}
+                  </span>
+                </div>
+
+                <!-- Clean 2x2 Price Grid -->
+                <div class="grid grid-cols-2 gap-3 mb-4 text-xs">
+                  <div class="p-3 rounded-xl" style="background-color: var(--bg-input);">
+                    <span class="block mb-1" style="color: var(--text-sub);">Закупка (1 банка)</span>
+                    <span class="text-sm font-extrabold num">${money(p.cost)}</span>
+                  </div>
+                  <div class="p-3 rounded-xl" style="background-color: var(--bg-input);">
+                    <span class="block mb-1" style="color: var(--text-sub);">Штук в банке</span>
+                    <span class="text-sm font-extrabold num">${p.pcs} шт.</span>
+                  </div>
+                  <div class="p-3 rounded-xl" style="background-color: var(--bg-input);">
+                    <span class="block mb-1" style="color: var(--text-sub);">Продажа банки</span>
+                    <span class="text-sm font-extrabold num" style="color: var(--gold);">${money(p.pw)}</span>
+                  </div>
+                  <div class="p-3 rounded-xl" style="background-color: var(--bg-input);">
+                    <span class="block mb-1" style="color: var(--text-sub);">Продажа 1 шт.</span>
+                    <span class="text-sm font-extrabold num" style="color: var(--gold);">${money(p.pp)}</span>
+                  </div>
+                </div>
+
+                <!-- Clear Profit Badges -->
+                <div class="space-y-2 mb-5">
+                  <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                    <span class="text-xs font-semibold">Прибыль с банки:</span>
+                    <span class="text-sm font-extrabold num ${profitCan >= 0 ? "text-emerald-400" : "text-red-400"}">${signedMoney(profitCan)}</span>
+                  </div>
+                  <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl" style="background-color: var(--bg-input);">
+                    <span class="text-xs font-semibold" style="color: var(--text-sub);">Если продать поштучно:</span>
+                    <span class="text-sm font-extrabold num ${profitPcTotal >= 0 ? "text-emerald-400" : "text-red-400"}">${signedMoney(profitPcTotal)}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center gap-2 pt-3 border-t" style="border-color: var(--border-color);">
+                <button onclick="openProductFormModal(${p.id})" class="btn-ghost flex-1 text-xs sm:text-sm">
+                  ${SVG.edit}
+                  <span>Редактировать</span>
+                </button>
+                ${DB.products.length > 1 ? `
+                  <button onclick="confirmDeleteProduct(${p.id})" class="btn-ghost !px-3 text-red-400 hover:!border-red-500/50" title="Удалить товар">
+                    ${SVG.trash}
+                  </button>
+                ` : ""}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+  },
+
+  // =========================================================================
+  // TAB 4: РАСХОДЫ — QUICK CATEGORY CHIPS & CLEAN BREAKDOWN
+  // =========================================================================
+  exp: function () {
+    const categories = ["Транспорт", "Аренда", "Реклама", "Упаковка", "Связь", "Другое"];
+    const totals = {};
+    DB.exps.forEach((e) => { totals[e.cat] = (totals[e.cat] || 0) + e.amt; });
+    const grandTotal = sumBy(DB.exps, (e) => e.amt);
+    const maxCat = Math.max(...Object.values(totals), 1);
+    const recent = DB.exps.slice().reverse().slice(0, 30);
+
+    return `
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Expense Form -->
+        <div class="lg:col-span-5">
+          <div class="panel-card-gold p-5 sm:p-6 space-y-4">
+            <div>
+              <h2 class="text-base font-bold">Новый расход</h2>
+              <p class="text-xs mt-0.5" style="color: var(--text-sub);">Вычитается из вашей чистой прибыли</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-2" style="color: var(--text-sub);">1. Выберите категорию</label>
+              <div class="grid grid-cols-3 gap-2">
+                ${categories.map((cat, idx) => `
+                  <button type="button" onclick="selectExpCategory('${cat}', this)" class="exp-chip py-2.5 px-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${idx === 0 ? "bg-[#d4af37]/15 border-[#d4af37] text-[#d4af37]" : ""}" style="${idx !== 0 ? "background-color: var(--bg-input); border-color: var(--border-color);" : ""}">
+                    ${cat}
+                  </button>
+                `).join("")}
+              </div>
+              <input type="hidden" id="e-cat" value="${categories[0]}">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">2. Сумма (₼)</label>
+                <input id="e-amt" type="number" step="0.5" placeholder="0.00" class="field-input num font-extrabold">
+              </div>
+              <div>
+                <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">3. Дата</label>
+                <input id="e-date" type="date" value="${todayISO()}" class="field-input num">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Короткая заметка (необязательно)</label>
+              <input id="e-note" type="text" placeholder="Например: доставка курьером" class="field-input">
+            </div>
+
+            <button onclick="confirmExpense()" class="btn-primary w-full">
+              ${SVG.plus}
+              <span>Записать расход</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Breakdown & History -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="panel-card p-5 sm:p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-base font-bold">Расходы по категориям</h2>
+              <span class="text-sm font-extrabold num text-red-400">Всего: ${money(grandTotal)}</span>
+            </div>
+            ${Object.keys(totals).length ? `
+              <div class="space-y-3">
+                ${Object.keys(totals).sort((a, b) => totals[b] - totals[a]).map((cat) => {
+                  const pct = Math.max((totals[cat] / maxCat) * 100, 4);
+                  return `
+                    <div>
+                      <div class="flex justify-between text-xs sm:text-sm font-bold mb-1">
+                        <span>${esc(cat)}</span>
+                        <span class="num">${money(totals[cat])}</span>
+                      </div>
+                      <div class="w-full h-2.5 rounded-full overflow-hidden" style="background-color: var(--bg-input);">
+                        <div class="h-full rounded-full bg-gradient-to-r from-red-500 to-amber-500" style="width: ${pct}%"></div>
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            ` : `<p class="text-xs" style="color: var(--text-muted);">Расходов пока нет.</p>`}
+          </div>
+
+          <div class="panel-card p-5 sm:p-6">
+            <h2 class="text-base font-bold mb-4">Последние расходы</h2>
+            ${recent.length ? `
+              <div class="overflow-x-auto -mx-2 px-2">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="border-b text-[11px] uppercase tracking-wider" style="border-color: var(--border-color); color: var(--text-muted);">
+                      <th class="py-2.5 px-2">Дата</th>
+                      <th class="py-2.5 px-2">Категория</th>
+                      <th class="py-2.5 px-2">Заметка</th>
+                      <th class="py-2.5 px-2">Сумма</th>
+                      <th class="py-2.5 px-1 text-right"></th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y text-xs sm:text-sm" style="border-color: var(--border-color);">
+                    ${recent.map((e) => `
+                      <tr>
+                        <td class="py-3 px-2 num text-[11px] whitespace-nowrap" style="color: var(--text-sub);">${e.date.slice(5)}</td>
+                        <td class="py-3 px-2 font-bold whitespace-nowrap">${esc(e.cat)}</td>
+                        <td class="py-3 px-2 text-xs max-w-[100px] sm:max-w-none truncate" style="color: var(--text-sub);">${esc(e.note || "—")}</td>
+                        <td class="py-3 px-2 num font-bold text-red-400 whitespace-nowrap">-${money(e.amt)}</td>
+                        <td class="py-3 px-1 text-right">
+                          <button onclick="removeExpense(${e.id})" class="p-1.5 rounded-xl text-red-400 hover:bg-red-500/15 cursor-pointer">${SVG.trash}</button>
+                        </td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              </div>
+            ` : `<p class="text-xs" style="color: var(--text-muted);">Список пуст.</p>`}
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // =========================================================================
+  // TAB 5: СКИДКИ И БАЗА — BULK DISCOUNTS + IRONCLAD BACKUP
+  // =========================================================================
+  settings: function () {
+    const sample = DB.products[0];
+    const testQtys = [1, ...DB.tiers.map((t) => t[0])].filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => a - b);
+    const nowStr = new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+
+    return `
+      <div class="space-y-6">
+        <!-- BLOCK 1: RELIABLE DATA STORAGE & BACKUP -->
+        <div class="panel-card-gold p-5 sm:p-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 mb-5 border-b" style="border-color: var(--border-color);">
+            <div class="flex items-start gap-3.5">
+              <div class="p-3 rounded-2xl bg-emerald-500/15 text-emerald-400 flex-none">${SVG.shield}</div>
+              <div>
+                <h2 class="text-base sm:text-lg font-extrabold">Надёжное хранение данных</h2>
+                <div id="settings-save-time" class="text-xs sm:text-sm font-bold text-emerald-400 mt-1 num">
+                  Все данные надёжно сохранены в браузере (${nowStr})
+                </div>
+                <p class="text-xs mt-1.5 leading-relaxed max-w-2xl" style="color: var(--text-sub);">
+                  Каждое ваше действие автоматически дублируется в <b>localStorage</b> и <b>IndexedDB</b>. Даже если полностью закрыть браузер или выключить компьютер, всё останется на месте. Для переноса на телефон или другое устройство скачайте резервную копию.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap gap-3">
+              <button onclick="exportJsonBackup()" class="btn-primary">
+                ${SVG.download}
+                <span>Скачать резервную копию (.json)</span>
+              </button>
+              <button onclick="triggerJsonImport()" class="btn-ghost">
+                ${SVG.upload}
+                <span>Восстановить из файла</span>
+              </button>
+            </div>
+
+            <button onclick="confirmFullReset()" class="px-4 py-2.5 rounded-xl text-xs font-bold text-red-400 border border-red-500/25 hover:bg-red-500/10 cursor-pointer">
+              Очистить всю базу
+            </button>
+          </div>
+        </div>
+
+        <!-- BLOCK 2: BULK DISCOUNTS -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-5">
+            <div class="panel-card p-5 sm:p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="text-base font-bold">Правила скидок от объёма</h2>
+                  <p class="text-xs" style="color: var(--text-sub);">Применяются сами при продаже банок</p>
+                </div>
+                <button onclick="addTierRow()" class="btn-ghost !min-h-[38px] !py-1.5 !px-3 text-xs">
+                  ${SVG.plus}
+                  <span>Добавить</span>
+                </button>
+              </div>
+
+              <div class="space-y-3">
+                ${DB.tiers.map((t, i) => `
+                  <div class="flex items-center gap-3 p-3 rounded-2xl border" style="background-color: var(--bg-input); border-color: var(--border-color);">
+                    <div class="flex-1">
+                      <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">От, банок</label>
+                      <input type="number" min="2" value="${t[0]}" onchange="editTier(${i}, 0, this.value)" class="field-input !min-h-[42px] num font-bold">
+                    </div>
+                    <div class="flex-1">
+                      <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">Скидка, %</label>
+                      <input type="number" min="0" max="90" value="${t[1]}" onchange="editTier(${i}, 1, this.value)" class="field-input !min-h-[42px] num font-bold" style="color: var(--gold);">
+                    </div>
+                    <button onclick="deleteTier(${i})" class="mt-5 p-2.5 rounded-xl text-red-400 hover:bg-red-500/15 cursor-pointer" title="Удалить">
+                      ${SVG.trash}
+                    </button>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="panel-card p-5 sm:p-6">
+              <h2 class="text-base font-bold mb-1">Как работают скидки для «${sample ? esc(sample.name) : "товара"}»</h2>
+              <p class="text-xs mb-4" style="color: var(--text-sub);">Проверка итоговой суммы и вашей прибыли при опте</p>
+
+              ${sample ? `
+                <div class="overflow-x-auto -mx-2 px-2">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="border-b text-[11px] uppercase tracking-wider" style="border-color: var(--border-color); color: var(--text-muted);">
+                        <th class="py-3 px-2">Банок</th>
+                        <th class="py-3 px-2">Скидка</th>
+                        <th class="py-3 px-2">Итого</th>
+                        <th class="py-3 px-2">За 1 б.</th>
+                        <th class="py-3 px-2">Прибыль</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y text-xs sm:text-sm" style="border-color: var(--border-color);">
+                      ${testQtys.map((q) => {
+                        const d = calcDiscount(q);
+                        const total = Math.round(sample.pw * q * (1 - d / 100) * 2) / 2;
+                        const prof = total - sample.cost * q;
+                        return `
+                          <tr>
+                            <td class="py-3 px-2 font-bold num whitespace-nowrap">${q} б.</td>
+                            <td class="py-3 px-2 num font-bold whitespace-nowrap" style="color: var(--gold);">${d}%</td>
+                            <td class="py-3 px-2 num font-bold whitespace-nowrap">${money(total)}</td>
+                            <td class="py-3 px-2 num whitespace-nowrap">${money(total / q)}</td>
+                            <td class="py-3 px-2 num font-extrabold whitespace-nowrap ${prof >= 0 ? "text-emerald-400" : "text-red-400"}">${signedMoney(prof)}</td>
+                          </tr>
+                        `;
+                      }).join("")}
+                    </tbody>
+                  </table>
+                </div>
+              ` : `<p class="text-xs">Добавьте товар на вкладке «Склад».</p>`}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+};
+
+// --- INTERACTIVE HANDLERS ---
+
+// Sales Step 2 & 3
+function chooseSaleMode(mode) {
+  document.getElementById("s-mode").value = mode;
+  const bCan = document.getElementById("btn-mode-can");
+  const bPc = document.getElementById("btn-mode-pc");
+
+  if (mode === "can") {
+    bCan.className = "min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer bg-[#d4af37]/15 border-[#d4af37] text-[#d4af37]";
+    bPc.className = "min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer";
+    bPc.style.backgroundColor = "var(--bg-input)";
+    bPc.style.borderColor = "var(--border-color)";
+    bPc.style.color = "var(--text-sub)";
+  } else {
+    bPc.className = "min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer bg-[#d4af37]/15 border-[#d4af37] text-[#d4af37]";
+    bCan.className = "min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer";
+    bCan.style.backgroundColor = "var(--bg-input)";
+    bCan.style.borderColor = "var(--border-color)";
+    bCan.style.color = "var(--text-sub)";
+  }
+  updateSaleCalc();
+}
+
+function stepSaleQty(delta) {
+  const input = document.getElementById("s-qty");
+  if (!input) return;
+  const next = Math.max(1, (Number(input.value) || 0) + delta);
+  input.value = next;
+  updateSaleCalc();
+}
+
+function updateSaleCalc() {
+  const prodSel = document.getElementById("s-prod");
+  if (!prodSel) return;
+  const p = findProduct(prodSel.value);
+  if (!p) return;
+
+  const mode = document.getElementById("s-mode").value;
+  const qty = Math.max(0, Number(document.getElementById("s-qty").value) || 0);
+  const disc = mode === "can" ? calcDiscount(qty) : 0;
+  const raw = mode === "can" ? p.pw * qty * (1 - disc / 100) : p.pp * qty;
+  const finalPrice = Math.round(raw * 2) / 2;
+
+  document.getElementById("s-price").value = finalPrice.toFixed(2);
+
+  const badge = document.getElementById("s-disc-badge");
+  if (disc > 0) {
+    badge.textContent = `Скидка -${disc}%`;
+    badge.classList.remove("hidden");
+  } else {
+    badge.classList.add("hidden");
+  }
+
+  updateManualProfit();
+}
+
+function updateManualProfit() {
+  const prodSel = document.getElementById("s-prod");
+  if (!prodSel) return;
+  const p = findProduct(prodSel.value);
+  if (!p) return;
+
+  const mode = document.getElementById("s-mode").value;
+  const qty = Math.max(0, Number(document.getElementById("s-qty").value) || 0);
+  const price = Number(document.getElementById("s-price").value) || 0;
+  const pieces = mode === "can" ? qty * p.pcs : qty;
+  const cogs = (pieces * p.cost) / Math.max(1, p.pcs);
+  const profit = price - cogs;
+
+  const profEl = document.getElementById("s-live-profit");
+  profEl.textContent = signedMoney(profit);
+  profEl.className = `text-lg sm:text-xl font-extrabold num ${profit >= 0 ? "text-emerald-400" : "text-red-400"}`;
+
+  const remStock = Math.max(0, p.stock - pieces);
+  const remCans = Math.floor(remStock / Math.max(1, p.pcs));
+  const remPcs = remStock % Math.max(1, p.pcs);
+  document.getElementById("s-after-stock").textContent = pieces > p.stock ? "Не хватает на складе!" : `${remCans} банк. + ${remPcs} шт.`;
+}
+
+function confirmSale() {
+  const p = findProduct(document.getElementById("s-prod").value);
+  if (!p) return;
+  const mode = document.getElementById("s-mode").value;
+  const qty = Number(document.getElementById("s-qty").value);
+  const price = Number(document.getElementById("s-price").value);
+  const date = document.getElementById("s-date").value || todayISO();
+  const pieces = mode === "can" ? qty * p.pcs : qty;
+
+  if (!(qty > 0) || !(price >= 0)) {
+    notify("Проверьте количество и сумму продажи", "err");
+    return;
+  }
+  if (pieces > p.stock) {
+    notify(`На складе недостаточно товара! Доступно: ${stockText(p)}`, "err");
+    return;
+  }
+
+  const cogs = (pieces * p.cost) / Math.max(1, p.pcs);
+  p.stock -= pieces;
+  DB.sales.push({
+    id: DB.seq++,
+    date,
+    pid: p.id,
+    type: mode,
+    qty,
+    pieces,
+    price,
+    cogs
+  });
+
+  persistData();
+  renderApp();
+  notify(`Продажа оформлена! Прибыль: ${signedMoney(price - cogs)}`, "ok");
+}
+
+function removeSale(id) {
+  const s = DB.sales.find((x) => x.id === id);
+  if (!s) return;
+  const p = findProduct(s.pid);
+  if (p) p.stock += s.pieces;
+  DB.sales = DB.sales.filter((x) => x.id !== id);
+  persistData();
+  renderApp();
+  notify("Продажа отменена, товар возвращён на склад", "ok");
+}
+
+// Purchases (Weighted Average Cost)
+function updateBuyCalc() {
+  const qty = Number(document.getElementById("b-qty")?.value) || 0;
+  const total = Number(document.getElementById("b-total")?.value) || 0;
+  const unit = qty > 0 ? total / qty : 0;
+  const el = document.getElementById("b-unit-cost");
+  if (el) el.textContent = money(unit);
+}
+
+function confirmBuy() {
+  const p = findProduct(document.getElementById("b-prod").value);
+  if (!p) return;
+  const qty = Number(document.getElementById("b-qty").value);
+  const total = Number(document.getElementById("b-total").value);
+  const date = document.getElementById("b-date").value || todayISO();
+
+  if (!(qty > 0) || !(total > 0)) {
+    notify("Укажите количество банок и общую сумму закупки", "err");
+    return;
+  }
+
+  // Weighted average cost calculation
+  const oldCans = p.stock / Math.max(1, p.pcs);
+  const oldVal = oldCans * p.cost;
+  const newCost = (oldVal + total) / (oldCans + qty);
+
+  p.stock += qty * p.pcs;
+  p.cost = Math.round(newCost * 100) / 100;
+
+  DB.buys.push({
+    id: DB.seq++,
+    date,
+    pid: p.id,
+    qty,
+    total
+  });
+
+  persistData();
+  renderApp();
+  notify(`Склад пополнен (+${qty} банк.). Новая себестоимость: ${money(p.cost)}`, "ok");
+}
+
+// Product Modal (Add & Edit)
+function openProductFormModal(productId) {
+  const p = productId ? findProduct(productId) : null;
+  const isEdit = Boolean(p);
+  const cansNow = p ? Math.floor(p.stock / Math.max(1, p.pcs)) : 0;
+
+  openModal(`
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-extrabold">${isEdit ? "Редактировать товар" : "Добавить новый товар"}</h3>
+      <button onclick="closeModal()" class="p-2 rounded-xl opacity-70 hover:opacity-100 cursor-pointer">✕</button>
+    </div>
+    <div class="space-y-3.5">
+      <div>
+        <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Название товара</label>
+        <input id="m-name" type="text" value="${isEdit ? esc(p.name) : ""}" placeholder="Например: Классика Gold" class="field-input font-bold">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Закупка за банку (₼)</label>
+          <input id="m-cost" type="number" step="0.1" value="${isEdit ? p.cost : "13.00"}" class="field-input num font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Штук в 1 банке</label>
+          <input id="m-pcs" type="number" min="1" value="${isEdit ? p.pcs : "20"}" class="field-input num font-bold">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Цена продажи банки (₼)</label>
+          <input id="m-pw" type="number" step="0.1" value="${isEdit ? p.pw : "17.00"}" class="field-input num font-bold" style="color: var(--gold);">
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Цена продажи 1 шт. (₼)</label>
+          <input id="m-pp" type="number" step="0.1" value="${isEdit ? p.pp : "1.00"}" class="field-input num font-bold" style="color: var(--gold);">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">${isEdit ? "Остаток (в штуках)" : "Начальный остаток (банок)"}</label>
+          <input id="m-stock" type="number" min="0" value="${isEdit ? p.stock : cansNow}" class="field-input num">
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Мин. остаток для тревоги (шт.)</label>
+          <input id="m-min" type="number" min="0" value="${isEdit ? p.min : "20"}" class="field-input num">
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 pt-3">
+        <button onclick="closeModal()" class="btn-ghost">Отмена</button>
+        <button onclick="saveProductFromModal(${isEdit ? p.id : "null"})" class="btn-primary px-6">
+          ${isEdit ? "Сохранить изменения" : "Создать товар"}
+        </button>
+      </div>
+    </div>
+  `);
+}
+
+function saveProductFromModal(productId) {
+  const name = document.getElementById("m-name").value.trim() || "Новый товар";
+  const cost = Math.max(0, Number(document.getElementById("m-cost").value) || 0);
+  const pcs = Math.max(1, Number(document.getElementById("m-pcs").value) || 1);
+  const pw = Math.max(0, Number(document.getElementById("m-pw").value) || 0);
+  const pp = Math.max(0, Number(document.getElementById("m-pp").value) || 0);
+  const stockInput = Math.max(0, Number(document.getElementById("m-stock").value) || 0);
+  const min = Math.max(0, Number(document.getElementById("m-min").value) || 0);
+
+  if (productId) {
+    const p = findProduct(productId);
+    if (p) {
+      p.name = name;
+      p.cost = cost;
+      p.pcs = pcs;
+      p.pw = pw;
+      p.pp = pp;
+      p.stock = stockInput;
+      p.min = min;
+    }
+    notify(`Товар «${name}» обновлён`, "ok");
+  } else {
+    DB.products.push({
+      id: DB.seq++,
+      name,
+      cost,
+      pcs,
+      pw,
+      pp,
+      stock: stockInput * pcs,
+      min
+    });
+    notify(`Товар «${name}» добавлен`, "ok");
+  }
+
+  persistData();
+  closeModal();
+  renderApp();
+}
+
+function confirmDeleteProduct(id) {
+  const p = findProduct(id);
+  if (!p) return;
+  openModal(`
+    <h3 class="text-lg font-extrabold mb-2">Удалить «${esc(p.name)}»?</h3>
+    <p class="text-sm mb-5" style="color: var(--text-sub);">Товар исчезнет из каталога, но история прошлых продаж сохранится в отчётах.</p>
+    <div class="flex justify-end gap-3">
+      <button onclick="closeModal()" class="btn-ghost">Отмена</button>
+      <button onclick="executeDeleteProduct(${id})" class="px-4 py-2.5 rounded-xl bg-red-500 text-white font-bold text-sm cursor-pointer">Удалить</button>
+    </div>
+  `);
+}
+
+function executeDeleteProduct(id) {
+  DB.products = DB.products.filter((p) => p.id !== id);
+  persistData();
+  closeModal();
+  renderApp();
+  notify("Товар удалён из каталога", "ok");
+}
+
+// Expenses
+function selectExpCategory(cat, btn) {
+  document.getElementById("e-cat").value = cat;
+  document.querySelectorAll(".exp-chip").forEach((el) => {
+    el.className = "exp-chip py-2.5 px-2 rounded-xl text-xs font-bold border transition-all cursor-pointer";
+    el.style.backgroundColor = "var(--bg-input)";
+    el.style.borderColor = "var(--border-color)";
+    el.style.color = "var(--text-main)";
+  });
+  btn.className = "exp-chip py-2.5 px-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-[#d4af37]/15 border-[#d4af37] text-[#d4af37]";
+  btn.style.backgroundColor = "";
+  btn.style.borderColor = "";
+  btn.style.color = "";
+}
+
+function confirmExpense() {
+  const cat = document.getElementById("e-cat").value;
+  const amt = Number(document.getElementById("e-amt").value);
+  const date = document.getElementById("e-date").value || todayISO();
+  const note = document.getElementById("e-note").value.trim();
+
+  if (!(amt > 0)) {
+    notify("Введите сумму расхода", "err");
+    return;
+  }
+
+  DB.exps.push({ id: DB.seq++, date, cat, amt, note });
+  persistData();
+  renderApp();
+  notify(`Расход ${money(amt)} записан`, "ok");
+}
+
+function removeExpense(id) {
+  DB.exps = DB.exps.filter((e) => e.id !== id);
+  persistData();
+  renderApp();
+  notify("Расход удалён", "ok");
+}
+
+// Discounts & Full Reset
+function addTierRow() {
+  const lastQty = DB.tiers.length ? DB.tiers[DB.tiers.length - 1][0] : 10;
+  const lastPct = DB.tiers.length ? DB.tiers[DB.tiers.length - 1][1] : 15;
+  DB.tiers.push([lastQty + 5, Math.min(90, lastPct + 3)]);
+  persistData();
+  renderApp();
+}
+
+function editTier(idx, col, val) {
+  DB.tiers[idx][col] = Math.max(0, Number(val) || 0);
+  persistData();
+  renderApp();
+}
+
+function deleteTier(idx) {
+  DB.tiers.splice(idx, 1);
+  persistData();
+  renderApp();
+}
+
+function confirmFullReset() {
+  openModal(`
+    <div class="flex items-center gap-2.5 text-red-400 mb-3">
+      ${SVG.alert}
+      <h3 class="text-lg font-extrabold">Очистить всю базу данных?</h3>
+    </div>
+    <p class="text-sm mb-5 leading-relaxed" style="color: var(--text-sub);">
+      Это действие удалит все продажи, закупки, расходы и вернёт стандартный пример товара. Рекомендуем сначала скачать резервную копию (.json).
+    </p>
+    <div class="flex flex-wrap justify-end gap-3">
+      <button onclick="closeModal()" class="btn-ghost">Отмена</button>
+      <button onclick="executeFullReset()" class="px-5 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold text-sm cursor-pointer">Да, очистить всё</button>
+    </div>
+  `);
+}
+
+function executeFullReset() {
+  try { localStorage.removeItem(LS_KEY); } catch (e) {}
+  DB = {
+    products: [{ id: 1, name: "Товар 1 (пример)", cost: 13.5, pcs: 20, pw: 17, pp: 1, stock: 200, min: 40 }],
+    sales: [],
+    buys: [],
+    exps: [],
+    tiers: [[2, 5], [3, 8], [5, 10], [10, 15]],
+    seq: 2
+  };
+  persistData();
+  closeModal();
+  renderApp();
+  notify("База данных очищена", "ok");
+}
+
+// --- MAIN RENDER ---
+function renderApp() {
+  renderNav();
+  const container = document.getElementById("app-content");
+  if (container && PAGES[activeTab]) {
+    container.innerHTML = PAGES[activeTab]();
+  }
+  if (activeTab === "sell") updateSaleCalc();
+  if (activeTab === "stock" && stockSubTab === "buy") updateBuyCalc();
+}
+
+window.addEventListener("DOMContentLoaded", async () => {
+  initTheme();
+  await initData();
+  renderApp();
+});
+</script>
+</body>
+</html>
