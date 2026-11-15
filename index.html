@@ -95,16 +95,31 @@ html, body {
 }
 
 .field-input, .field-select {
+  display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 48px;
+  box-sizing: border-box;
   background-color: var(--bg-input);
   border: 1px solid var(--border-color);
   color: var(--text-main);
   border-radius: 14px;
-  padding: 11px 14px;
+  padding: 11px 12px;
   font-size: 16px;
   font-weight: 500;
+  -webkit-appearance: none;
+  appearance: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="date"].field-input {
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  font-size: 14px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .field-input:focus, .field-select:focus {
@@ -910,12 +925,12 @@ const PAGES = {
                 <span id="s-disc-badge" class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-[#d4af37]/20 text-[#d4af37] num">Скидка 0%</span>
               </div>
 
-              <div class="grid grid-cols-2 gap-3 mb-3">
-                <div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <div class="min-w-0">
                   <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">Итого к оплате (₼)</label>
                   <input id="s-price" type="number" step="0.1" class="field-input num font-extrabold text-lg" style="color: var(--gold);" oninput="updateManualProfit()">
                 </div>
-                <div>
+                <div class="min-w-0">
                   <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">Дата продажи</label>
                   <input id="s-date" type="date" value="${todayISO()}" class="field-input num text-sm">
                 </div>
@@ -923,13 +938,13 @@ const PAGES = {
 
               <!-- Live Profit Box -->
               <div class="p-4 rounded-2xl border" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.28);">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs sm:text-sm font-bold">Ваша чистая прибыль с этой продажи:</span>
-                  <span id="s-live-profit" class="text-lg sm:text-xl font-extrabold num text-emerald-400">+0.00 ₼</span>
+                <div class="flex items-center justify-between gap-3">
+                  <span class="text-xs sm:text-sm font-bold leading-snug">Ваша чистая прибыль с этой продажи:</span>
+                  <span id="s-live-profit" class="text-lg sm:text-xl font-extrabold num text-emerald-400 whitespace-nowrap flex-none">+0.00 ₼</span>
                 </div>
-                <div class="text-[11px] mt-1.5 flex justify-between" style="color: var(--text-sub);">
+                <div class="text-[11px] mt-1.5 flex items-center justify-between gap-2" style="color: var(--text-sub);">
                   <span>Останется на складе после сделки:</span>
-                  <span id="s-after-stock" class="num font-bold">—</span>
+                  <span id="s-after-stock" class="num font-bold whitespace-nowrap flex-none">—</span>
                 </div>
               </div>
             </div>
@@ -1035,10 +1050,26 @@ const PAGES = {
               </div>
 
               <div class="grid grid-cols-2 gap-3">
-                <div>
+                <div class="min-w-0">
                   <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Куплено банок</label>
                   <input id="b-qty" type="number" min="1" value="10" class="field-input num font-bold" oninput="updateBuyCalc()">
                 </div>
+                <div class="min-w-0">
+                  <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Заплатили всего (₼)</label>
+                  <input id="b-total" type="number" step="0.5" value="135" class="field-input num font-bold" style="color: var(--gold);" oninput="updateBuyCalc()">
+                </div>
+              </div>
+
+              <div class="min-w-0">
+                <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Дата закупки</label>
+                <input id="b-date" type="date" value="${todayISO()}" class="field-input num">
+              </div>
+
+              <!-- Live Unit Cost Box -->
+              <div class="p-4 rounded-2xl border flex items-center justify-between gap-2" style="background: rgba(212, 175, 55, 0.08); border-color: var(--border-gold);">
+                <span class="text-xs sm:text-sm font-bold">Цена за 1 банку:</span>
+                <span id="b-unit-cost" class="text-lg font-extrabold num whitespace-nowrap flex-none" style="color: var(--gold);">13.50 ₼</span>
+              </div>
                 <div>
                   <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Заплатили всего (₼)</label>
                   <input id="b-total" type="number" step="0.5" value="135" class="field-input num font-bold" style="color: var(--gold);" oninput="updateBuyCalc()">
@@ -1221,12 +1252,12 @@ const PAGES = {
               <input type="hidden" id="e-cat" value="${categories[0]}">
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-              <div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="min-w-0">
                 <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">2. Сумма (₼)</label>
                 <input id="e-amt" type="number" step="0.5" placeholder="0.00" class="field-input num font-extrabold">
               </div>
-              <div>
+              <div class="min-w-0">
                 <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">3. Дата</label>
                 <input id="e-date" type="date" value="${todayISO()}" class="field-input num">
               </div>
@@ -1356,33 +1387,33 @@ const PAGES = {
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div class="lg:col-span-5">
             <div class="panel-card p-5 sm:p-6">
-              <div class="flex items-center justify-between mb-4">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <div>
                   <h2 class="text-base font-bold">Правила скидок от объёма</h2>
                   <p class="text-xs" style="color: var(--text-sub);">Применяются сами при продаже банок</p>
                 </div>
-                <button onclick="addTierRow()" class="btn-ghost !min-h-[38px] !py-1.5 !px-3 text-xs">
+                <button type="button" onclick="addTierRow()" class="btn-primary !min-h-[40px] !py-2 !px-3.5 text-xs">
                   ${SVG.plus}
-                  <span>Добавить</span>
+                  <span>Добавить скидку</span>
                 </button>
               </div>
 
               <div class="space-y-3">
-                ${DB.tiers.map((t, i) => `
-                  <div class="flex items-center gap-3 p-3 rounded-2xl border" style="background-color: var(--bg-input); border-color: var(--border-color);">
-                    <div class="flex-1">
+                ${DB.tiers.length ? DB.tiers.map((t, i) => `
+                  <div class="flex items-center gap-2.5 p-3 rounded-2xl border" style="background-color: var(--bg-input); border-color: var(--border-color);">
+                    <div class="flex-1 min-w-0">
                       <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">От, банок</label>
                       <input type="number" min="2" value="${t[0]}" onchange="editTier(${i}, 0, this.value)" class="field-input !min-h-[42px] num font-bold">
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0">
                       <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">Скидка, %</label>
                       <input type="number" min="0" max="90" value="${t[1]}" onchange="editTier(${i}, 1, this.value)" class="field-input !min-h-[42px] num font-bold" style="color: var(--gold);">
                     </div>
-                    <button onclick="deleteTier(${i})" class="mt-5 p-2.5 rounded-xl text-red-400 hover:bg-red-500/15 cursor-pointer" title="Удалить">
+                    <button type="button" onclick="deleteTier(${i})" class="mt-5 p-2.5 rounded-xl text-red-400 hover:bg-red-500/15 cursor-pointer flex-none" title="Удалить">
                       ${SVG.trash}
                     </button>
                   </div>
-                `).join("")}
+                `).join("") : `<p class="text-xs py-4 text-center" style="color: var(--text-muted);">Скидок пока нет. Нажмите «Добавить скидку».</p>`}
               </div>
             </div>
           </div>
@@ -1503,7 +1534,7 @@ function updateManualProfit() {
 
   const profEl = document.getElementById("s-live-profit");
   profEl.textContent = signedMoney(profit);
-  profEl.className = `text-lg sm:text-xl font-extrabold num ${profit >= 0 ? "text-emerald-400" : "text-red-400"}`;
+  profEl.className = `text-lg sm:text-xl font-extrabold num whitespace-nowrap flex-none ${profit >= 0 ? "text-emerald-400" : "text-red-400"}`;
 
   const remStock = Math.max(0, p.stock - pieces);
   const remCans = Math.floor(remStock / Math.max(1, p.pcs));
@@ -1758,11 +1789,29 @@ function removeExpense(id) {
 
 // Discounts & Full Reset
 function addTierRow() {
-  const lastQty = DB.tiers.length ? DB.tiers[DB.tiers.length - 1][0] : 10;
-  const lastPct = DB.tiers.length ? DB.tiers[DB.tiers.length - 1][1] : 15;
-  DB.tiers.push([lastQty + 5, Math.min(90, lastPct + 3)]);
+  if (!Array.isArray(DB.tiers)) DB.tiers = [];
+  const maxQty = DB.tiers.length ? Math.max(...DB.tiers.map((t) => Number(t[0]) || 0)) : 0;
+  const maxPct = DB.tiers.length ? Math.max(...DB.tiers.map((t) => Number(t[1]) || 0)) : 2;
+  const nextQty = maxQty > 0 ? maxQty + 5 : 2;
+  const nextPct = Math.min(90, maxPct + 3);
+  DB.tiers.push([nextQty, nextPct]);
   persistData();
   renderApp();
+  notify(`Добавлена скидка: от ${nextQty} банк. → -${nextPct}%`, "ok");
+}
+
+function editTier(idx, col, val) {
+  if (!DB.tiers[idx]) return;
+  DB.tiers[idx][col] = Math.max(0, Number(val) || 0);
+  persistData();
+  renderApp();
+}
+
+function deleteTier(idx) {
+  DB.tiers.splice(idx, 1);
+  persistData();
+  renderApp();
+  notify("Правило скидки удалено", "ok");
 }
 
 function editTier(idx, col, val) {
