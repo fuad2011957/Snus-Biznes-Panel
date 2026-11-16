@@ -1,1879 +1,1954 @@
-<!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+﻿<!DOCTYPE html>
+<html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Бизнес-панель · Executive Edition</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Бизнес-панель — Учёт и Прибыль</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  darkMode: ['class', '[data-theme="dark"]'],
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Plus Jakarta Sans', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      }
-    }
-  }
-}
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-body: #090b10;
-  --bg-sidebar: #0d1018;
-  --bg-card: #11151f;
-  --bg-card-alt: #161b28;
-  --bg-input: #171c29;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-gold: rgba(212, 175, 55, 0.32);
-  --text-main: #f8fafc;
-  --text-sub: #94a3b8;
-  --text-muted: #64748b;
-  --gold: #d4af37;
-  --gold-light: #f3d06b;
-  --emerald: #10b981;
-  --ruby: #ef4444;
-  --shadow-elevated: 0 14px 34px -10px rgba(0, 0, 0, 0.65);
+  --bg: #090b10;
+  --bg-elev: #10131c;
+  --card: #151924;
+  --card-hover: #1b202e;
+  --border: #23293a;
+  --border-gold: rgba(229, 185, 76, 0.38);
+  --text: #f5f7fa;
+  --text-muted: #939bb0;
+  --gold: #e5b94c;
+  --gold-bright: #f8d474;
+  --gold-dim: rgba(229, 185, 76, 0.13);
+  --ok: #2dd4bf;
+  --ok-dim: rgba(45, 212, 191, 0.13);
+  --bad: #fb7185;
+  --bad-dim: rgba(251, 113, 133, 0.13);
+  --warn: #fbbf24;
+  --warn-dim: rgba(251, 191, 36, 0.13);
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --radius: 18px;
 }
 
 :root[data-theme="light"] {
-  --bg-body: #f3f5f9;
-  --bg-sidebar: #ffffff;
-  --bg-card: #ffffff;
-  --bg-card-alt: #f8fafc;
-  --bg-input: #f1f5f9;
-  --border-color: #e2e8f0;
-  --border-gold: rgba(180, 138, 28, 0.35);
-  --text-main: #0f172a;
-  --text-sub: #475569;
-  --text-muted: #64748b;
-  --gold: #b48a1c;
-  --gold-light: #9a7312;
-  --emerald: #059669;
-  --ruby: #dc2626;
-  --shadow-elevated: 0 10px 28px -8px rgba(15, 23, 42, 0.08);
+  --bg: #f4f6fa;
+  --bg-elev: #ffffff;
+  --card: #ffffff;
+  --card-hover: #f8fafd;
+  --border: #e1e5ef;
+  --border-gold: rgba(180, 134, 24, 0.4);
+  --text: #111521;
+  --text-muted: #5e667a;
+  --gold: #b88618;
+  --gold-bright: #9c6f0e;
+  --gold-dim: rgba(184, 134, 24, 0.1);
+  --ok: #0d9488;
+  --ok-dim: rgba(13, 148, 136, 0.1);
+  --bad: #e11d48;
+  --bad-dim: rgba(225, 29, 72, 0.1);
+  --warn: #d97706;
+  --warn-dim: rgba(217, 119, 6, 0.1);
+  --shadow: 0 8px 24px rgba(17, 21, 33, 0.06);
 }
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-body);
-  color: var(--text-main);
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
   overflow-x: hidden;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Manrope', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15.5px;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  min-height: 100vh;
 }
 
 .num {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
-.panel-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  box-shadow: var(--shadow-elevated);
+/* Layout */
+.layout { display: flex; min-height: 100vh; width: 100%; }
+
+.sidebar {
+  width: 264px;
+  flex: 0 0 264px;
+  background: var(--bg-elev);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
 }
 
-.panel-card-gold {
-  background: linear-gradient(155deg, var(--bg-card) 0%, var(--bg-card-alt) 100%);
-  border: 1px solid var(--border-gold);
-  border-radius: 20px;
-  box-shadow: var(--shadow-elevated);
-}
-
-.field-input, .field-select {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  min-height: 48px;
-  box-sizing: border-box;
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
-  border-radius: 14px;
-  padding: 11px 12px;
-  font-size: 16px;
-  font-weight: 500;
-  -webkit-appearance: none;
-  appearance: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-input[type="date"].field-input {
-  inline-size: 100%;
-  max-inline-size: 100%;
-  min-inline-size: 0;
-  font-size: 14px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-.field-input:focus, .field-select:focus {
-  outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.16);
-}
-
-.btn-primary {
-  min-height: 48px;
-  background: linear-gradient(135deg, #d4af37 0%, #f3d06b 100%);
-  color: #090b10;
-  font-weight: 700;
-  font-size: 15px;
-  border-radius: 14px;
-  padding: 12px 20px;
-  border: none;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.25);
-  transition: transform 0.15s ease, filter 0.15s ease;
-}
-
-.btn-primary:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-.btn-ghost {
-  min-height: 44px;
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
-  font-weight: 600;
-  font-size: 14px;
-  border-radius: 14px;
-  padding: 10px 16px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: border-color 0.2s, background-color 0.2s;
-}
-
-.btn-ghost:hover {
-  border-color: var(--gold);
-}
-
-.side-link {
-  width: 100%;
+.brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 13px 16px;
-  border-radius: 14px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-sub);
-  background: transparent;
+  padding: 0 8px 22px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold), #b88618);
+  color: #090b10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+  flex: none;
+}
+
+.brand-title { font-weight: 800; font-size: 17px; letter-spacing: -0.01em; }
+.brand-sub { font-size: 12.5px; color: var(--text-muted); }
+
+.nav-list { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: 13px;
   border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-weight: 600;
+  font-size: 14.5px;
   cursor: pointer;
   text-align: left;
   transition: all 0.18s ease;
 }
 
-.side-link:hover {
-  color: var(--text-main);
-  background-color: rgba(212, 175, 55, 0.06);
-}
-
-.side-link.active {
-  background: linear-gradient(90deg, rgba(212, 175, 55, 0.16) 0%, rgba(212, 175, 55, 0.03) 100%);
+.nav-btn:hover { background: var(--card); color: var(--text); }
+.nav-btn.active {
+  background: var(--gold-dim);
   border-color: var(--border-gold);
-  color: var(--gold);
+  color: var(--gold-bright);
 }
 
-.step-badge {
+.nav-btn svg { width: 20px; height: 20px; flex: none; }
+
+.save-box {
+  margin-top: auto;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+}
+
+.save-status { display: flex; align-items: center; gap: 8px; color: var(--ok); font-weight: 700; margin-bottom: 4px; }
+.save-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); flex: none; }
+
+/* Main Content */
+.main {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 28px 32px 64px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+h1 { font-size: 27px; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.02em; }
+.subtitle { color: var(--text-muted); font-size: 14.5px; margin: 0; }
+h2 { font-size: 18px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
+h3 { font-size: 15.5px; font-weight: 700; margin: 0 0 8px; }
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex: none;
+}
+.icon-btn:hover { border-color: var(--gold); }
+
+/* Cards & Grids */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+
+.card-gold {
+  background: linear-gradient(145deg, var(--card), rgba(229, 185, 76, 0.06));
+  border-color: var(--border-gold);
+}
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+
+/* Metric Cards */
+.metric {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+.metric-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.metric-title { font-size: 13.5px; font-weight: 600; color: var(--text-muted); }
+.metric-val { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
+.metric-desc { font-size: 12.5px; color: var(--text-muted); margin-top: 8px; line-height: 1.45; }
+
+.help-tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: help;
+  flex: none;
+}
+
+/* Forms */
+.step-box {
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  border-radius: 15px;
+  padding: 16px;
+  margin-bottom: 14px;
+  min-width: 0;
+}
+.step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.step-num {
   width: 26px;
   height: 26px;
-  border-radius: 8px;
-  background: rgba(212, 175, 55, 0.15);
-  color: var(--gold);
-  font-family: 'JetBrains Mono', monospace;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-bright);
+  font-size: 12.5px;
   font-weight: 800;
-  font-size: 12px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   flex: none;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.22); border-radius: 99px; }
+label { display: block; font-size: 13.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+.field-hint { font-size: 12.5px; color: var(--text-muted); margin-top: 6px; }
 
-/* Responsive Layout Rules */
-@media (max-width: 768px) {
-  .desktop-aside { display: none !important; }
-  .mobile-bottom-bar { display: flex !important; }
-  .workspace-main {
-    width: 100%;
-    max-width: 100vw;
-    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
-  }
+input, select {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 13px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  transition: border-color 0.15s;
 }
-@media (min-width: 769px) {
-  .desktop-aside { display: flex !important; }
-  .mobile-bottom-bar { display: none !important; }
+input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 48px;
+  line-height: 48px;
+}
+input:focus, select:focus { outline: none; border-color: var(--gold); }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 20px;
+  border-radius: 13px;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, var(--gold), #c99722);
+  color: #090b10;
+  font: inherit;
+  font-weight: 700;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.15s;
+  white-space: nowrap;
+}
+.btn:hover { opacity: 0.94; }
+.btn:active { transform: scale(0.98); }
+.btn-full { width: 100%; }
+
+.btn-secondary {
+  background: var(--bg-elev);
+  border-color: var(--border);
+  color: var(--text);
+}
+.btn-secondary:hover { border-color: var(--gold); }
+
+.btn-danger {
+  background: var(--bad-dim);
+  border-color: rgba(251, 113, 133, 0.3);
+  color: var(--bad);
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.seg-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.seg-btn {
+  height: 48px;
+  padding: 0 10px;
+  border-radius: 13px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  font: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+.seg-btn.active {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+
+.quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.chip {
+  padding: 8px 14px;
+  border-radius: 11px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.chip:hover, .chip.active { border-color: var(--gold); background: var(--gold-dim); color: var(--gold-bright); }
+
+/* Preview & Badges */
+.preview-box {
+  border-radius: 15px;
+  padding: 16px;
+  background: var(--ok-dim);
+  border: 1px solid rgba(45, 212, 191, 0.32);
+  margin: 14px 0;
+}
+.preview-box.warn {
+  background: var(--bad-dim);
+  border-color: rgba(251, 113, 133, 0.38);
+}
+.preview-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.preview-row + .preview-row { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 99px;
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.badge-ok { background: var(--ok-dim); color: var(--ok); }
+.badge-bad { background: var(--bad-dim); color: var(--bad); }
+.badge-warn { background: var(--warn-dim); color: var(--warn); }
+.badge-gold { background: var(--gold-dim); color: var(--gold-bright); }
+
+.pos { color: var(--ok); }
+.neg { color: var(--bad); }
+.gold { color: var(--gold-bright); }
+
+/* Tables */
+.table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
+th { color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+tr:last-child td { border-bottom: none; }
+
+/* Empty State & Onboarding */
+.empty-state {
+  text-align: center;
+  padding: 36px 20px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+}
+.empty-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: var(--gold-dim);
+  color: var(--gold-bright);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.onboarding-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 15px;
+  border-radius: 15px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.74);
+  backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  z-index: 100;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--border-gold);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+/* Toast Notification */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--card);
+  border: 1px solid var(--gold);
+  color: var(--text);
+  padding: 13px 18px;
+  border-radius: 13px;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: var(--shadow);
+  z-index: 200;
+  transform: translateY(-150%);
+  transition: transform 0.25s ease;
+}
+.toast.show { transform: translateY(0); }
+
+/* Mobile Status Pill & Bottom Bar */
+.mobile-save-pill { display: none; }
+.mobile-nav { display: none; }
+
+@media (max-width: 860px) {
+  .sidebar { display: none !important; }
+  .main { padding: 16px 14px 104px; width: 100%; max-width: 100%; }
+  .topbar { align-items: center; margin-bottom: 18px; }
+  h1 { font-size: 21px; }
+  .subtitle { font-size: 13.5px; }
+  .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .metric { padding: 14px; }
+  .metric-val { font-size: 19px; }
+  .card { padding: 16px; border-radius: 16px; }
+  .step-box { padding: 14px; }
+  .toast { left: 14px; right: 14px; top: 14px; text-align: center; }
+
+  .mobile-save-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--ok);
+    background: var(--ok-dim);
+    border: 1px solid rgba(45, 212, 191, 0.25);
+    padding: 4px 10px;
+    border-radius: 99px;
+    margin-bottom: 14px;
+  }
+
+  .mobile-nav {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: var(--bg-elev);
+    border-top: 1px solid var(--border);
+    padding: 6px 2px calc(8px + env(safe-area-inset-bottom, 0px));
+    z-index: 50;
+  }
+  .m-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 2px;
+    cursor: pointer;
+    min-width: 0;
+  }
+  .m-btn span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  .m-btn svg { width: 20px; height: 20px; flex: none; }
+  .m-btn.active { color: var(--gold-bright); }
+}
+
+@media (max-width: 560px) {
+  .form-split { grid-template-columns: 1fr !important; }
+  .seg-btn { font-size: 13px; padding: 0 6px; }
+  .icon-btn span { display: none; }
+  .icon-btn { padding: 10px 11px; }
 }
 </style>
 </head>
 <body>
 
-<!-- Toast Notification Area -->
-<div id="toasts" class="fixed top-4 right-4 z-50 flex flex-col gap-2.5 max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
+<div id="toast" class="toast"></div>
 
-<!-- Universal Modal -->
-<div id="modal-backdrop" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4" onclick="if(event.target===this) closeModal()">
-  <div id="modal-box" class="panel-card-gold w-full max-w-lg p-6"></div>
-</div>
-
-<!-- Hidden File Input for JSON Import -->
-<input type="file" id="json-import-input" accept=".json,application/json" class="hidden" onchange="importJsonBackup(event)">
-
-<div class="flex min-h-screen w-full overflow-x-hidden">
-  <!-- DESKTOP SIDEBAR (240px) -->
-  <aside class="desktop-aside hidden md:flex w-[240px] flex-none border-r flex-col justify-between sticky top-0 h-screen p-4" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
-    <div>
-      <!-- Brand -->
-      <div class="flex items-center gap-3 px-2 py-2 mb-6">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#d4af37] to-[#f3d06b] text-[#090b10] shadow-md">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        </div>
-        <div>
-          <div class="font-extrabold text-base tracking-tight leading-none">БИЗНЕС<span style="color: var(--gold);">ПАНЕЛЬ</span></div>
-          <div class="text-[11px] font-medium mt-1" style="color: var(--text-muted);">Учёт и финансы · ₼</div>
-        </div>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">₼</div>
+      <div>
+        <div class="brand-title">Бизнес-Панель</div>
+        <div class="brand-sub">Учёт товаров и прибыли</div>
       </div>
-
-      <!-- 5 Clear Tabs -->
-      <nav id="desktop-menu" class="space-y-1.5"></nav>
     </div>
 
-    <!-- Auto-Save Status Footer -->
-    <div class="p-3.5 rounded-2xl border" style="background: rgba(16, 185, 129, 0.06); border-color: rgba(16, 185, 129, 0.22);">
-      <div class="flex items-center gap-2 text-xs font-bold text-emerald-400">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>Автосохранение</span>
+    <nav class="nav-list" id="desktop-nav"></nav>
+
+    <div class="save-box">
+      <div class="save-status">
+        <span class="save-dot"></span>
+        <span>Автосохранение в памяти</span>
       </div>
-      <div id="sidebar-save-time" class="text-[11px] mt-1 num" style="color: var(--text-sub);">Сохранено: только что</div>
-      <button onclick="switchTab('settings')" class="mt-2.5 w-full py-1.5 px-2.5 rounded-lg text-[11px] font-semibold border transition-colors cursor-pointer hover:border-amber-400/50" style="background-color: var(--bg-card); border-color: var(--border-color); color: var(--text-main);">
-        Резервная копия →
-      </button>
+      <div id="save-time" style="color:var(--text-muted)">Всё сохранено навсегда</div>
     </div>
   </aside>
 
-  <!-- MAIN WORKSPACE -->
-  <div class="flex-1 flex flex-col min-w-0 w-full">
-    <!-- TOP HEADER -->
-    <header id="top-header" class="sticky top-0 z-30 border-b px-4 sm:px-8 py-3.5 flex items-center justify-between gap-3 backdrop-blur-xl" style="background-color: rgba(9, 11, 16, 0.85); border-color: var(--border-color);">
-      <div class="min-w-0">
-        <h1 id="page-title" class="text-lg sm:text-xl font-extrabold tracking-tight truncate">Сводка бизнеса</h1>
-        <p id="page-subtitle" class="text-xs truncate hidden sm:block mt-0.5" style="color: var(--text-sub);">Главные финансовые показатели без лишних деталей</p>
+  <main class="main">
+    <div class="mobile-save-pill">
+      <span class="save-dot"></span>
+      <span id="mobile-save-time">Данные сохранены в памяти</span>
+    </div>
+
+    <div class="topbar">
+      <div style="min-width:0;">
+        <h1 id="page-title">Сводка бизнеса</h1>
+        <p class="subtitle" id="page-subtitle">Главные показатели вашей работы</p>
       </div>
-
-      <div class="flex items-center gap-2.5 flex-none">
-        <button id="quick-sell-cta" onclick="switchTab('sell')" class="btn-primary !min-h-[40px] !py-2 !px-3.5 sm:!px-4 text-xs sm:text-sm">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          <span>Продать</span>
+      <div style="display:flex;gap:8px;flex:none;">
+        <button class="icon-btn" onclick="openHelpModal()" title="Инструкция для новичка">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Помощь</span>
         </button>
-
-        <button onclick="toggleTheme()" id="theme-toggle-btn" class="btn-ghost !min-h-[40px] !w-[40px] !p-0" title="Сменить тему оформления">
-          <svg id="theme-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <button class="icon-btn" onclick="toggleTheme()" title="Сменить тему оформления">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         </button>
       </div>
-    </header>
+    </div>
 
-    <!-- CONTENT CONTAINER -->
-    <main id="app-content" class="workspace-main flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-8 py-6"></main>
+    <div id="app-content"></div>
+  </main>
+</div>
+
+<nav class="mobile-nav" id="mobile-nav"></nav>
+
+<!-- Product Modal (Add / Edit) -->
+<div class="modal-backdrop" id="prod-modal" onclick="if(event.target===this)closeProdModal()">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 id="pm-title" style="margin:0;">Новый товар</h2>
+      <button class="icon-btn" style="padding:6px 10px;" onclick="closeProdModal()">✕</button>
+    </div>
+
+    <input type="hidden" id="pm-id">
+
+    <div style="margin-bottom:14px;">
+      <label>1. Название товара</label>
+      <input id="pm-name" type="text" placeholder="Например: Классический вкус">
+      <div class="field-hint">Укажите понятное название, чтобы легко выбирать при продаже</div>
+    </div>
+
+    <div class="grid-2 form-split" style="margin-bottom:14px;">
+      <div>
+        <label>2. Закупочная цена 1 упаковки (₼)</label>
+        <input id="pm-cost" class="num" type="number" step="0.1" min="0" placeholder="13.50" oninput="calcModalMargin()">
+        <div class="field-hint">За сколько вы сами покупаете 1 банку</div>
+      </div>
+      <div>
+        <label>3. Штук в 1 упаковке</label>
+        <input id="pm-pcs" class="num" type="number" step="1" min="1" value="20" oninput="calcModalMargin()">
+        <div class="field-hint">Сколько порций/штук внутри одной банки</div>
+      </div>
+    </div>
+
+    <div class="grid-2 form-split" style="margin-bottom:14px;">
+      <div>
+        <label>4. Цена продажи целой упаковки (₼)</label>
+        <input id="pm-pw" class="num" type="number" step="0.5" min="0" placeholder="17.00" oninput="calcModalMargin()">
+        <div class="field-hint">За сколько продаёте клиенту целую банку</div>
+      </div>
+      <div>
+        <label>5. Цена продажи поштучно (₼)</label>
+        <input id="pm-pp" class="num" type="number" step="0.1" min="0" placeholder="1.00" oninput="calcModalMargin()">
+        <div class="field-hint">За сколько продаёте 1 штуку отдельно</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label>6. Напомнить, когда останется меньше (штук)</label>
+      <input id="pm-min" class="num" type="number" step="1" min="0" value="20">
+      <div class="field-hint">Например: 20 шт. = 1 целая банка. Панель предупредит, когда пора закупаться</div>
+    </div>
+
+    <div class="preview-box" id="pm-preview" style="margin-bottom:16px;"></div>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-secondary" style="flex:1;" onclick="closeProdModal()">Отмена</button>
+      <button class="btn" style="flex:2;" onclick="saveProdModal()">Сохранить товар</button>
+    </div>
   </div>
 </div>
 
-<!-- MOBILE BOTTOM NAVIGATION BAR -->
-<nav id="mobile-menu" class="mobile-bottom-bar fixed bottom-0 left-0 right-0 z-40 border-t px-1 py-1.5 justify-around items-center backdrop-blur-xl" style="background-color: rgba(13, 16, 24, 0.94); border-color: var(--border-color); padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));"></nav>
+<!-- Beginner Guide Modal -->
+<div class="modal-backdrop" id="help-modal" onclick="if(event.target===this)closeHelpModal()">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h2 style="margin:0;">Как пользоваться панелью</h2>
+      <button class="icon-btn" style="padding:6px 10px;" onclick="closeHelpModal()">✕</button>
+    </div>
+    <p class="subtitle" style="margin-bottom:16px;">Простая инструкция за 1 минуту:</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px;">
+      <div class="onboarding-step">
+        <div class="step-num">1</div>
+        <div>
+          <div style="font-weight:700;font-size:14.5px;">Добавьте ваши товары (раздел «Склад»)</div>
+          <div style="font-size:13.5px;color:var(--text-muted);">Нажмите «+ Добавить товар», укажите название, вашу закупочную цену и цену продажи.</div>
+        </div>
+      </div>
+      <div class="onboarding-step">
+        <div class="step-num">2</div>
+        <div>
+          <div style="font-weight:700;font-size:14.5px;">Запишите закупку (раздел «Склад»)</div>
+          <div style="font-size:13.5px;color:var(--text-muted);">Когда купили партию товара, внесите её в «Пополнить склад». Остаток прибавится сам.</div>
+        </div>
+      </div>
+      <div class="onboarding-step">
+        <div class="step-num">3</div>
+        <div>
+          <div style="font-weight:700;font-size:14.5px;">Оформляйте продажи (раздел «Продать»)</div>
+          <div style="font-size:13.5px;color:var(--text-muted);">Выберите товар и количество. Панель сама спишет остаток со склада и посчитает вашу чистую прибыль.</div>
+        </div>
+      </div>
+      <div class="onboarding-step">
+        <div class="step-num">4</div>
+        <div>
+          <div style="font-weight:700;font-size:14.5px;">Данные сохраняются автоматически</div>
+          <div style="font-size:13.5px;color:var(--text-muted);">Даже если полностью закрыть браузер или выключить телефон/ноутбук, все записи останутся на месте.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-full" onclick="closeHelpModal()">Всё понятно, приступить</button>
+  </div>
+</div>
 
 <script>
-/**
- * ============================================================================
- * EXECUTIVE BUSINESS DASHBOARD · CLEAN ARCHITECTURE & DUAL STORAGE
- * ============================================================================
- */
-
-const LS_KEY = "biz1"; // Совместимость со старой базой пользователя
-const IDB_NAME = "BizPanelDB";
-const IDB_STORE = "vault";
-const THEME_STORAGE = "biz_exec_theme";
-
-let activeTab = "dash";
-let periodFilter = 7; // 1 = Сегодня, 7 = 7 дней, 30 = 30 дней, 0 = Всё время
-let stockSubTab = "buy"; // 'buy' = Пополнить склад, 'items' = Мои товары и цены
-let salesSearchQuery = "";
-let idb = null;
-
-let DB = {
-  products: [
-    { id: 1, name: "Товар 1 (пример)", cost: 13.5, pcs: 20, pw: 17, pp: 1, stock: 200, min: 40 }
-  ],
-  sales: [],
-  buys: [],
-  exps: [],
-  tiers: [[2, 5], [3, 8], [5, 10], [10, 15]],
-  seq: 2
-};
-
-// --- CRISP SVG ICONS ---
-const SVG = {
-  dash: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
-  sell: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
-  stock: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
-  exp: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
-  settings: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
-  check: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-  trash: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
-  edit: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
-  plus: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
-  download: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
-  upload: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
-  shield: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
-  alert: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
-};
-
-const TABS = [
-  { id: "dash", short: "Сводка", title: "Сводка бизнеса", subtitle: "Главные финансовые показатели без лишних деталей", icon: SVG.dash },
-  { id: "sell", short: "Продать", title: "Продать товар", subtitle: "Оформление сделки по шагам с авторасчётом прибыли", icon: SVG.sell },
-  { id: "stock", short: "Склад", title: "Склад и Закупки", subtitle: "Пополнение остатков и управление ценами товаров", icon: SVG.stock },
-  { id: "exp", short: "Расходы", title: "Учёт расходов", subtitle: "Аренда, транспорт, реклама и прочие затраты", icon: SVG.exp },
-  { id: "settings", short: "Скидки и База", title: "Скидки и Резервная база", subtitle: "Оптовые скидки от объёма и надёжное хранение данных", icon: SVG.settings }
-];
-
-// --- DUAL STORAGE ENGINE (LocalStorage + IndexedDB) ---
-function openVaultDB() {
-  return new Promise((resolve) => {
-    if (!window.indexedDB) return resolve(null);
-    try {
-      const req = indexedDB.open(IDB_NAME, 1);
-      req.onupgradeneeded = (e) => {
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains(IDB_STORE)) {
-          db.createObjectStore(IDB_STORE);
-        }
-      };
-      req.onsuccess = (e) => {
-        idb = e.target.result;
-        resolve(idb);
-      };
-      req.onerror = () => resolve(null);
-    } catch (e) {
-      resolve(null);
-    }
-  });
-}
-
-function getFromVault() {
-  return new Promise((resolve) => {
-    if (!idb) return resolve(null);
-    try {
-      const tx = idb.transaction(IDB_STORE, "readonly");
-      const req = tx.objectStore(IDB_STORE).get(LS_KEY);
-      req.onsuccess = () => resolve(req.result || null);
-      req.onerror = () => resolve(null);
-    } catch (e) {
-      resolve(null);
-    }
-  });
-}
-
-function saveToVault(data) {
-  if (!idb) return;
-  try {
-    const tx = idb.transaction(IDB_STORE, "readwrite");
-    tx.objectStore(IDB_STORE).put(data, LS_KEY);
-  } catch (e) {}
-}
-
-async function initData() {
-  let local = null;
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (raw) local = JSON.parse(raw);
-  } catch (e) {}
-
-  await openVaultDB();
-  const vault = await getFromVault();
-
-  if (local && Array.isArray(local.products)) {
-    DB = normalizeDB(local);
-    saveToVault(DB);
-  } else if (vault && Array.isArray(vault.products)) {
-    DB = normalizeDB(vault);
-    try { localStorage.setItem(LS_KEY, JSON.stringify(DB)); } catch (e) {}
-    notify("Данные восстановлены из защищённого хранилища", "ok");
-  } else {
-    persistData(false);
+// ==========================================
+// 1. TRIPLE PERSISTENCE (localStorage + IndexedDB + Cookie/Session fallback + auto-save on exit)
+// ==========================================
+var STORAGE_KEY = "biz1";
+var STATE = {
+  view: "dash",
+  period: 7,
+  stockTab: "add",
+  sellType: "can",
+  sellQty: 1,
+  expCat: "Транспорт",
+  data: {
+    products: [],
+    sales: [],
+    buys: [],
+    exps: [],
+    tiers: [[2, 5], [3, 8], [5, 10]],
+    seq: 1,
+    updatedAt: 0
   }
-  updateSaveClock();
-}
+};
 
-function normalizeDB(raw) {
+function defaultData() {
   return {
-    products: Array.isArray(raw.products) && raw.products.length ? raw.products : DB.products,
-    sales: Array.isArray(raw.sales) ? raw.sales : [],
-    buys: Array.isArray(raw.buys) ? raw.buys : [],
-    exps: Array.isArray(raw.exps) ? raw.exps : [],
-    tiers: Array.isArray(raw.tiers) ? raw.tiers : [[2, 5], [3, 8], [5, 10], [10, 15]],
-    seq: Number(raw.seq) || 100
+    products: [],
+    sales: [],
+    buys: [],
+    exps: [],
+    tiers: [[2, 5], [3, 8], [5, 10]],
+    seq: 1,
+    updatedAt: 0
   };
 }
 
-function persistData(updateClock = true) {
+function normalizeData(raw) {
+  var base = defaultData();
+  if (!raw || typeof raw !== "object") return base;
+  base.products = Array.isArray(raw.products) ? raw.products : [];
+  base.sales = Array.isArray(raw.sales) ? raw.sales : [];
+  base.buys = Array.isArray(raw.buys) ? raw.buys : [];
+  base.exps = Array.isArray(raw.exps) ? raw.exps : [];
+  base.tiers = Array.isArray(raw.tiers) ? raw.tiers : [[2, 5], [3, 8], [5, 10]];
+  base.seq = typeof raw.seq === "number" && raw.seq > 0 ? raw.seq : 1;
+  base.updatedAt = typeof raw.updatedAt === "number" ? raw.updatedAt : Date.now();
+  return base;
+}
+
+function requestPersistentStorage() {
   try {
-    localStorage.setItem(LS_KEY, JSON.stringify(DB));
-  } catch (e) {}
-  saveToVault(DB);
-  if (updateClock) updateSaveClock();
-}
-
-function updateSaveClock() {
-  const now = new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-  const sideEl = document.getElementById("sidebar-save-time");
-  const tabEl = document.getElementById("settings-save-time");
-  if (sideEl) sideEl.textContent = `Сохранено: ${now}`;
-  if (tabEl) tabEl.textContent = `Все данные надёжно сохранены в браузере (${now})`;
-}
-
-// --- BACKUP & RESTORE ---
-function exportJsonBackup() {
-  try {
-    const blob = new Blob([JSON.stringify(DB, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `BizPanel_Backup_${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    notify("Файл резервной копии (.json) сохранён на устройство", "ok");
-  } catch (e) {
-    notify("Не удалось создать резервную копию", "err");
-  }
-}
-
-function triggerJsonImport() {
-  document.getElementById("json-import-input").click();
-}
-
-function importJsonBackup(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const parsed = JSON.parse(e.target.result);
-      if (parsed && Array.isArray(parsed.products)) {
-        DB = normalizeDB(parsed);
-        persistData();
-        renderApp();
-        notify("База успешно загружена из файла!", "ok");
-      } else {
-        notify("Ошибка: выбран неподходящий файл", "err");
-      }
-    } catch (err) {
-      notify("Не удалось прочитать JSON-файл", "err");
+    if (navigator.storage && navigator.storage.persist) {
+      navigator.storage.persist();
     }
-    event.target.value = "";
-  };
-  reader.readAsText(file);
+  } catch (e) {}
 }
 
-// --- THEME ---
-function initTheme() {
-  const saved = localStorage.getItem(THEME_STORAGE) || "dark";
-  applyTheme(saved);
+function saveToIDB(dataObj) {
+  try {
+    if (!window.indexedDB) return;
+    var req = indexedDB.open("BizPanelDB", 2);
+    req.onupgradeneeded = function(e) {
+      var db = e.target.result;
+      if (!db.objectStoreNames.contains("store")) db.createObjectStore("store");
+    };
+    req.onsuccess = function(e) {
+      var db = e.target.result;
+      var tx = db.transaction("store", "readwrite");
+      tx.objectStore("store").put(dataObj, STORAGE_KEY);
+    };
+  } catch (err) {}
 }
 
-function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme") || "dark";
-  const next = current === "dark" ? "light" : "dark";
-  localStorage.setItem(THEME_STORAGE, next);
-  applyTheme(next);
+function loadFromIDB(callback) {
+  try {
+    if (!window.indexedDB) return;
+    var req = indexedDB.open("BizPanelDB", 2);
+    req.onupgradeneeded = function(e) {
+      var db = e.target.result;
+      if (!db.objectStoreNames.contains("store")) db.createObjectStore("store");
+    };
+    req.onsuccess = function(e) {
+      var db = e.target.result;
+      var tx = db.transaction("store", "readonly");
+      var getReq = tx.objectStore("store").get(STORAGE_KEY);
+      getReq.onsuccess = function() {
+        if (getReq.result) callback(getReq.result);
+      };
+    };
+  } catch (err) {}
 }
 
-function applyTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  const header = document.getElementById("top-header");
-  const mobBar = document.getElementById("mobile-menu");
-  const svg = document.getElementById("theme-svg");
+function saveData(silent) {
+  STATE.data.updatedAt = Date.now();
+  var serialized = JSON.stringify(STATE.data);
+  try {
+    localStorage.setItem(STORAGE_KEY, serialized);
+    localStorage.setItem(STORAGE_KEY + "_backup", serialized);
+  } catch (e) {}
+  saveToIDB(STATE.data);
 
-  if (theme === "light") {
-    if (header) header.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
-    if (mobBar) mobBar.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
-    if (svg) svg.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-  } else {
-    if (header) header.style.backgroundColor = "rgba(9, 11, 16, 0.85)";
-    if (mobBar) mobBar.style.backgroundColor = "rgba(13, 16, 24, 0.94)";
-    if (svg) svg.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  if (!silent) {
+    var now = new Date();
+    var hh = String(now.getHours()).padStart(2, "0");
+    var mm = String(now.getMinutes()).padStart(2, "0");
+    var ss = String(now.getSeconds()).padStart(2, "0");
+    var timeStr = hh + ":" + mm + ":" + ss;
+    var el = document.getElementById("save-time");
+    if (el) el.textContent = "Сохранено в " + timeStr;
+    var mel = document.getElementById("mobile-save-time");
+    if (mel) mel.textContent = "Сохранено в " + timeStr;
   }
 }
 
-// --- FORMATTERS & HELPERS ---
-function money(val) {
-  const n = Number(val) || 0;
-  return n.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₼";
+function hasAnyContent(d) {
+  if (!d) return false;
+  return (d.products && d.products.length > 0) ||
+         (d.sales && d.sales.length > 0) ||
+         (d.buys && d.buys.length > 0) ||
+         (d.exps && d.exps.length > 0);
 }
 
-function signedMoney(val) {
-  const n = Number(val) || 0;
-  return (n > 0 ? "+" : "") + money(n);
+function initLoad() {
+  requestPersistentStorage();
+  var loaded = null;
+  try {
+    var str = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(STORAGE_KEY + "_backup");
+    if (str) loaded = JSON.parse(str);
+  } catch (e) {}
+
+  if (loaded && typeof loaded === "object") {
+    STATE.data = normalizeData(loaded);
+  } else {
+    STATE.data = defaultData();
+  }
+
+  // Always check IndexedDB in case localStorage was cleared by browser cleanup
+  loadFromIDB(function(idbData) {
+    if (!idbData || typeof idbData !== "object") return;
+    var normIdb = normalizeData(idbData);
+    var localHas = hasAnyContent(STATE.data);
+    var idbHas = hasAnyContent(normIdb);
+    if ((!localHas && idbHas) || (normIdb.updatedAt > (STATE.data.updatedAt || 0) && idbHas)) {
+      STATE.data = normIdb;
+      saveData(true);
+      render();
+    }
+  });
+}
+
+// ==========================================
+// 2. HELPERS & FORMATTERS
+// ==========================================
+function $(id) { return document.getElementById(id); }
+
+function money(val) {
+  var num = Number(val) || 0;
+  return num.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₼";
 }
 
 function esc(str) {
-  return String(str ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  return String(str == null ? "" : str).replace(/[&<>"]/g, function(c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  });
 }
 
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
+function todayStr() {
+  var d = new Date();
+  var y = d.getFullYear();
+  var m = String(d.getMonth() + 1).padStart(2, "0");
+  var day = String(d.getDate()).padStart(2, "0");
+  return y + "-" + m + "-" + day;
 }
 
-function findProduct(id) {
-  return DB.products.find((p) => p.id == id);
+function formatDateRu(iso) {
+  if (!iso || iso.length < 10) return iso || "";
+  var p = iso.split("-");
+  return p[2] + "." + p[1] + "." + p[0];
 }
 
-function sumBy(list, fn) {
-  return list.reduce((acc, item) => acc + (Number(fn(item)) || 0), 0);
+function getProduct(id) {
+  for (var i = 0; i < STATE.data.products.length; i++) {
+    if (STATE.data.products[i].id == id) return STATE.data.products[i];
+  }
+  return null;
 }
 
-function stockText(p) {
-  if (!p) return "0 шт.";
-  const perCan = Math.max(1, Number(p.pcs) || 1);
-  const cans = Math.floor(p.stock / perCan);
-  const rem = p.stock % perCan;
-  return `${cans} банк. + ${rem} шт.`;
+function sumBy(arr, fn) {
+  var total = 0;
+  for (var i = 0; i < arr.length; i++) total += Number(fn(arr[i])) || 0;
+  return total;
 }
 
-function calcDiscount(cansQty) {
-  let best = 0;
-  DB.tiers.forEach((t) => {
-    if (cansQty >= t[0] && t[1] > best) best = t[1];
+function getDiscountPct(qty) {
+  var best = 0;
+  STATE.data.tiers.forEach(function(t) {
+    if (qty >= Number(t[0]) && Number(t[1]) > best) best = Number(t[1]);
   });
   return best;
 }
 
-function periodStartDate() {
-  if (!periodFilter) return "0000-00-00";
-  const d = new Date();
-  d.setDate(d.getDate() - periodFilter + 1);
-  return d.toISOString().slice(0, 10);
+function formatStock(prod) {
+  var pcsPerPack = Math.max(1, Number(prod.pcs) || 1);
+  var totalPcs = Math.max(0, Math.round(Number(prod.stock) || 0));
+  var packs = Math.floor(totalPcs / pcsPerPack);
+  var rem = totalPcs % pcsPerPack;
+  return packs + " уп. + " + rem + " шт.";
 }
 
-// --- NOTIFICATIONS & MODALS (No alert/confirm) ---
-function notify(text, type = "ok") {
-  const container = document.getElementById("toasts");
-  if (!container) return;
-  const id = "t_" + Date.now() + Math.random().toString(36).slice(2, 6);
-  const isErr = type === "err";
-  const html = `
-    <div id="${id}" class="pointer-events-auto flex items-center gap-3 p-3.5 rounded-2xl border shadow-2xl backdrop-blur-xl transition-all duration-300" style="background: rgba(15, 19, 29, 0.96); border-color: ${isErr ? "rgba(239, 68, 68, 0.45)" : "rgba(16, 185, 129, 0.45)"}; color: #f8fafc;">
-      <div class="${isErr ? "text-red-400" : "text-emerald-400"} flex-none">${isErr ? SVG.alert : SVG.check}</div>
-      <div class="text-xs sm:text-sm font-semibold leading-snug">${esc(text)}</div>
-    </div>
-  `;
-  container.insertAdjacentHTML("beforeend", html);
-  setTimeout(() => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.style.opacity = "0";
-      el.style.transform = "translateY(-6px)";
-      setTimeout(() => el.remove(), 250);
-    }
-  }, 3400);
+function cutoffDate() {
+  if (!STATE.period) return "0000-00-00";
+  var d = new Date();
+  d.setDate(d.getDate() - STATE.period + 1);
+  var y = d.getFullYear();
+  var m = String(d.getMonth() + 1).padStart(2, "0");
+  var day = String(d.getDate()).padStart(2, "0");
+  return y + "-" + m + "-" + day;
 }
 
-function openModal(html) {
-  const backdrop = document.getElementById("modal-backdrop");
-  document.getElementById("modal-box").innerHTML = html;
-  backdrop.classList.remove("hidden");
-  backdrop.classList.add("flex");
+function showToast(msg, isError) {
+  var t = $("toast");
+  t.textContent = msg;
+  t.style.borderColor = isError ? "var(--bad)" : "var(--gold)";
+  t.classList.add("show");
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function() {
+    t.classList.remove("show");
+  }, 2800);
 }
 
-function closeModal() {
-  const backdrop = document.getElementById("modal-backdrop");
-  backdrop.classList.add("hidden");
-  backdrop.classList.remove("flex");
-}
+// ==========================================
+// 3. NAVIGATION & THEME
+// ==========================================
+var NAV_ITEMS = [
+  { id: "dash", label: "Сводка", title: "Сводка бизнеса", sub: "Понятная картина ваших доходов, расходов и чистой прибыли", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>' },
+  { id: "sell", label: "Продать", title: "Оформить продажу", sub: "Выберите товар — склад и прибыль посчитаются автоматически", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>' },
+  { id: "stock", label: "Склад", title: "Склад и Товары", sub: "Добавляйте новые товары и записывайте пополнение запасов", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>' },
+  { id: "exp", label: "Расходы", title: "Расходы бизнеса", sub: "Записывайте траты на дорогу, рекламу или упаковку", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>' },
+  { id: "more", label: "Скидки и База", title: "Скидки и База", sub: "Автоматические скидки и резервное копирование", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>' }
+];
 
-// --- NAVIGATION ---
-function switchTab(tabId) {
-  activeTab = tabId;
-  renderApp();
+function go(viewId, subTab) {
+  STATE.view = viewId;
+  if (subTab) STATE.stockTab = subTab;
+  saveData(true);
+  render();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function renderNav() {
-  const current = TABS.find((t) => t.id === activeTab) || TABS[0];
-  document.getElementById("page-title").textContent = current.title;
-  document.getElementById("page-subtitle").textContent = current.subtitle;
+function toggleTheme() {
+  var root = document.documentElement;
+  var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+  root.setAttribute("data-theme", next);
+  try { localStorage.setItem("biz_theme", next); } catch (e) {}
+}
 
-  const quickCta = document.getElementById("quick-sell-cta");
-  if (quickCta) quickCta.style.display = activeTab === "sell" ? "none" : "inline-flex";
-
-  document.getElementById("desktop-menu").innerHTML = TABS.map((t) => `
-    <button onclick="switchTab('${t.id}')" class="side-link ${t.id === activeTab ? "active" : ""}">
-      <span class="flex-none">${t.icon}</span>
-      <span>${t.short}</span>
-    </button>
-  `).join("");
-
-  document.getElementById("mobile-menu").innerHTML = TABS.map((t) => {
-    const isActive = t.id === activeTab;
-    return `
-      <button onclick="switchTab('${t.id}')" class="flex flex-col items-center justify-center gap-1 py-1 px-1.5 rounded-xl transition-all cursor-pointer ${isActive ? "text-[#d4af37]" : "opacity-65"}">
-        <span>${t.icon}</span>
-        <span class="text-[10px] font-bold tracking-tight leading-none">${t.short}</span>
-      </button>
-    `;
+// ==========================================
+// 4. VIEW RENDERERS
+// ==========================================
+function render() {
+  $("desktop-nav").innerHTML = NAV_ITEMS.map(function(n) {
+    return '<button class="nav-btn ' + (n.id === STATE.view ? "active" : "") + '" onclick="go(&apos;' + n.id + '&apos;)">' + n.icon + '<span>' + n.label + '</span></button>';
   }).join("");
+
+  $("mobile-nav").innerHTML = NAV_ITEMS.map(function(n) {
+    return '<button class="m-btn ' + (n.id === STATE.view ? "active" : "") + '" onclick="go(&apos;' + n.id + '&apos;)">' + n.icon + '<span>' + n.label + '</span></button>';
+  }).join("");
+
+  var currentNav = NAV_ITEMS.filter(function(n) { return n.id === STATE.view; })[0] || NAV_ITEMS[0];
+  $("page-title").textContent = currentNav.title;
+  $("page-subtitle").textContent = currentNav.sub;
+
+  if (STATE.view === "dash") $("app-content").innerHTML = renderDashboard();
+  else if (STATE.view === "sell") { $("app-content").innerHTML = renderSell(); updateSellPreview(); }
+  else if (STATE.view === "stock") { $("app-content").innerHTML = renderStock(); if (STATE.stockTab === "add") updateBuyPreview(); }
+  else if (STATE.view === "exp") $("app-content").innerHTML = renderExpenses();
+  else if (STATE.view === "more") $("app-content").innerHTML = renderMore();
 }
 
-// --- TAB RENDERERS ---
-const PAGES = {
-  // =========================================================================
-  // TAB 1: СВОДКА (ОБЗОР) — ONLY METRICS & VISUAL CHARTS, ZERO INPUT CLUTTER
-  // =========================================================================
-  dash: function () {
-    const start = periodStartDate();
-    const sales = DB.sales.filter((s) => s.date >= start);
-    const buys = DB.buys.filter((b) => b.date >= start);
-    const exps = DB.exps.filter((e) => e.date >= start);
+// ------------------------------------------
+// VIEW 1: DASHBOARD (СВОДКА)
+// ------------------------------------------
+function renderDashboard() {
+  var prods = STATE.data.products;
+  var hasProducts = prods.length > 0;
+  var hasStock = sumBy(prods, function(p) { return p.stock; }) > 0;
+  var hasSales = STATE.data.sales.length > 0;
 
-    const revenue = sumBy(sales, (s) => s.price);
-    const cogs = sumBy(sales, (s) => s.cogs);
-    const expTotal = sumBy(exps, (e) => e.amt);
-    const buysTotal = sumBy(buys, (b) => b.total);
-    const netProfit = revenue - cogs - expTotal;
-    const stockCostValue = sumBy(DB.products, (p) => (p.stock * p.cost) / Math.max(1, p.pcs));
+  if (!hasProducts) {
+    return '' +
+      '<div class="card card-gold">' +
+        '<div class="badge badge-gold" style="margin-bottom:10px;">Добро пожаловать в ваш личный кабинет</div>' +
+        '<h2 style="font-size:21px;margin-bottom:8px;">Начнём работу за 3 простых шага</h2>' +
+        '<p class="subtitle" style="margin-bottom:18px;">Сейчас база пуста. Следуйте шагам ниже — все данные автоматически сохраняются в памяти устройства:</p>' +
+        '<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:8px;">' +
+          '<div class="onboarding-step" style="flex-wrap:wrap;">' +
+            '<div class="step-num">1</div>' +
+            '<div style="flex:1;min-width:200px;">' +
+              '<div style="font-weight:700;">Создайте свой первый товар</div>' +
+              '<div style="font-size:13.5px;color:var(--text-muted);">Укажите название, вашу закупочную цену и цену продажи.</div>' +
+            '</div>' +
+            '<button class="btn" onclick="go(&apos;stock&apos;, &apos;list&apos;); setTimeout(openNewProdModal, 120);">+ Создать товар</button>' +
+          '</div>' +
+          '<div class="onboarding-step" style="opacity:0.65;">' +
+            '<div class="step-num">2</div>' +
+            '<div>' +
+              '<div style="font-weight:700;">Пополните склад (Закупка)</div>' +
+              '<div style="font-size:13.5px;color:var(--text-muted);">Укажите, сколько упаковок вы закупили, чтобы товар появился на складе.</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="onboarding-step" style="opacity:0.65;">' +
+            '<div class="step-num">3</div>' +
+            '<div>' +
+              '<div style="font-weight:700;">Запишите первую продажу</div>' +
+              '<div style="font-size:13.5px;color:var(--text-muted);">Панель сама вычтет товар со склада и покажет вашу чистую прибыль.</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
 
-    // 7-Day Bar Chart Data
-    const chartDays = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const iso = d.toISOString().slice(0, 10);
-      const label = d.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" });
-      const dSales = DB.sales.filter((s) => s.date === iso);
-      const dExps = DB.exps.filter((e) => e.date === iso);
-      const rev = sumBy(dSales, (s) => s.price);
-      const prof = rev - sumBy(dSales, (s) => s.cogs) - sumBy(dExps, (e) => e.amt);
-      chartDays.push({ label, rev, prof });
-    }
-    const maxChart = Math.max(...chartDays.map((d) => Math.max(d.rev, d.prof)), 10);
+  var cut = cutoffDate();
+  var periodSales = STATE.data.sales.filter(function(s) { return s.date >= cut; });
+  var periodExps = STATE.data.exps.filter(function(e) { return e.date >= cut; });
+  var periodBuys = STATE.data.buys.filter(function(b) { return b.date >= cut; });
 
-    const W = 680, H = 200, pL = 42, pR = 16, pT = 18, pB = 30;
-    const plotW = W - pL - pR;
-    const plotH = H - pT - pB;
-    const colW = plotW / 7;
+  var revenue = sumBy(periodSales, function(s) { return s.price; });
+  var cogs = sumBy(periodSales, function(s) { return s.cogs; });
+  var grossProfit = revenue - cogs;
+  var opExpenses = sumBy(periodExps, function(e) { return e.amt; });
+  var netProfit = grossProfit - opExpenses;
+  var purchasesSpent = sumBy(periodBuys, function(b) { return b.total; });
+  var inventoryValue = sumBy(prods, function(p) {
+    var pcs = Math.max(1, Number(p.pcs) || 1);
+    return (Number(p.stock) || 0) * (Number(p.cost) || 0) / pcs;
+  });
 
-    let gridSvg = "";
-    for (let i = 0; i <= 3; i++) {
-      const y = pT + (plotH * i) / 3;
-      const val = Math.round(maxChart * (1 - i / 3));
-      gridSvg += `
-        <line x1="${pL}" y1="${y}" x2="${W - pR}" y2="${y}" stroke="rgba(148,163,184,0.12)" stroke-dasharray="4 4"/>
-        <text x="${pL - 8}" y="${y + 4}" text-anchor="end" font-size="10" font-family="JetBrains Mono" fill="#64748b">${val}</text>
-      `;
-    }
+  var lowStock = prods.filter(function(p) { return (Number(p.stock) || 0) <= (Number(p.min) || 0); });
 
-    let barsSvg = "";
-    chartDays.forEach((d, idx) => {
-      const cx = pL + idx * colW + colW / 2;
-      const hRev = (d.rev / maxChart) * plotH;
-      const hProf = (Math.max(0, d.prof) / maxChart) * plotH;
-      barsSvg += `
-        <g>
-          <rect x="${cx - 18}" y="${pT + plotH - hRev}" width="16" height="${Math.max(hRev, 2)}" rx="4" fill="#d4af37"/>
-          <rect x="${cx + 2}" y="${pT + plotH - hProf}" width="16" height="${Math.max(hProf, 2)}" rx="4" fill="#10b981"/>
-          <text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="11" font-family="JetBrains Mono" fill="#94a3b8">${d.label}</text>
-        </g>
-      `;
+  var nextStepBanner = "";
+  if (!hasStock && !hasSales) {
+    nextStepBanner = '' +
+      '<div class="card card-gold" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">' +
+        '<div>' +
+          '<div style="font-weight:700;color:var(--gold-bright);">Шаг 2 из 3: Пополните остатки на складе</div>' +
+          '<div style="font-size:13.5px;color:var(--text-muted);">Товар создан, но на складе пока 0 шт. Запишите первую закупку, чтобы начать продавать.</div>' +
+        '</div>' +
+        '<button class="btn" onclick="go(&apos;stock&apos;, &apos;add&apos;)">+ Записать закупку</button>' +
+      '</div>';
+  } else if (hasStock && !hasSales) {
+    nextStepBanner = '' +
+      '<div class="card card-gold" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">' +
+        '<div>' +
+          '<div style="font-weight:700;color:var(--gold-bright);">Шаг 3 из 3: Всё готово к первой продаже!</div>' +
+          '<div style="font-size:13.5px;color:var(--text-muted);">Товар уже на складе. Нажмите кнопку справа, чтобы оформить продажу клиенту.</div>' +
+        '</div>' +
+        '<button class="btn" onclick="go(&apos;sell&apos;)">Оформить продажу →</button>' +
+      '</div>';
+  }
+
+  var days = [];
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date();
+    d.setDate(d.getDate() - i);
+    var iso = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    var ds = STATE.data.sales.filter(function(s) { return s.date === iso; });
+    days.push({
+      label: iso.slice(8, 10) + "." + iso.slice(5, 7),
+      rev: sumBy(ds, function(s) { return s.price; }),
+      prof: sumBy(ds, function(s) { return s.price - s.cogs; })
     });
-
-    const lowStockList = DB.products.filter((p) => p.stock <= p.min);
-    const topProducts = DB.products
-      .map((p) => {
-        const pSales = sales.filter((s) => s.pid == p.id);
-        const profit = sumBy(pSales, (s) => s.price - s.cogs);
-        return { name: p.name, profit };
-      })
-      .sort((a, b) => b.profit - a.profit);
-    const maxProdProfit = Math.max(...topProducts.map((t) => Math.abs(t.profit)), 1);
-
-    return `
-      <!-- Period Filter Pills -->
-      <div class="mb-6">
-        <div class="inline-flex flex-wrap gap-1.5 p-1.5 rounded-2xl border" style="background-color: var(--bg-card); border-color: var(--border-color);">
-          ${[[1, "Сегодня"], [7, "7 дней"], [30, "30 дней"], [0, "Всё время"]].map(([days, label]) => `
-            <button onclick="periodFilter=${days};renderApp()" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${periodFilter === days ? "bg-gradient-to-r from-[#d4af37] to-[#f3d06b] text-[#090b10] shadow-sm" : "opacity-75 hover:opacity-100"}">
-              ${label}
-            </button>
-          `).join("")}
-        </div>
-      </div>
-
-      <!-- 4 CLEAN KPI CARDS -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mb-6">
-        <!-- 1. Чистая прибыль -->
-        <div class="panel-card-gold p-5">
-          <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--gold);">1. Чистая прибыль</div>
-          <div class="text-2xl sm:text-3xl font-extrabold num ${netProfit >= 0 ? "text-emerald-400" : "text-red-400"}">
-            ${signedMoney(netProfit)}
-          </div>
-          <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-sub);">
-            Сколько реально осталось в кармане после закупок и расходов
-          </p>
-        </div>
-
-        <!-- 2. Выручка -->
-        <div class="panel-card p-5">
-          <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--text-sub);">2. Выручка</div>
-          <div class="text-2xl sm:text-3xl font-extrabold num">${money(revenue)}</div>
-          <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-sub);">
-            Сколько денег принесли продажи · Сделок: <b class="num" style="color: var(--gold);">${sales.length}</b>
-          </p>
-        </div>
-
-        <!-- 3. Расходы и Закупки -->
-        <div class="panel-card p-5">
-          <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--text-sub);">3. Расходы и Закупки</div>
-          <div class="text-2xl sm:text-3xl font-extrabold num text-red-400">${money(expTotal + buysTotal)}</div>
-          <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-sub);">
-            Закупки: <b class="num">${money(buysTotal)}</b> · Расходы: <b class="num">${money(expTotal)}</b>
-          </p>
-        </div>
-
-        <!-- 4. Товар на складе -->
-        <div class="panel-card p-5">
-          <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--text-sub);">4. Товар на складе</div>
-          <div class="text-2xl sm:text-3xl font-extrabold num">${money(stockCostValue)}</div>
-          <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-sub);">
-            На какую сумму лежит товара по цене закупки
-          </p>
-        </div>
-      </div>
-
-      <!-- 7-DAY BAR CHART -->
-      <div class="panel-card p-5 sm:p-6 mb-6">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-          <div>
-            <h2 class="text-base font-bold">График за последние 7 дней</h2>
-            <p class="text-xs" style="color: var(--text-sub);">Сравнение общей выручки и чистой прибыли по дням</p>
-          </div>
-          <div class="flex items-center gap-4 text-xs font-semibold">
-            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm inline-block" style="background:#d4af37;"></span> Выручка</span>
-            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm inline-block" style="background:#10b981;"></span> Чистая прибыль</span>
-          </div>
-        </div>
-        <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto select-none">
-          ${gridSvg}
-          ${barsSvg}
-        </svg>
-      </div>
-
-      <!-- TWO SIDE-BY-SIDE CARDS -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <!-- Заканчивается на складе -->
-        <div class="panel-card p-5 sm:p-6">
-          <h2 class="text-base font-bold mb-1">Заканчивается на складе</h2>
-          <p class="text-xs mb-4" style="color: var(--text-sub);">Товары, которых осталось меньше минимального запаса</p>
-          ${lowStockList.length ? `
-            <div class="space-y-2.5">
-              ${lowStockList.map((p) => `
-                <div class="flex items-center justify-between p-3 rounded-2xl border border-red-500/25 bg-red-500/5">
-                  <span class="font-bold text-sm">${esc(p.name)}</span>
-                  <span class="px-3 py-1 rounded-xl text-xs font-extrabold num bg-red-500/20 text-red-400">${stockText(p)}</span>
-                </div>
-              `).join("")}
-            </div>
-          ` : `
-            <div class="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-xs sm:text-sm font-semibold text-emerald-400">
-              Всё отлично: на складе достаточно каждого товара.
-            </div>
-          `}
-        </div>
-
-        <!-- Топ товаров по прибыли -->
-        <div class="panel-card p-5 sm:p-6">
-          <h2 class="text-base font-bold mb-1">Топ товаров по прибыли</h2>
-          <p class="text-xs mb-4" style="color: var(--text-sub);">Сколько заработано на каждом товаре за период</p>
-          <div class="space-y-3.5">
-            ${topProducts.map((item) => {
-              const widthPct = Math.max((Math.abs(item.profit) / maxProdProfit) * 100, 4);
-              return `
-                <div>
-                  <div class="flex justify-between text-xs sm:text-sm font-bold mb-1.5">
-                    <span class="truncate pr-2">${esc(item.name)}</span>
-                    <span class="num ${item.profit >= 0 ? "text-emerald-400" : "text-red-400"}">${signedMoney(item.profit)}</span>
-                  </div>
-                  <div class="w-full h-2.5 rounded-full overflow-hidden" style="background-color: var(--bg-input);">
-                    <div class="h-full rounded-full bg-gradient-to-r from-[#d4af37] to-emerald-400" style="width: ${widthPct}%"></div>
-                  </div>
-                </div>
-              `;
-            }).join("")}
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  // =========================================================================
-  // TAB 2: ПРОДАТЬ ТОВАР — STEP-BY-STEP 1-2-3 FLOW
-  // =========================================================================
-  sell: function () {
-    const options = DB.products.map((p) => {
-      return `<option value="${p.id}">${esc(p.name)} (На складе: ${stockText(p)})</option>`;
-    }).join("");
-
-    const q = salesSearchQuery.trim().toLowerCase();
-    const filteredSales = DB.sales
-      .slice()
-      .reverse()
-      .filter((s) => {
-        if (!q) return true;
-        const p = findProduct(s.pid);
-        const name = p ? p.name.toLowerCase() : "";
-        return name.includes(q) || s.date.includes(q);
-      })
-      .slice(0, 35);
-
-    return `
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- LEFT/TOP: 1-2-3 STEP FORM -->
-        <div class="lg:col-span-5">
-          <div class="panel-card-gold p-5 sm:p-6 space-y-5">
-            <!-- ШАГ 1 -->
-            <div>
-              <div class="flex items-center gap-2.5 mb-2">
-                <span class="step-badge">1</span>
-                <label class="text-sm font-bold">Что продаём?</label>
-              </div>
-              <select id="s-prod" class="field-select" onchange="updateSaleCalc()">
-                ${options}
-              </select>
-            </div>
-
-            <!-- ШАГ 2 -->
-            <div>
-              <div class="flex items-center gap-2.5 mb-2">
-                <span class="step-badge">2</span>
-                <label class="text-sm font-bold">Как продаём и сколько?</label>
-              </div>
-
-              <!-- Big Mode Toggle -->
-              <div class="grid grid-cols-2 gap-2.5 mb-3">
-                <button type="button" id="btn-mode-can" onclick="chooseSaleMode('can')" class="min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer bg-[#d4af37]/15 border-[#d4af37] text-[#d4af37]">
-                  Банкой целиком
-                </button>
-                <button type="button" id="btn-mode-pc" onclick="chooseSaleMode('pc')" class="min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer" style="background-color: var(--bg-input); border-color: var(--border-color); color: var(--text-sub);">
-                  Поштучно
-                </button>
-              </div>
-              <input type="hidden" id="s-mode" value="can">
-
-              <!-- Stepper [- 1 +] & Quick Add Buttons -->
-              <div class="flex items-center gap-2 mb-2.5">
-                <button type="button" onclick="stepSaleQty(-1)" class="btn-ghost !w-12 !px-0 text-lg font-extrabold">−</button>
-                <input id="s-qty" type="number" min="1" value="1" class="field-input text-center num font-extrabold text-lg" oninput="updateSaleCalc()">
-                <button type="button" onclick="stepSaleQty(1)" class="btn-ghost !w-12 !px-0 text-lg font-extrabold">+</button>
-              </div>
-
-              <div class="grid grid-cols-3 gap-2">
-                <button type="button" onclick="stepSaleQty(1)" class="py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer hover:border-[#d4af37]" style="background-color: var(--bg-input); border-color: var(--border-color);">+1</button>
-                <button type="button" onclick="stepSaleQty(2)" class="py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer hover:border-[#d4af37]" style="background-color: var(--bg-input); border-color: var(--border-color);">+2</button>
-                <button type="button" onclick="stepSaleQty(5)" class="py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer hover:border-[#d4af37]" style="background-color: var(--bg-input); border-color: var(--border-color);">+5</button>
-              </div>
-            </div>
-
-            <!-- ШАГ 3 -->
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-2">
-                <div class="flex items-center gap-2.5">
-                  <span class="step-badge">3</span>
-                  <label class="text-sm font-bold">Итоговая цена и прибыль</label>
-                </div>
-                <span id="s-disc-badge" class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-[#d4af37]/20 text-[#d4af37] num">Скидка 0%</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                <div class="min-w-0">
-                  <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">Итого к оплате (₼)</label>
-                  <input id="s-price" type="number" step="0.1" class="field-input num font-extrabold text-lg" style="color: var(--gold);" oninput="updateManualProfit()">
-                </div>
-                <div class="min-w-0">
-                  <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">Дата продажи</label>
-                  <input id="s-date" type="date" value="${todayISO()}" class="field-input num text-sm">
-                </div>
-              </div>
-
-              <!-- Live Profit Box -->
-              <div class="p-4 rounded-2xl border" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.28);">
-                <div class="flex items-center justify-between gap-3">
-                  <span class="text-xs sm:text-sm font-bold leading-snug">Ваша чистая прибыль с этой продажи:</span>
-                  <span id="s-live-profit" class="text-lg sm:text-xl font-extrabold num text-emerald-400 whitespace-nowrap flex-none">+0.00 ₼</span>
-                </div>
-                <div class="text-[11px] mt-1.5 flex items-center justify-between gap-2" style="color: var(--text-sub);">
-                  <span>Останется на складе после сделки:</span>
-                  <span id="s-after-stock" class="num font-bold whitespace-nowrap flex-none">—</span>
-                </div>
-              </div>
-            </div>
-
-            <button onclick="confirmSale()" class="btn-primary w-full text-base">
-              ${SVG.check}
-              <span>Оформить продажу</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- RIGHT/BOTTOM: SALES HISTORY -->
-        <div class="lg:col-span-7">
-          <div class="panel-card p-5 sm:p-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-              <div>
-                <h2 class="text-base font-bold">История продаж</h2>
-                <p class="text-xs" style="color: var(--text-sub);">Удаление записи автоматически вернёт товар на склад</p>
-              </div>
-              <input type="text" placeholder="Поиск по товару или дате..." value="${esc(salesSearchQuery)}" oninput="salesSearchQuery=this.value;renderApp()" class="field-input !min-h-[40px] !py-1.5 sm:max-w-[230px] text-sm">
-            </div>
-
-            ${filteredSales.length ? `
-              <div class="overflow-x-auto -mx-2 px-2">
-                <table class="w-full text-left border-collapse">
-                  <thead>
-                    <tr class="border-b text-[11px] uppercase tracking-wider" style="border-color: var(--border-color); color: var(--text-muted);">
-                      <th class="py-3 px-2">Дата</th>
-                      <th class="py-3 px-2">Товар</th>
-                      <th class="py-3 px-2">Кол-во</th>
-                      <th class="py-3 px-2">Сумма</th>
-                      <th class="py-3 px-2">Прибыль</th>
-                      <th class="py-3 px-1 text-right"></th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y text-xs sm:text-sm" style="border-color: var(--border-color);">
-                    ${filteredSales.map((s) => {
-                      const p = findProduct(s.pid);
-                      const prof = s.price - s.cogs;
-                      return `
-                        <tr>
-                          <td class="py-3 px-2 num text-[11px] whitespace-nowrap" style="color: var(--text-sub);">${s.date.slice(5)}</td>
-                          <td class="py-3 px-2 font-bold max-w-[110px] sm:max-w-none truncate">${esc(p ? p.name : "Товар")}</td>
-                          <td class="py-3 px-2 num text-xs whitespace-nowrap">${s.qty} ${s.type === "can" ? "б." : "шт."}</td>
-                          <td class="py-3 px-2 num font-bold whitespace-nowrap">${money(s.price)}</td>
-                          <td class="py-3 px-2 num font-extrabold whitespace-nowrap ${prof >= 0 ? "text-emerald-400" : "text-red-400"}">${signedMoney(prof)}</td>
-                          <td class="py-3 px-1 text-right">
-                            <button onclick="removeSale(${s.id})" class="p-1.5 rounded-xl text-red-400 hover:bg-red-500/15 cursor-pointer" title="Отменить продажу и вернуть на склад">
-                              ${SVG.trash}
-                            </button>
-                          </td>
-                        </tr>
-                      `;
-                    }).join("")}
-                  </tbody>
-                </table>
-              </div>
-            ` : `
-              <div class="text-center py-12 px-4 rounded-2xl border border-dashed" style="border-color: var(--border-color);">
-                <p class="text-sm font-bold mb-1">Записей пока нет</p>
-                <p class="text-xs" style="color: var(--text-muted);">Оформите продажу по шагам 1–2–3, и она появится в этом списке.</p>
-              </div>
-            `}
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  // =========================================================================
-  // TAB 3: СКЛАД И ЗАКУПКИ — STRICTLY SEPARATED INTO 2 CLEAR SUB-SECTIONS
-  // =========================================================================
-  stock: function () {
-    const subTabsHtml = `
-      <div class="grid grid-cols-2 gap-2.5 p-1.5 rounded-2xl border max-w-xl mb-6" style="background-color: var(--bg-card); border-color: var(--border-color);">
-        <button onclick="stockSubTab='buy';renderApp()" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${stockSubTab === "buy" ? "bg-gradient-to-r from-[#d4af37] to-[#f3d06b] text-[#090b10] shadow-sm" : "opacity-75 hover:opacity-100"}">
-          Пополнить склад (Закупка)
-        </button>
-        <button onclick="stockSubTab='items';renderApp()" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${stockSubTab === "items" ? "bg-gradient-to-r from-[#d4af37] to-[#f3d06b] text-[#090b10] shadow-sm" : "opacity-75 hover:opacity-100"}">
-          Мои товары и цены (${DB.products.length})
-        </button>
-      </div>
-    `;
-
-    if (stockSubTab === "buy") {
-      const prodOpts = DB.products.map((p) => `<option value="${p.id}">${esc(p.name)} (Сейчас: ${stockText(p)})</option>`).join("");
-      const recentBuys = DB.buys.slice().reverse().slice(0, 25);
-
-      return `
-        ${subTabsHtml}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Purchase Form -->
-          <div class="lg:col-span-5">
-            <div class="panel-card-gold p-5 sm:p-6 space-y-4">
-              <div>
-                <h2 class="text-base font-bold">Приход нового товара</h2>
-                <p class="text-xs mt-0.5" style="color: var(--text-sub);">Укажите сколько банок купили и общую сумму</p>
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Выберите товар</label>
-                <select id="b-prod" class="field-select">${prodOpts}</select>
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div class="min-w-0">
-                  <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Куплено банок</label>
-                  <input id="b-qty" type="number" min="1" value="10" class="field-input num font-bold" oninput="updateBuyCalc()">
-                </div>
-                <div class="min-w-0">
-                  <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Заплатили всего (₼)</label>
-                  <input id="b-total" type="number" step="0.5" value="135" class="field-input num font-bold" style="color: var(--gold);" oninput="updateBuyCalc()">
-                </div>
-              </div>
-
-              <div class="min-w-0">
-                <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Дата закупки</label>
-                <input id="b-date" type="date" value="${todayISO()}" class="field-input num">
-              </div>
-
-              <!-- Live Unit Cost Box -->
-              <div class="p-4 rounded-2xl border flex items-center justify-between gap-2" style="background: rgba(212, 175, 55, 0.08); border-color: var(--border-gold);">
-                <span class="text-xs sm:text-sm font-bold">Цена за 1 банку:</span>
-                <span id="b-unit-cost" class="text-lg font-extrabold num whitespace-nowrap flex-none" style="color: var(--gold);">13.50 ₼</span>
-              </div>
-                <div>
-                  <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Заплатили всего (₼)</label>
-                  <input id="b-total" type="number" step="0.5" value="135" class="field-input num font-bold" style="color: var(--gold);" oninput="updateBuyCalc()">
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Дата закупки</label>
-                <input id="b-date" type="date" value="${todayISO()}" class="field-input num">
-              </div>
-
-              <!-- Live Unit Cost Box -->
-              <div class="p-4 rounded-2xl border flex items-center justify-between" style="background: rgba(212, 175, 55, 0.08); border-color: var(--border-gold);">
-                <span class="text-xs sm:text-sm font-bold">Цена за 1 банку:</span>
-                <span id="b-unit-cost" class="text-lg font-extrabold num" style="color: var(--gold);">13.50 ₼</span>
-              </div>
-
-              <button onclick="confirmBuy()" class="btn-primary w-full">
-                ${SVG.plus}
-                <span>Добавить на склад</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Purchase History -->
-          <div class="lg:col-span-7">
-            <div class="panel-card p-5 sm:p-6">
-              <h2 class="text-base font-bold mb-1">История пополнений склада</h2>
-              <p class="text-xs mb-4" style="color: var(--text-sub);">Все закупки партии товаров</p>
-
-              ${recentBuys.length ? `
-                <div class="overflow-x-auto -mx-2 px-2">
-                  <table class="w-full text-left border-collapse">
-                    <thead>
-                      <tr class="border-b text-[11px] uppercase tracking-wider" style="border-color: var(--border-color); color: var(--text-muted);">
-                        <th class="py-3 px-2">Дата</th>
-                        <th class="py-3 px-2">Товар</th>
-                        <th class="py-3 px-2">Партия</th>
-                        <th class="py-3 px-2">Сумма</th>
-                        <th class="py-3 px-2">За 1 б.</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y text-xs sm:text-sm" style="border-color: var(--border-color);">
-                      ${recentBuys.map((b) => {
-                        const p = findProduct(b.pid);
-                        return `
-                          <tr>
-                            <td class="py-3 px-2 num text-[11px] whitespace-nowrap" style="color: var(--text-sub);">${b.date.slice(5)}</td>
-                            <td class="py-3 px-2 font-bold max-w-[110px] sm:max-w-none truncate">${esc(p ? p.name : "Товар")}</td>
-                            <td class="py-3 px-2 num whitespace-nowrap">${b.qty} б.</td>
-                            <td class="py-3 px-2 num font-bold whitespace-nowrap">${money(b.total)}</td>
-                            <td class="py-3 px-2 num font-bold whitespace-nowrap" style="color: var(--gold);">${money(b.total / Math.max(1, b.qty))}</td>
-                          </tr>
-                        `;
-                      }).join("")}
-                    </tbody>
-                  </table>
-                </div>
-              ` : `
-                <div class="text-center py-12 px-4 rounded-2xl border border-dashed" style="border-color: var(--border-color);">
-                  <p class="text-sm font-bold mb-1">Закупок пока нет</p>
-                  <p class="text-xs" style="color: var(--text-muted);">Когда закупите товар, внесите его слева — склад обновится сам.</p>
-                </div>
-              `}
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    // SUB-TAB: МОИ ТОВАРЫ И ЦЕНЫ (CLEAN UNCROWDED CARDS + MODAL EDIT)
-    return `
-      ${subTabsHtml}
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
-        <p class="text-xs sm:text-sm" style="color: var(--text-sub);">Нажмите «Редактировать» на карточке, чтобы безопасно изменить цены или остаток.</p>
-        <button onclick="openProductFormModal(null)" class="btn-primary">
-          ${SVG.plus}
-          <span>Добавить новый товар</span>
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-        ${DB.products.map((p) => {
-          const profitCan = p.pw - p.cost;
-          const profitPcTotal = p.pp * p.pcs - p.cost;
-          const low = p.stock <= p.min;
-          return `
-            <div class="panel-card p-5 flex flex-col justify-between">
-              <div>
-                <!-- Header: Name + Stock Badge -->
-                <div class="flex items-start justify-between gap-3 pb-4 mb-4 border-b" style="border-color: var(--border-color);">
-                  <h3 class="text-base font-extrabold leading-snug">${esc(p.name)}</h3>
-                  <span class="px-3 py-1 rounded-xl text-xs font-extrabold num flex-none ${low ? "bg-red-500/15 text-red-400 border border-red-500/30" : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"}">
-                    ${stockText(p)}
-                  </span>
-                </div>
-
-                <!-- Clean 2x2 Price Grid -->
-                <div class="grid grid-cols-2 gap-3 mb-4 text-xs">
-                  <div class="p-3 rounded-xl" style="background-color: var(--bg-input);">
-                    <span class="block mb-1" style="color: var(--text-sub);">Закупка (1 банка)</span>
-                    <span class="text-sm font-extrabold num">${money(p.cost)}</span>
-                  </div>
-                  <div class="p-3 rounded-xl" style="background-color: var(--bg-input);">
-                    <span class="block mb-1" style="color: var(--text-sub);">Штук в банке</span>
-                    <span class="text-sm font-extrabold num">${p.pcs} шт.</span>
-                  </div>
-                  <div class="p-3 rounded-xl" style="background-color: var(--bg-input);">
-                    <span class="block mb-1" style="color: var(--text-sub);">Продажа банки</span>
-                    <span class="text-sm font-extrabold num" style="color: var(--gold);">${money(p.pw)}</span>
-                  </div>
-                  <div class="p-3 rounded-xl" style="background-color: var(--bg-input);">
-                    <span class="block mb-1" style="color: var(--text-sub);">Продажа 1 шт.</span>
-                    <span class="text-sm font-extrabold num" style="color: var(--gold);">${money(p.pp)}</span>
-                  </div>
-                </div>
-
-                <!-- Clear Profit Badges -->
-                <div class="space-y-2 mb-5">
-                  <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                    <span class="text-xs font-semibold">Прибыль с банки:</span>
-                    <span class="text-sm font-extrabold num ${profitCan >= 0 ? "text-emerald-400" : "text-red-400"}">${signedMoney(profitCan)}</span>
-                  </div>
-                  <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl" style="background-color: var(--bg-input);">
-                    <span class="text-xs font-semibold" style="color: var(--text-sub);">Если продать поштучно:</span>
-                    <span class="text-sm font-extrabold num ${profitPcTotal >= 0 ? "text-emerald-400" : "text-red-400"}">${signedMoney(profitPcTotal)}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Actions -->
-              <div class="flex items-center gap-2 pt-3 border-t" style="border-color: var(--border-color);">
-                <button onclick="openProductFormModal(${p.id})" class="btn-ghost flex-1 text-xs sm:text-sm">
-                  ${SVG.edit}
-                  <span>Редактировать</span>
-                </button>
-                ${DB.products.length > 1 ? `
-                  <button onclick="confirmDeleteProduct(${p.id})" class="btn-ghost !px-3 text-red-400 hover:!border-red-500/50" title="Удалить товар">
-                    ${SVG.trash}
-                  </button>
-                ` : ""}
-              </div>
-            </div>
-          `;
-        }).join("")}
-      </div>
-    `;
-  },
-
-  // =========================================================================
-  // TAB 4: РАСХОДЫ — QUICK CATEGORY CHIPS & CLEAN BREAKDOWN
-  // =========================================================================
-  exp: function () {
-    const categories = ["Транспорт", "Аренда", "Реклама", "Упаковка", "Связь", "Другое"];
-    const totals = {};
-    DB.exps.forEach((e) => { totals[e.cat] = (totals[e.cat] || 0) + e.amt; });
-    const grandTotal = sumBy(DB.exps, (e) => e.amt);
-    const maxCat = Math.max(...Object.values(totals), 1);
-    const recent = DB.exps.slice().reverse().slice(0, 30);
-
-    return `
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Expense Form -->
-        <div class="lg:col-span-5">
-          <div class="panel-card-gold p-5 sm:p-6 space-y-4">
-            <div>
-              <h2 class="text-base font-bold">Новый расход</h2>
-              <p class="text-xs mt-0.5" style="color: var(--text-sub);">Вычитается из вашей чистой прибыли</p>
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold mb-2" style="color: var(--text-sub);">1. Выберите категорию</label>
-              <div class="grid grid-cols-3 gap-2">
-                ${categories.map((cat, idx) => `
-                  <button type="button" onclick="selectExpCategory('${cat}', this)" class="exp-chip py-2.5 px-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${idx === 0 ? "bg-[#d4af37]/15 border-[#d4af37] text-[#d4af37]" : ""}" style="${idx !== 0 ? "background-color: var(--bg-input); border-color: var(--border-color);" : ""}">
-                    ${cat}
-                  </button>
-                `).join("")}
-              </div>
-              <input type="hidden" id="e-cat" value="${categories[0]}">
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="min-w-0">
-                <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">2. Сумма (₼)</label>
-                <input id="e-amt" type="number" step="0.5" placeholder="0.00" class="field-input num font-extrabold">
-              </div>
-              <div class="min-w-0">
-                <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">3. Дата</label>
-                <input id="e-date" type="date" value="${todayISO()}" class="field-input num">
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold mb-1.5" style="color: var(--text-sub);">Короткая заметка (необязательно)</label>
-              <input id="e-note" type="text" placeholder="Например: доставка курьером" class="field-input">
-            </div>
-
-            <button onclick="confirmExpense()" class="btn-primary w-full">
-              ${SVG.plus}
-              <span>Записать расход</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Breakdown & History -->
-        <div class="lg:col-span-7 space-y-6">
-          <div class="panel-card p-5 sm:p-6">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-base font-bold">Расходы по категориям</h2>
-              <span class="text-sm font-extrabold num text-red-400">Всего: ${money(grandTotal)}</span>
-            </div>
-            ${Object.keys(totals).length ? `
-              <div class="space-y-3">
-                ${Object.keys(totals).sort((a, b) => totals[b] - totals[a]).map((cat) => {
-                  const pct = Math.max((totals[cat] / maxCat) * 100, 4);
-                  return `
-                    <div>
-                      <div class="flex justify-between text-xs sm:text-sm font-bold mb-1">
-                        <span>${esc(cat)}</span>
-                        <span class="num">${money(totals[cat])}</span>
-                      </div>
-                      <div class="w-full h-2.5 rounded-full overflow-hidden" style="background-color: var(--bg-input);">
-                        <div class="h-full rounded-full bg-gradient-to-r from-red-500 to-amber-500" style="width: ${pct}%"></div>
-                      </div>
-                    </div>
-                  `;
-                }).join("")}
-              </div>
-            ` : `<p class="text-xs" style="color: var(--text-muted);">Расходов пока нет.</p>`}
-          </div>
-
-          <div class="panel-card p-5 sm:p-6">
-            <h2 class="text-base font-bold mb-4">Последние расходы</h2>
-            ${recent.length ? `
-              <div class="overflow-x-auto -mx-2 px-2">
-                <table class="w-full text-left border-collapse">
-                  <thead>
-                    <tr class="border-b text-[11px] uppercase tracking-wider" style="border-color: var(--border-color); color: var(--text-muted);">
-                      <th class="py-2.5 px-2">Дата</th>
-                      <th class="py-2.5 px-2">Категория</th>
-                      <th class="py-2.5 px-2">Заметка</th>
-                      <th class="py-2.5 px-2">Сумма</th>
-                      <th class="py-2.5 px-1 text-right"></th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y text-xs sm:text-sm" style="border-color: var(--border-color);">
-                    ${recent.map((e) => `
-                      <tr>
-                        <td class="py-3 px-2 num text-[11px] whitespace-nowrap" style="color: var(--text-sub);">${e.date.slice(5)}</td>
-                        <td class="py-3 px-2 font-bold whitespace-nowrap">${esc(e.cat)}</td>
-                        <td class="py-3 px-2 text-xs max-w-[100px] sm:max-w-none truncate" style="color: var(--text-sub);">${esc(e.note || "—")}</td>
-                        <td class="py-3 px-2 num font-bold text-red-400 whitespace-nowrap">-${money(e.amt)}</td>
-                        <td class="py-3 px-1 text-right">
-                          <button onclick="removeExpense(${e.id})" class="p-1.5 rounded-xl text-red-400 hover:bg-red-500/15 cursor-pointer">${SVG.trash}</button>
-                        </td>
-                      </tr>
-                    `).join("")}
-                  </tbody>
-                </table>
-              </div>
-            ` : `<p class="text-xs" style="color: var(--text-muted);">Список пуст.</p>`}
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  // =========================================================================
-  // TAB 5: СКИДКИ И БАЗА — BULK DISCOUNTS + IRONCLAD BACKUP
-  // =========================================================================
-  settings: function () {
-    const sample = DB.products[0];
-    const testQtys = [1, ...DB.tiers.map((t) => t[0])].filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => a - b);
-    const nowStr = new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-
-    return `
-      <div class="space-y-6">
-        <!-- BLOCK 1: RELIABLE DATA STORAGE & BACKUP -->
-        <div class="panel-card-gold p-5 sm:p-6">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 mb-5 border-b" style="border-color: var(--border-color);">
-            <div class="flex items-start gap-3.5">
-              <div class="p-3 rounded-2xl bg-emerald-500/15 text-emerald-400 flex-none">${SVG.shield}</div>
-              <div>
-                <h2 class="text-base sm:text-lg font-extrabold">Надёжное хранение данных</h2>
-                <div id="settings-save-time" class="text-xs sm:text-sm font-bold text-emerald-400 mt-1 num">
-                  Все данные надёжно сохранены в браузере (${nowStr})
-                </div>
-                <p class="text-xs mt-1.5 leading-relaxed max-w-2xl" style="color: var(--text-sub);">
-                  Каждое ваше действие автоматически дублируется в <b>localStorage</b> и <b>IndexedDB</b>. Даже если полностью закрыть браузер или выключить компьютер, всё останется на месте. Для переноса на телефон или другое устройство скачайте резервную копию.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <div class="flex flex-wrap gap-3">
-              <button onclick="exportJsonBackup()" class="btn-primary">
-                ${SVG.download}
-                <span>Скачать резервную копию (.json)</span>
-              </button>
-              <button onclick="triggerJsonImport()" class="btn-ghost">
-                ${SVG.upload}
-                <span>Восстановить из файла</span>
-              </button>
-            </div>
-
-            <button onclick="confirmFullReset()" class="px-4 py-2.5 rounded-xl text-xs font-bold text-red-400 border border-red-500/25 hover:bg-red-500/10 cursor-pointer">
-              Очистить всю базу
-            </button>
-          </div>
-        </div>
-
-        <!-- BLOCK 2: BULK DISCOUNTS -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div class="lg:col-span-5">
-            <div class="panel-card p-5 sm:p-6">
-              <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-                <div>
-                  <h2 class="text-base font-bold">Правила скидок от объёма</h2>
-                  <p class="text-xs" style="color: var(--text-sub);">Применяются сами при продаже банок</p>
-                </div>
-                <button type="button" onclick="addTierRow()" class="btn-primary !min-h-[40px] !py-2 !px-3.5 text-xs">
-                  ${SVG.plus}
-                  <span>Добавить скидку</span>
-                </button>
-              </div>
-
-              <div class="space-y-3">
-                ${DB.tiers.length ? DB.tiers.map((t, i) => `
-                  <div class="flex items-center gap-2.5 p-3 rounded-2xl border" style="background-color: var(--bg-input); border-color: var(--border-color);">
-                    <div class="flex-1 min-w-0">
-                      <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">От, банок</label>
-                      <input type="number" min="2" value="${t[0]}" onchange="editTier(${i}, 0, this.value)" class="field-input !min-h-[42px] num font-bold">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <label class="block text-[11px] font-semibold mb-1" style="color: var(--text-sub);">Скидка, %</label>
-                      <input type="number" min="0" max="90" value="${t[1]}" onchange="editTier(${i}, 1, this.value)" class="field-input !min-h-[42px] num font-bold" style="color: var(--gold);">
-                    </div>
-                    <button type="button" onclick="deleteTier(${i})" class="mt-5 p-2.5 rounded-xl text-red-400 hover:bg-red-500/15 cursor-pointer flex-none" title="Удалить">
-                      ${SVG.trash}
-                    </button>
-                  </div>
-                `).join("") : `<p class="text-xs py-4 text-center" style="color: var(--text-muted);">Скидок пока нет. Нажмите «Добавить скидку».</p>`}
-              </div>
-            </div>
-          </div>
-
-          <div class="lg:col-span-7">
-            <div class="panel-card p-5 sm:p-6">
-              <h2 class="text-base font-bold mb-1">Как работают скидки для «${sample ? esc(sample.name) : "товара"}»</h2>
-              <p class="text-xs mb-4" style="color: var(--text-sub);">Проверка итоговой суммы и вашей прибыли при опте</p>
-
-              ${sample ? `
-                <div class="overflow-x-auto -mx-2 px-2">
-                  <table class="w-full text-left border-collapse">
-                    <thead>
-                      <tr class="border-b text-[11px] uppercase tracking-wider" style="border-color: var(--border-color); color: var(--text-muted);">
-                        <th class="py-3 px-2">Банок</th>
-                        <th class="py-3 px-2">Скидка</th>
-                        <th class="py-3 px-2">Итого</th>
-                        <th class="py-3 px-2">За 1 б.</th>
-                        <th class="py-3 px-2">Прибыль</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y text-xs sm:text-sm" style="border-color: var(--border-color);">
-                      ${testQtys.map((q) => {
-                        const d = calcDiscount(q);
-                        const total = Math.round(sample.pw * q * (1 - d / 100) * 2) / 2;
-                        const prof = total - sample.cost * q;
-                        return `
-                          <tr>
-                            <td class="py-3 px-2 font-bold num whitespace-nowrap">${q} б.</td>
-                            <td class="py-3 px-2 num font-bold whitespace-nowrap" style="color: var(--gold);">${d}%</td>
-                            <td class="py-3 px-2 num font-bold whitespace-nowrap">${money(total)}</td>
-                            <td class="py-3 px-2 num whitespace-nowrap">${money(total / q)}</td>
-                            <td class="py-3 px-2 num font-extrabold whitespace-nowrap ${prof >= 0 ? "text-emerald-400" : "text-red-400"}">${signedMoney(prof)}</td>
-                          </tr>
-                        `;
-                      }).join("")}
-                    </tbody>
-                  </table>
-                </div>
-              ` : `<p class="text-xs">Добавьте товар на вкладке «Склад».</p>`}
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
   }
-};
+  var maxBar = Math.max.apply(null, days.map(function(x) { return x.rev; }).concat([1]));
+  var svgBars = days.map(function(d, idx) {
+    var x = 24 + idx * 76;
+    var hRev = (d.rev / maxBar) * 120;
+    var hProf = (Math.max(0, d.prof) / maxBar) * 120;
+    return '' +
+      '<rect x="' + x + '" y="' + (140 - hRev) + '" width="22" height="' + Math.max(hRev, 2) + '" rx="5" fill="var(--gold)" opacity="0.85"/>' +
+      '<rect x="' + (x + 25) + '" y="' + (140 - hProf) + '" width="22" height="' + Math.max(hProf, 2) + '" rx="5" fill="var(--ok)"/>' +
+      '<text x="' + (x + 23) + '" y="162" text-anchor="middle" font-size="11" fill="var(--text-muted)">' + d.label + '</text>';
+  }).join("");
 
-// --- INTERACTIVE HANDLERS ---
+  return nextStepBanner +
+    '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;">' +
+      '<div class="quick-chips" style="margin:0;">' +
+        [[1, "Сегодня"], [7, "7 дней"], [30, "30 дней"], [0, "Всё время"]].map(function(p) {
+          return '<button class="chip ' + (STATE.period === p[0] ? "active" : "") + '" onclick="STATE.period=' + p[0] + ';render()">' + p[1] + '</button>';
+        }).join("") +
+      '</div>' +
+      '<button class="btn" onclick="go(&apos;sell&apos;)">+ Новая продажа</button>' +
+    '</div>' +
 
-// Sales Step 2 & 3
-function chooseSaleMode(mode) {
-  document.getElementById("s-mode").value = mode;
-  const bCan = document.getElementById("btn-mode-can");
-  const bPc = document.getElementById("btn-mode-pc");
+    '<div class="grid-4" style="margin-bottom:16px;">' +
+      '<div class="metric" style="border-color:var(--border-gold);">' +
+        '<div class="metric-head">' +
+          '<span class="metric-title">Чистая прибыль</span>' +
+          '<span class="help-tip" title="Ваши чистые деньги: Выручка минус себестоимость проданного товара и минус расходы">?</span>' +
+        '</div>' +
+        '<div class="metric-val num ' + (netProfit >= 0 ? "pos" : "neg") + '">' + money(netProfit) + '</div>' +
+        '<div class="metric-desc">Остаётся вам на руки после всех вычетов</div>' +
+      '</div>' +
 
-  if (mode === "can") {
-    bCan.className = "min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer bg-[#d4af37]/15 border-[#d4af37] text-[#d4af37]";
-    bPc.className = "min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer";
-    bPc.style.backgroundColor = "var(--bg-input)";
-    bPc.style.borderColor = "var(--border-color)";
-    bPc.style.color = "var(--text-sub)";
-  } else {
-    bPc.className = "min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer bg-[#d4af37]/15 border-[#d4af37] text-[#d4af37]";
-    bCan.className = "min-h-[46px] rounded-xl font-bold text-xs sm:text-sm border transition-all cursor-pointer";
-    bCan.style.backgroundColor = "var(--bg-input)";
-    bCan.style.borderColor = "var(--border-color)";
-    bCan.style.color = "var(--text-sub)";
-  }
-  updateSaleCalc();
+      '<div class="metric">' +
+        '<div class="metric-head">' +
+          '<span class="metric-title">Выручка (Оборот)</span>' +
+          '<span class="help-tip" title="Вся сумма денег, которую заплатили покупатели за выбранный период">?</span>' +
+        '</div>' +
+        '<div class="metric-val num">' + money(revenue) + '</div>' +
+        '<div class="metric-desc">Всего продаж: ' + periodSales.length + ' шт.</div>' +
+      '</div>' +
+
+      '<div class="metric">' +
+        '<div class="metric-head">' +
+          '<span class="metric-title">Товар на складе</span>' +
+          '<span class="help-tip" title="На какую сумму сейчас лежит товара на складе по вашей закупочной цене">?</span>' +
+        '</div>' +
+        '<div class="metric-val num gold">' + money(inventoryValue) + '</div>' +
+        '<div class="metric-desc">Оценка запасов по закупочной цене</div>' +
+      '</div>' +
+
+      '<div class="metric">' +
+        '<div class="metric-head">' +
+          '<span class="metric-title">Расходы бизнеса</span>' +
+          '<span class="help-tip" title="Траты на транспорт, рекламу, упаковку и прочие нужды">?</span>' +
+        '</div>' +
+        '<div class="metric-val num ' + (opExpenses > 0 ? "neg" : "") + '">' + money(opExpenses) + '</div>' +
+        '<div class="metric-desc">Закуплено товара: <span class="num">' + money(purchasesSpent) + '</span></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="card">' +
+      '<h2>Как складывается ваша прибыль</h2>' +
+      '<p class="subtitle" style="margin-bottom:14px;">Понятная формула расчёта без двойного учёта закупок</p>' +
+      '<div class="grid-3">' +
+        '<div class="step-box" style="margin:0;">' +
+          '<div style="font-size:12.5px;color:var(--text-muted);">1. Пришло от клиентов (Выручка)</div>' +
+          '<div class="num" style="font-size:19px;font-weight:800;margin-top:4px;">' + money(revenue) + '</div>' +
+        '</div>' +
+        '<div class="step-box" style="margin:0;">' +
+          '<div style="font-size:12.5px;color:var(--text-muted);">2. Себестоимость проданного</div>' +
+          '<div class="num" style="font-size:19px;font-weight:800;margin-top:4px;color:var(--warn);">− ' + money(cogs) + '</div>' +
+          '<div class="field-hint">Валовая прибыль: <b class="num">' + money(grossProfit) + '</b></div>' +
+        '</div>' +
+        '<div class="step-box" style="margin:0;">' +
+          '<div style="font-size:12.5px;color:var(--text-muted);">3. Операционные расходы</div>' +
+          '<div class="num" style="font-size:19px;font-weight:800;margin-top:4px;color:var(--bad);">− ' + money(opExpenses) + '</div>' +
+          '<div class="field-hint">Итого чистыми: <b class="num ' + (netProfit >= 0 ? "pos" : "neg") + '">' + money(netProfit) + '</b></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="grid-2">' +
+      '<div class="card">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap;">' +
+          '<h2 style="margin:0;">Динамика за 7 дней</h2>' +
+          '<div style="font-size:12.5px;color:var(--text-muted);"><span style="color:var(--gold);">■</span> Выручка &nbsp; <span style="color:var(--ok);">■</span> Прибыль</div>' +
+        '</div>' +
+        '<svg viewBox="0 0 560 175" style="width:100%;height:auto;display:block;">' + svgBars + '</svg>' +
+      '</div>' +
+
+      '<div class="card">' +
+        '<h2>Контроль остатков на складе</h2>' +
+        '<p class="subtitle" style="margin-bottom:12px;">Товары, которые пора докупить</p>' +
+        (lowStock.length > 0
+          ? lowStock.map(function(p) {
+              return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">' +
+                '<div style="min-width:0;"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(p.name) + '</div><div style="font-size:12px;color:var(--text-muted);">Минимум: ' + p.min + ' шт.</div></div>' +
+                '<span class="badge badge-bad num">' + formatStock(p) + '</span>' +
+              '</div>';
+            }).join("") +
+            '<button class="btn btn-secondary btn-full" style="margin-top:12px;" onclick="go(&apos;stock&apos;, &apos;add&apos;)">Пополнить склад →</button>'
+          : '<div class="empty-state" style="padding:24px 14px;">' +
+              '<div style="color:var(--ok);font-weight:700;margin-bottom:4px;">Все остатки в норме</div>' +
+              '<div style="font-size:13.5px;color:var(--text-muted);">Запасов достаточно, срочных закупок не требуется.</div>' +
+            '</div>') +
+      '</div>' +
+    '</div>';
 }
 
-function stepSaleQty(delta) {
-  const input = document.getElementById("s-qty");
-  if (!input) return;
-  const next = Math.max(1, (Number(input.value) || 0) + delta);
-  input.value = next;
-  updateSaleCalc();
+// ------------------------------------------
+// VIEW 2: SELL (ПРОДАТЬ)
+// ------------------------------------------
+function renderSell() {
+  var prods = STATE.data.products;
+  if (prods.length === 0) {
+    return '' +
+      '<div class="empty-state">' +
+        '<div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>' +
+        '<h2>Сначала добавьте товар</h2>' +
+        '<p class="subtitle" style="max-width:420px;margin:0 auto 18px;">Чтобы оформить продажу, в базе должен быть хотя бы один товар и остаток на складе.</p>' +
+        '<button class="btn" onclick="go(&apos;stock&apos;, &apos;list&apos;); setTimeout(openNewProdModal, 120);">+ Добавить первый товар</button>' +
+      '</div>';
+  }
+
+  var recentRows = STATE.data.sales.slice().reverse().slice(0, 20).map(function(s) {
+    var p = getProduct(s.pid);
+    var prof = s.price - s.cogs;
+    return '<tr>' +
+      '<td class="num" style="font-size:13px;color:var(--text-muted);white-space:nowrap;">' + formatDateRu(s.date) + '</td>' +
+      '<td style="font-weight:600;">' + esc(p ? p.name : "Удалённый товар") + '</td>' +
+      '<td class="num" style="white-space:nowrap;">' + s.qty + (s.type === "can" ? " уп." : " шт.") + '</td>' +
+      '<td class="num" style="white-space:nowrap;">' + money(s.price) + '</td>' +
+      '<td class="num ' + (prof >= 0 ? "pos" : "neg") + '" style="white-space:nowrap;">' + (prof >= 0 ? "+" : "") + money(prof) + '</td>' +
+      '<td style="text-align:right;"><button class="btn-danger" onclick="deleteSale(' + s.id + ')">Отменить</button></td>' +
+    '</tr>';
+  }).join("");
+
+  return '' +
+    '<div class="card">' +
+      '<div class="step-box">' +
+        '<div class="step-header"><div class="step-num">1</div><h3 style="margin:0;">Выберите товар</h3></div>' +
+        '<select id="sell-prod" onchange="updateSellPreview()">' +
+          prods.map(function(p) {
+            return '<option value="' + p.id + '">' + esc(p.name) + ' — остаток: ' + formatStock(p) + '</option>';
+          }).join("") +
+        '</select>' +
+      '</div>' +
+
+      '<div class="step-box">' +
+        '<div class="step-header"><div class="step-num">2</div><h3 style="margin:0;">Формат и количество</h3></div>' +
+        '<div class="seg-group" style="margin-bottom:12px;">' +
+          '<button type="button" class="seg-btn ' + (STATE.sellType === "can" ? "active" : "") + '" onclick="setSellType(&apos;can&apos;)">Целой упаковкой</button>' +
+          '<button type="button" class="seg-btn ' + (STATE.sellType === "pc" ? "active" : "") + '" onclick="setSellType(&apos;pc&apos;)">Поштучно</button>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:10px;">' +
+          '<button type="button" class="btn btn-secondary" style="width:52px;flex:none;font-size:20px;" onclick="changeSellQty(-1)">−</button>' +
+          '<input id="sell-qty" class="num" type="number" min="1" value="' + STATE.sellQty + '" style="text-align:center;font-size:19px;font-weight:800;" oninput="STATE.sellQty=Math.max(1, +this.value||1);updateSellPreview()">' +
+          '<button type="button" class="btn btn-secondary" style="width:52px;flex:none;font-size:20px;" onclick="changeSellQty(1)">+</button>' +
+        '</div>' +
+        '<div class="quick-chips">' +
+          '<button type="button" class="chip" onclick="setSellQty(1)">1</button>' +
+          '<button type="button" class="chip" onclick="setSellQty(2)">2</button>' +
+          '<button type="button" class="chip" onclick="setSellQty(3)">3</button>' +
+          '<button type="button" class="chip" onclick="setSellQty(5)">5</button>' +
+          '<button type="button" class="chip" onclick="setSellQty(10)">10</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="step-box" style="margin-bottom:0;">' +
+        '<div class="step-header"><div class="step-num">3</div><h3 style="margin:0;">Сумма оплаты и дата</h3></div>' +
+        '<div class="grid-2 form-split">' +
+          '<div>' +
+            '<label>Итого заплатит клиент (₼)</label>' +
+            '<input id="sell-amount" class="num" type="number" step="0.5" min="0" oninput="updateSellProfitOnly()">' +
+            '<div class="field-hint" id="sell-disc-note">Цена подставляется автоматически</div>' +
+          '</div>' +
+          '<div>' +
+            '<label>Дата продажи</label>' +
+            '<input id="sell-date" type="date" value="' + todayStr() + '">' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div id="sell-preview"></div>' +
+
+      '<button class="btn btn-full" style="height:52px;font-size:16px;" onclick="submitSale()">✓ Подтвердить продажу</button>' +
+    '</div>' +
+
+    '<div class="card">' +
+      '<h2>История последних продаж</h2>' +
+      '<p class="subtitle" style="margin-bottom:14px;">Если ошиблись — нажмите «Отменить», и товар вернётся на склад</p>' +
+      (recentRows
+        ? '<div class="table-wrap"><table><thead><tr><th>Дата</th><th>Товар</th><th>Кол-во</th><th>Сумма</th><th>Прибыль</th><th></th></tr></thead><tbody>' + recentRows + '</tbody></table></div>'
+        : '<div class="empty-state" style="padding:24px;">Продаж пока не было</div>') +
+    '</div>';
 }
 
-function updateSaleCalc() {
-  const prodSel = document.getElementById("s-prod");
-  if (!prodSel) return;
-  const p = findProduct(prodSel.value);
+function setSellType(t) {
+  STATE.sellType = t;
+  render();
+}
+
+function changeSellQty(delta) {
+  STATE.sellQty = Math.max(1, (Number($("sell-qty").value) || 1) + delta);
+  $("sell-qty").value = STATE.sellQty;
+  updateSellPreview();
+}
+
+function setSellQty(val) {
+  STATE.sellQty = val;
+  $("sell-qty").value = val;
+  updateSellPreview();
+}
+
+function updateSellPreview() {
+  var sel = $("sell-prod");
+  if (!sel) return;
+  var p = getProduct(sel.value);
+  if (!p) return;
+  var qty = Math.max(1, Math.floor(Number($("sell-qty").value) || 1));
+  var disc = STATE.sellType === "can" ? getDiscountPct(qty) : 0;
+  var rawPrice = STATE.sellType === "can" ? (Number(p.pw) * qty * (1 - disc / 100)) : (Number(p.pp) * qty);
+  var rounded = Math.round(rawPrice * 2) / 2;
+  $("sell-amount").value = rounded.toFixed(2);
+  $("sell-disc-note").textContent = disc > 0 ? ("Применена скидка за объём: −" + disc + "%") : "Стандартная цена без скидки";
+  updateSellProfitOnly();
+}
+
+function updateSellProfitOnly() {
+  var sel = $("sell-prod");
+  var box = $("sell-preview");
+  if (!sel || !box) return;
+  var p = getProduct(sel.value);
   if (!p) return;
 
-  const mode = document.getElementById("s-mode").value;
-  const qty = Math.max(0, Number(document.getElementById("s-qty").value) || 0);
-  const disc = mode === "can" ? calcDiscount(qty) : 0;
-  const raw = mode === "can" ? p.pw * qty * (1 - disc / 100) : p.pp * qty;
-  const finalPrice = Math.round(raw * 2) / 2;
+  var qty = Math.max(1, Math.floor(Number($("sell-qty").value) || 1));
+  var pcsPerPack = Math.max(1, Number(p.pcs) || 1);
+  var piecesNeeded = STATE.sellType === "can" ? qty * pcsPerPack : qty;
+  var amount = Number($("sell-amount").value) || 0;
+  var cogs = piecesNeeded * (Number(p.cost) || 0) / pcsPerPack;
+  var profit = amount - cogs;
+  var remPcs = (Number(p.stock) || 0) - piecesNeeded;
 
-  document.getElementById("s-price").value = finalPrice.toFixed(2);
-
-  const badge = document.getElementById("s-disc-badge");
-  if (disc > 0) {
-    badge.textContent = `Скидка -${disc}%`;
-    badge.classList.remove("hidden");
-  } else {
-    badge.classList.add("hidden");
-  }
-
-  updateManualProfit();
-}
-
-function updateManualProfit() {
-  const prodSel = document.getElementById("s-prod");
-  if (!prodSel) return;
-  const p = findProduct(prodSel.value);
-  if (!p) return;
-
-  const mode = document.getElementById("s-mode").value;
-  const qty = Math.max(0, Number(document.getElementById("s-qty").value) || 0);
-  const price = Number(document.getElementById("s-price").value) || 0;
-  const pieces = mode === "can" ? qty * p.pcs : qty;
-  const cogs = (pieces * p.cost) / Math.max(1, p.pcs);
-  const profit = price - cogs;
-
-  const profEl = document.getElementById("s-live-profit");
-  profEl.textContent = signedMoney(profit);
-  profEl.className = `text-lg sm:text-xl font-extrabold num whitespace-nowrap flex-none ${profit >= 0 ? "text-emerald-400" : "text-red-400"}`;
-
-  const remStock = Math.max(0, p.stock - pieces);
-  const remCans = Math.floor(remStock / Math.max(1, p.pcs));
-  const remPcs = remStock % Math.max(1, p.pcs);
-  document.getElementById("s-after-stock").textContent = pieces > p.stock ? "Не хватает на складе!" : `${remCans} банк. + ${remPcs} шт.`;
-}
-
-function confirmSale() {
-  const p = findProduct(document.getElementById("s-prod").value);
-  if (!p) return;
-  const mode = document.getElementById("s-mode").value;
-  const qty = Number(document.getElementById("s-qty").value);
-  const price = Number(document.getElementById("s-price").value);
-  const date = document.getElementById("s-date").value || todayISO();
-  const pieces = mode === "can" ? qty * p.pcs : qty;
-
-  if (!(qty > 0) || !(price >= 0)) {
-    notify("Проверьте количество и сумму продажи", "err");
-    return;
-  }
-  if (pieces > p.stock) {
-    notify(`На складе недостаточно товара! Доступно: ${stockText(p)}`, "err");
+  if (remPcs < 0) {
+    box.innerHTML = '' +
+      '<div class="preview-box warn">' +
+        '<div style="font-weight:700;color:var(--bad);margin-bottom:4px;">Недостаточно товара на складе!</div>' +
+        '<div style="font-size:13.5px;">Сейчас в наличии только <b class="num">' + formatStock(p) + '</b>. Сначала пополните склад в разделе «Склад».</div>' +
+      '</div>';
     return;
   }
 
-  const cogs = (pieces * p.cost) / Math.max(1, p.pcs);
-  p.stock -= pieces;
-  DB.sales.push({
-    id: DB.seq++,
-    date,
+  var remPacks = Math.floor(remPcs / pcsPerPack);
+  var remLeft = remPcs % pcsPerPack;
+
+  box.innerHTML = '' +
+    '<div class="preview-box">' +
+      '<div class="preview-row">' +
+        '<span style="font-size:14px;font-weight:600;">Ваша чистая прибыль со сделки:</span>' +
+        '<span class="num ' + (profit >= 0 ? "pos" : "neg") + '" style="font-size:20px;font-weight:800;white-space:nowrap;">' + (profit >= 0 ? "+" : "") + money(profit) + '</span>' +
+      '</div>' +
+      '<div class="preview-row" style="font-size:13.5px;color:var(--text-muted);">' +
+        '<span>Останется на складе после продажи:</span>' +
+        '<span class="num" style="color:var(--text);font-weight:700;white-space:nowrap;">' + remPacks + ' уп. + ' + remLeft + ' шт.</span>' +
+      '</div>' +
+    '</div>';
+}
+
+function submitSale() {
+  var p = getProduct($("sell-prod").value);
+  if (!p) return;
+  var qty = Math.max(1, Math.floor(Number($("sell-qty").value) || 1));
+  var amount = Number($("sell-amount").value);
+  if (!(amount >= 0)) { showToast("Укажите корректную сумму оплаты", true); return; }
+
+  var pcsPerPack = Math.max(1, Number(p.pcs) || 1);
+  var piecesNeeded = STATE.sellType === "can" ? qty * pcsPerPack : qty;
+  if (piecesNeeded > (Number(p.stock) || 0)) {
+    showToast("На складе недостаточно товара для этой продажи", true);
+    return;
+  }
+
+  var cogs = piecesNeeded * (Number(p.cost) || 0) / pcsPerPack;
+  p.stock = (Number(p.stock) || 0) - piecesNeeded;
+
+  STATE.data.sales.push({
+    id: STATE.data.seq++,
+    date: $("sell-date").value || todayStr(),
     pid: p.id,
-    type: mode,
-    qty,
-    pieces,
-    price,
-    cogs
+    type: STATE.sellType,
+    qty: qty,
+    pieces: piecesNeeded,
+    price: amount,
+    cogs: cogs
   });
 
-  persistData();
-  renderApp();
-  notify(`Продажа оформлена! Прибыль: ${signedMoney(price - cogs)}`, "ok");
+  STATE.sellQty = 1;
+  saveData();
+  render();
+  showToast("Продажа успешно оформлена и сохранена!");
 }
 
-function removeSale(id) {
-  const s = DB.sales.find((x) => x.id === id);
-  if (!s) return;
-  const p = findProduct(s.pid);
-  if (p) p.stock += s.pieces;
-  DB.sales = DB.sales.filter((x) => x.id !== id);
-  persistData();
-  renderApp();
-  notify("Продажа отменена, товар возвращён на склад", "ok");
+function deleteSale(id) {
+  var idx = -1;
+  for (var i = 0; i < STATE.data.sales.length; i++) {
+    if (STATE.data.sales[i].id === id) { idx = i; break; }
+  }
+  if (idx === -1) return;
+  var sale = STATE.data.sales[idx];
+  var p = getProduct(sale.pid);
+  if (p) p.stock = (Number(p.stock) || 0) + (Number(sale.pieces) || 0);
+  STATE.data.sales.splice(idx, 1);
+  saveData();
+  render();
+  showToast("Продажа отменена, товар возвращён на склад");
 }
 
-// Purchases (Weighted Average Cost)
-function updateBuyCalc() {
-  const qty = Number(document.getElementById("b-qty")?.value) || 0;
-  const total = Number(document.getElementById("b-total")?.value) || 0;
-  const unit = qty > 0 ? total / qty : 0;
-  const el = document.getElementById("b-unit-cost");
-  if (el) el.textContent = money(unit);
+// ------------------------------------------
+// VIEW 3: STOCK & PRODUCTS (СКЛАД И ТОВАРЫ)
+// ------------------------------------------
+function renderStock() {
+  var prods = STATE.data.products;
+
+  var topTabs = '' +
+    '<div class="seg-group" style="margin-bottom:18px;">' +
+      '<button class="seg-btn ' + (STATE.stockTab === "add" ? "active" : "") + '" onclick="STATE.stockTab=&apos;add&apos;;render()">Пополнить склад (Закупка)</button>' +
+      '<button class="seg-btn ' + (STATE.stockTab === "list" ? "active" : "") + '" onclick="STATE.stockTab=&apos;list&apos;;render()">Мои товары и цены (' + prods.length + ')</button>' +
+    '</div>';
+
+  if (STATE.stockTab === "list") {
+    return topTabs +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">' +
+        '<p class="subtitle" style="margin:0;">Нажмите «+ Добавить товар», чтобы создать новую позицию</p>' +
+        '<button class="btn" onclick="openNewProdModal()">+ Добавить товар</button>' +
+      '</div>' +
+      (prods.length === 0
+        ? '<div class="empty-state">' +
+            '<div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>' +
+            '<h2>Список товаров пока пуст</h2>' +
+            '<p class="subtitle" style="max-width:400px;margin:0 auto 18px;">Добавьте ваш первый товар, чтобы задать закупочную цену и цену продажи.</p>' +
+            '<button class="btn" onclick="openNewProdModal()">+ Добавить первый товар</button>' +
+          '</div>'
+        : '<div class="grid-2">' +
+            prods.map(function(p) {
+              var profitPack = (Number(p.pw) || 0) - (Number(p.cost) || 0);
+              var isLow = (Number(p.stock) || 0) <= (Number(p.min) || 0);
+              return '' +
+                '<div class="card" style="margin:0;display:flex;flex-direction:column;justify-content:space-between;">' +
+                  '<div>' +
+                    '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px;">' +
+                      '<h3 style="font-size:17px;margin:0;word-break:break-word;">' + esc(p.name) + '</h3>' +
+                      '<span class="badge ' + (isLow ? "badge-bad" : "badge-ok") + ' num">' + formatStock(p) + '</span>' +
+                    '</div>' +
+                    '<div class="grid-2" style="gap:10px;margin-bottom:14px;">' +
+                      '<div class="step-box" style="margin:0;padding:11px 12px;">' +
+                        '<div style="font-size:11.5px;color:var(--text-muted);">Закупка (1 уп.)</div>' +
+                        '<div class="num" style="font-weight:700;">' + money(p.cost) + '</div>' +
+                      '</div>' +
+                      '<div class="step-box" style="margin:0;padding:11px 12px;">' +
+                        '<div style="font-size:11.5px;color:var(--text-muted);">Продажа (1 уп.)</div>' +
+                        '<div class="num gold" style="font-weight:700;">' + money(p.pw) + '</div>' +
+                      '</div>' +
+                      '<div class="step-box" style="margin:0;padding:11px 12px;">' +
+                        '<div style="font-size:11.5px;color:var(--text-muted);">Поштучно (' + p.pcs + ' шт/уп)</div>' +
+                        '<div class="num" style="font-weight:700;">' + money(p.pp) + ' / шт.</div>' +
+                      '</div>' +
+                      '<div class="step-box" style="margin:0;padding:11px 12px;">' +
+                        '<div style="font-size:11.5px;color:var(--text-muted);">Прибыль с 1 уп.</div>' +
+                        '<div class="num ' + (profitPack >= 0 ? "pos" : "neg") + '" style="font-weight:700;">+' + money(profitPack) + '</div>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div style="display:flex;gap:8px;">' +
+                    '<button class="btn btn-secondary" style="flex:1;height:42px;" onclick="openEditProdModal(' + p.id + ')">Изменить цены</button>' +
+                    '<button class="btn-danger" style="height:42px;" onclick="deleteProduct(' + p.id + ')">Удалить</button>' +
+                  '</div>' +
+                '</div>';
+            }).join("") +
+          '</div>');
+  }
+
+  if (prods.length === 0) {
+    return topTabs +
+      '<div class="empty-state">' +
+        '<h2>Сначала создайте карточку товара</h2>' +
+        '<p class="subtitle" style="max-width:420px;margin:0 auto 18px;">Прежде чем записать закупку на склад, добавьте товар во вкладке «Мои товары и цены».</p>' +
+        '<button class="btn" onclick="openNewProdModal()">+ Добавить первый товар</button>' +
+      '</div>';
+  }
+
+  var buyRows = STATE.data.buys.slice().reverse().slice(0, 20).map(function(b) {
+    var p = getProduct(b.pid);
+    var unitCost = b.qty > 0 ? b.total / b.qty : 0;
+    return '<tr>' +
+      '<td class="num" style="font-size:13px;color:var(--text-muted);white-space:nowrap;">' + formatDateRu(b.date) + '</td>' +
+      '<td style="font-weight:600;">' + esc(p ? p.name : "Удалённый товар") + '</td>' +
+      '<td class="num" style="white-space:nowrap;">' + b.qty + ' уп.</td>' +
+      '<td class="num" style="white-space:nowrap;">' + money(b.total) + '</td>' +
+      '<td class="num" style="color:var(--text-muted);white-space:nowrap;">' + money(unitCost) + ' / уп.</td>' +
+    '</tr>';
+  }).join("");
+
+  return topTabs +
+    '<div class="card">' +
+      '<h2>Записать закупку товара</h2>' +
+      '<p class="subtitle" style="margin-bottom:16px;">Укажите сколько упаковок купили — остаток на складе увеличится, а закупочная цена обновится автоматически</p>' +
+
+      '<div style="margin-bottom:14px;">' +
+        '<label>1. Какой товар закупили?</label>' +
+        '<select id="buy-prod" onchange="updateBuyPreview()">' +
+          prods.map(function(p) {
+            return '<option value="' + p.id + '">' + esc(p.name) + ' (сейчас на складе: ' + formatStock(p) + ')</option>';
+          }).join("") +
+        '</select>' +
+      '</div>' +
+
+      '<div class="grid-3 form-split" style="margin-bottom:14px;">' +
+        '<div>' +
+          '<label>2. Сколько упаковок купили?</label>' +
+          '<input id="buy-qty" class="num" type="number" min="1" value="10" oninput="updateBuyPreview()">' +
+        '</div>' +
+        '<div>' +
+          '<label>3. Сколько заплатили всего (₼)?</label>' +
+          '<input id="buy-total" class="num" type="number" step="0.5" min="0" oninput="updateBuyPreview()">' +
+        '</div>' +
+        '<div>' +
+          '<label>4. Дата закупки</label>' +
+          '<input id="buy-date" type="date" value="' + todayStr() + '">' +
+        '</div>' +
+      '</div>' +
+
+      '<div id="buy-preview"></div>' +
+
+      '<button class="btn btn-full" onclick="submitBuy()">+ Добавить партию на склад</button>' +
+    '</div>' +
+
+    '<div class="card">' +
+      '<h2>История закупок</h2>' +
+      (buyRows
+        ? '<div class="table-wrap"><table><thead><tr><th>Дата</th><th>Товар</th><th>Куплено</th><th>Сумма</th><th>Цена за 1 уп.</th></tr></thead><tbody>' + buyRows + '</tbody></table></div>'
+        : '<div class="empty-state" style="padding:24px;">Закупок пока не было</div>') +
+    '</div>';
 }
 
-function confirmBuy() {
-  const p = findProduct(document.getElementById("b-prod").value);
+function updateBuyPreview() {
+  var sel = $("buy-prod");
+  var box = $("buy-preview");
+  if (!sel || !box) return;
+  var p = getProduct(sel.value);
   if (!p) return;
-  const qty = Number(document.getElementById("b-qty").value);
-  const total = Number(document.getElementById("b-total").value);
-  const date = document.getElementById("b-date").value || todayISO();
 
-  if (!(qty > 0) || !(total > 0)) {
-    notify("Укажите количество банок и общую сумму закупки", "err");
+  var qty = Math.max(1, Number($("buy-qty").value) || 1);
+  if (!$("buy-total").dataset.touched) {
+    $("buy-total").value = ((Number(p.cost) || 0) * qty).toFixed(2);
+  }
+  var total = Number($("buy-total").value) || 0;
+  var perUnit = qty > 0 ? total / qty : 0;
+
+  box.innerHTML = '' +
+    '<div class="preview-box" style="background:var(--gold-dim);border-color:var(--border-gold);">' +
+      '<div class="preview-row">' +
+        '<span style="font-size:14px;">Цена 1 упаковки в этой партии:</span>' +
+        '<span class="num gold" style="font-size:18px;font-weight:800;white-space:nowrap;">' + money(perUnit) + '</span>' +
+      '</div>' +
+      '<div class="preview-row" style="font-size:13.5px;color:var(--text-muted);">' +
+        '<span>Будет добавлено на склад:</span>' +
+        '<span class="num" style="color:var(--text);font-weight:700;white-space:nowrap;">+' + qty + ' уп. (+' + (qty * p.pcs) + ' шт.)</span>' +
+      '</div>' +
+    '</div>';
+}
+
+function submitBuy() {
+  var p = getProduct($("buy-prod").value);
+  if (!p) return;
+  var qty = Math.max(1, Math.floor(Number($("buy-qty").value) || 0));
+  var total = Number($("buy-total").value);
+  if (!(qty > 0) || !(total >= 0)) {
+    showToast("Проверьте количество и сумму закупки", true);
     return;
   }
 
-  // Weighted average cost calculation
-  const oldCans = p.stock / Math.max(1, p.pcs);
-  const oldVal = oldCans * p.cost;
-  const newCost = (oldVal + total) / (oldCans + qty);
+  var pcsPerPack = Math.max(1, Number(p.pcs) || 1);
+  var oldStock = Math.max(0, Number(p.stock) || 0);
+  var addedStock = qty * pcsPerPack;
+  var oldInventoryCost = oldStock * (Number(p.cost) || 0) / pcsPerPack;
+  var resultingStock = oldStock + addedStock;
 
-  p.stock += qty * p.pcs;
-  p.cost = Math.round(newCost * 100) / 100;
+  p.stock = resultingStock;
+  if (resultingStock > 0) {
+    p.cost = Math.round(((oldInventoryCost + total) / resultingStock * pcsPerPack) * 100) / 100;
+  }
 
-  DB.buys.push({
-    id: DB.seq++,
-    date,
+  STATE.data.buys.push({
+    id: STATE.data.seq++,
+    date: $("buy-date").value || todayStr(),
     pid: p.id,
-    qty,
-    total
+    qty: qty,
+    total: total
   });
 
-  persistData();
-  renderApp();
-  notify(`Склад пополнен (+${qty} банк.). Новая себестоимость: ${money(p.cost)}`, "ok");
+  if ($("buy-total")) delete $("buy-total").dataset.touched;
+  saveData();
+  render();
+  showToast("Склад пополнен и сохранён!");
 }
 
-// Product Modal (Add & Edit)
-function openProductFormModal(productId) {
-  const p = productId ? findProduct(productId) : null;
-  const isEdit = Boolean(p);
-  const cansNow = p ? Math.floor(p.stock / Math.max(1, p.pcs)) : 0;
-
-  openModal(`
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-extrabold">${isEdit ? "Редактировать товар" : "Добавить новый товар"}</h3>
-      <button onclick="closeModal()" class="p-2 rounded-xl opacity-70 hover:opacity-100 cursor-pointer">✕</button>
-    </div>
-    <div class="space-y-3.5">
-      <div>
-        <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Название товара</label>
-        <input id="m-name" type="text" value="${isEdit ? esc(p.name) : ""}" placeholder="Например: Классика Gold" class="field-input font-bold">
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Закупка за банку (₼)</label>
-          <input id="m-cost" type="number" step="0.1" value="${isEdit ? p.cost : "13.00"}" class="field-input num font-bold">
-        </div>
-        <div>
-          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Штук в 1 банке</label>
-          <input id="m-pcs" type="number" min="1" value="${isEdit ? p.pcs : "20"}" class="field-input num font-bold">
-        </div>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Цена продажи банки (₼)</label>
-          <input id="m-pw" type="number" step="0.1" value="${isEdit ? p.pw : "17.00"}" class="field-input num font-bold" style="color: var(--gold);">
-        </div>
-        <div>
-          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Цена продажи 1 шт. (₼)</label>
-          <input id="m-pp" type="number" step="0.1" value="${isEdit ? p.pp : "1.00"}" class="field-input num font-bold" style="color: var(--gold);">
-        </div>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">${isEdit ? "Остаток (в штуках)" : "Начальный остаток (банок)"}</label>
-          <input id="m-stock" type="number" min="0" value="${isEdit ? p.stock : cansNow}" class="field-input num">
-        </div>
-        <div>
-          <label class="block text-xs font-bold mb-1" style="color: var(--text-sub);">Мин. остаток для тревоги (шт.)</label>
-          <input id="m-min" type="number" min="0" value="${isEdit ? p.min : "20"}" class="field-input num">
-        </div>
-      </div>
-      <div class="flex justify-end gap-3 pt-3">
-        <button onclick="closeModal()" class="btn-ghost">Отмена</button>
-        <button onclick="saveProductFromModal(${isEdit ? p.id : "null"})" class="btn-primary px-6">
-          ${isEdit ? "Сохранить изменения" : "Создать товар"}
-        </button>
-      </div>
-    </div>
-  `);
+// Product Modal Actions
+function openNewProdModal() {
+  $("pm-title").textContent = "Новый товар";
+  $("pm-id").value = "";
+  $("pm-name").value = "";
+  $("pm-cost").value = "";
+  $("pm-pcs").value = "20";
+  $("pm-pw").value = "";
+  $("pm-pp").value = "";
+  $("pm-min").value = "20";
+  calcModalMargin();
+  $("prod-modal").classList.add("open");
 }
 
-function saveProductFromModal(productId) {
-  const name = document.getElementById("m-name").value.trim() || "Новый товар";
-  const cost = Math.max(0, Number(document.getElementById("m-cost").value) || 0);
-  const pcs = Math.max(1, Number(document.getElementById("m-pcs").value) || 1);
-  const pw = Math.max(0, Number(document.getElementById("m-pw").value) || 0);
-  const pp = Math.max(0, Number(document.getElementById("m-pp").value) || 0);
-  const stockInput = Math.max(0, Number(document.getElementById("m-stock").value) || 0);
-  const min = Math.max(0, Number(document.getElementById("m-min").value) || 0);
+function openEditProdModal(id) {
+  var p = getProduct(id);
+  if (!p) return;
+  $("pm-title").textContent = "Редактировать товар";
+  $("pm-id").value = p.id;
+  $("pm-name").value = p.name;
+  $("pm-cost").value = p.cost;
+  $("pm-pcs").value = p.pcs;
+  $("pm-pw").value = p.pw;
+  $("pm-pp").value = p.pp;
+  $("pm-min").value = p.min;
+  calcModalMargin();
+  $("prod-modal").classList.add("open");
+}
 
-  if (productId) {
-    const p = findProduct(productId);
+function closeProdModal() {
+  $("prod-modal").classList.remove("open");
+}
+
+function calcModalMargin() {
+  var cost = Number($("pm-cost").value) || 0;
+  var pcs = Math.max(1, Number($("pm-pcs").value) || 1);
+  var pw = Number($("pm-pw").value) || 0;
+  var pp = Number($("pm-pp").value) || 0;
+  var profPack = pw - cost;
+  var profPcs = (pp * pcs) - cost;
+
+  $("pm-preview").innerHTML = '' +
+    '<div class="preview-row" style="font-size:13.5px;">' +
+      '<span>Прибыль с продажи 1 целой упаковки:</span>' +
+      '<span class="num ' + (profPack >= 0 ? "pos" : "neg") + '" style="font-weight:700;white-space:nowrap;">' + (profPack >= 0 ? "+" : "") + money(profPack) + '</span>' +
+    '</div>' +
+    '<div class="preview-row" style="font-size:13.5px;">' +
+      '<span>Прибыль, если продать упаковку поштучно:</span>' +
+      '<span class="num ' + (profPcs >= 0 ? "pos" : "neg") + '" style="font-weight:700;white-space:nowrap;">' + (profPcs >= 0 ? "+" : "") + money(profPcs) + '</span>' +
+    '</div>';
+}
+
+function saveProdModal() {
+  var name = $("pm-name").value.trim();
+  if (!name) { showToast("Введите название товара", true); return; }
+
+  var cost = Math.max(0, Number($("pm-cost").value) || 0);
+  var pcs = Math.max(1, Math.round(Number($("pm-pcs").value) || 1));
+  var pw = Math.max(0, Number($("pm-pw").value) || 0);
+  var pp = Math.max(0, Number($("pm-pp").value) || 0);
+  var min = Math.max(0, Math.round(Number($("pm-min").value) || 0));
+
+  var editId = $("pm-id").value;
+  if (editId) {
+    var p = getProduct(editId);
     if (p) {
       p.name = name;
       p.cost = cost;
       p.pcs = pcs;
       p.pw = pw;
       p.pp = pp;
-      p.stock = stockInput;
       p.min = min;
     }
-    notify(`Товар «${name}» обновлён`, "ok");
+    showToast("Изменения сохранены");
   } else {
-    DB.products.push({
-      id: DB.seq++,
-      name,
-      cost,
-      pcs,
-      pw,
-      pp,
-      stock: stockInput * pcs,
-      min
+    STATE.data.products.push({
+      id: STATE.data.seq++,
+      name: name,
+      cost: cost,
+      pcs: pcs,
+      pw: pw,
+      pp: pp,
+      stock: 0,
+      min: min
     });
-    notify(`Товар «${name}» добавлен`, "ok");
+    showToast("Товар добавлен! Теперь пополните склад");
   }
 
-  persistData();
-  closeModal();
-  renderApp();
+  saveData();
+  closeProdModal();
+  render();
 }
 
-function confirmDeleteProduct(id) {
-  const p = findProduct(id);
-  if (!p) return;
-  openModal(`
-    <h3 class="text-lg font-extrabold mb-2">Удалить «${esc(p.name)}»?</h3>
-    <p class="text-sm mb-5" style="color: var(--text-sub);">Товар исчезнет из каталога, но история прошлых продаж сохранится в отчётах.</p>
-    <div class="flex justify-end gap-3">
-      <button onclick="closeModal()" class="btn-ghost">Отмена</button>
-      <button onclick="executeDeleteProduct(${id})" class="px-4 py-2.5 rounded-xl bg-red-500 text-white font-bold text-sm cursor-pointer">Удалить</button>
-    </div>
-  `);
+function deleteProduct(id) {
+  if (!confirm("Удалить этот товар из списка? История прошлых продаж сохранится.")) return;
+  STATE.data.products = STATE.data.products.filter(function(p) { return p.id !== id; });
+  saveData();
+  render();
+  showToast("Товар удалён");
 }
 
-function executeDeleteProduct(id) {
-  DB.products = DB.products.filter((p) => p.id !== id);
-  persistData();
-  closeModal();
-  renderApp();
-  notify("Товар удалён из каталога", "ok");
+// ------------------------------------------
+// VIEW 4: EXPENSES (РАСХОДЫ)
+// ------------------------------------------
+function renderExpenses() {
+  var cats = ["Транспорт", "Реклама", "Упаковка", "Связь", "Аренда", "Другое"];
+  var totalExp = sumBy(STATE.data.exps, function(e) { return e.amt; });
+
+  var rows = STATE.data.exps.slice().reverse().slice(0, 25).map(function(e) {
+    return '<tr>' +
+      '<td class="num" style="font-size:13px;color:var(--text-muted);white-space:nowrap;">' + formatDateRu(e.date) + '</td>' +
+      '<td><span class="badge badge-gold">' + esc(e.cat) + '</span></td>' +
+      '<td>' + esc(e.note || "—") + '</td>' +
+      '<td class="num neg" style="font-weight:700;white-space:nowrap;">− ' + money(e.amt) + '</td>' +
+      '<td style="text-align:right;"><button class="btn-danger" onclick="deleteExpense(' + e.id + ')">Удалить</button></td>' +
+    '</tr>';
+  }).join("");
+
+  return '' +
+    '<div class="card">' +
+      '<h2>Добавить расход</h2>' +
+      '<p class="subtitle" style="margin-bottom:14px;">Эти суммы вычитаются из вашей чистой прибыли. Закупки товара записывайте в разделе «Склад».</p>' +
+
+      '<label>1. На что потратили?</label>' +
+      '<div class="quick-chips" style="margin-bottom:14px;margin-top:0;">' +
+        cats.map(function(c) {
+          return '<button type="button" class="chip ' + (STATE.expCat === c ? "active" : "") + '" onclick="STATE.expCat=&apos;' + c + '&apos;;render()">' + c + '</button>';
+        }).join("") +
+      '</div>' +
+
+      '<div class="grid-3 form-split" style="margin-bottom:14px;">' +
+        '<div>' +
+          '<label>2. Сумма расхода (₼)</label>' +
+          '<input id="exp-amt" class="num" type="number" step="0.5" min="0" placeholder="5.00">' +
+        '</div>' +
+        '<div>' +
+          '<label>3. Комментарий (необязательно)</label>' +
+          '<input id="exp-note" type="text" placeholder="Например: такси или пакеты">' +
+        '</div>' +
+        '<div>' +
+          '<label>4. Дата</label>' +
+          '<input id="exp-date" type="date" value="' + todayStr() + '">' +
+        '</div>' +
+      '</div>' +
+
+      '<button class="btn btn-full" onclick="submitExpense()">Записать расход</button>' +
+    '</div>' +
+
+    '<div class="card">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap;">' +
+        '<h2 style="margin:0;">История расходов</h2>' +
+        '<span class="num neg" style="font-weight:700;">Всего: ' + money(totalExp) + '</span>' +
+      '</div>' +
+      (rows
+        ? '<div class="table-wrap"><table><thead><tr><th>Дата</th><th>Категория</th><th>Заметка</th><th>Сумма</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+        : '<div class="empty-state" style="padding:24px;">Расходов пока не записано</div>') +
+    '</div>';
 }
 
-// Expenses
-function selectExpCategory(cat, btn) {
-  document.getElementById("e-cat").value = cat;
-  document.querySelectorAll(".exp-chip").forEach((el) => {
-    el.className = "exp-chip py-2.5 px-2 rounded-xl text-xs font-bold border transition-all cursor-pointer";
-    el.style.backgroundColor = "var(--bg-input)";
-    el.style.borderColor = "var(--border-color)";
-    el.style.color = "var(--text-main)";
-  });
-  btn.className = "exp-chip py-2.5 px-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-[#d4af37]/15 border-[#d4af37] text-[#d4af37]";
-  btn.style.backgroundColor = "";
-  btn.style.borderColor = "";
-  btn.style.color = "";
-}
-
-function confirmExpense() {
-  const cat = document.getElementById("e-cat").value;
-  const amt = Number(document.getElementById("e-amt").value);
-  const date = document.getElementById("e-date").value || todayISO();
-  const note = document.getElementById("e-note").value.trim();
-
+function submitExpense() {
+  var amt = Number($("exp-amt").value);
   if (!(amt > 0)) {
-    notify("Введите сумму расхода", "err");
+    showToast("Введите сумму расхода больше нуля", true);
     return;
   }
-
-  DB.exps.push({ id: DB.seq++, date, cat, amt, note });
-  persistData();
-  renderApp();
-  notify(`Расход ${money(amt)} записан`, "ok");
+  STATE.data.exps.push({
+    id: STATE.data.seq++,
+    date: $("exp-date").value || todayStr(),
+    cat: STATE.expCat,
+    amt: amt,
+    note: $("exp-note").value.trim()
+  });
+  saveData();
+  render();
+  showToast("Расход записан и сохранён");
 }
 
-function removeExpense(id) {
-  DB.exps = DB.exps.filter((e) => e.id !== id);
-  persistData();
-  renderApp();
-  notify("Расход удалён", "ok");
+function deleteExpense(id) {
+  STATE.data.exps = STATE.data.exps.filter(function(e) { return e.id !== id; });
+  saveData();
+  render();
+  showToast("Запись о расходе удалена");
 }
 
-// Discounts & Full Reset
-function addTierRow() {
-  if (!Array.isArray(DB.tiers)) DB.tiers = [];
-  const maxQty = DB.tiers.length ? Math.max(...DB.tiers.map((t) => Number(t[0]) || 0)) : 0;
-  const maxPct = DB.tiers.length ? Math.max(...DB.tiers.map((t) => Number(t[1]) || 0)) : 2;
-  const nextQty = maxQty > 0 ? maxQty + 5 : 2;
-  const nextPct = Math.min(90, maxPct + 3);
-  DB.tiers.push([nextQty, nextPct]);
-  persistData();
-  renderApp();
-  notify(`Добавлена скидка: от ${nextQty} банк. → -${nextPct}%`, "ok");
-}
+// ------------------------------------------
+// VIEW 5: DISCOUNTS & BACKUP (СКИДКИ И БАЗА)
+// ------------------------------------------
+function renderMore() {
+  var tiers = STATE.data.tiers;
+  var sampleProd = STATE.data.products[0];
 
-function editTier(idx, col, val) {
-  if (!DB.tiers[idx]) return;
-  DB.tiers[idx][col] = Math.max(0, Number(val) || 0);
-  persistData();
-  renderApp();
-}
+  var tierRows = tiers.map(function(t, idx) {
+    return '<tr>' +
+      '<td><input class="num" type="number" min="2" value="' + t[0] + '" style="height:40px;min-width:72px;" onchange="updateTier(' + idx + ', 0, this.value)"></td>' +
+      '<td><input class="num" type="number" min="1" max="90" value="' + t[1] + '" style="height:40px;min-width:72px;" onchange="updateTier(' + idx + ', 1, this.value)"></td>' +
+      '<td style="text-align:right;"><button class="btn-danger" onclick="removeTier(' + idx + ')">Удалить</button></td>' +
+    '</tr>';
+  }).join("");
 
-function deleteTier(idx) {
-  DB.tiers.splice(idx, 1);
-  persistData();
-  renderApp();
-  notify("Правило скидки удалено", "ok");
-}
-
-function editTier(idx, col, val) {
-  DB.tiers[idx][col] = Math.max(0, Number(val) || 0);
-  persistData();
-  renderApp();
-}
-
-function deleteTier(idx) {
-  DB.tiers.splice(idx, 1);
-  persistData();
-  renderApp();
-}
-
-function confirmFullReset() {
-  openModal(`
-    <div class="flex items-center gap-2.5 text-red-400 mb-3">
-      ${SVG.alert}
-      <h3 class="text-lg font-extrabold">Очистить всю базу данных?</h3>
-    </div>
-    <p class="text-sm mb-5 leading-relaxed" style="color: var(--text-sub);">
-      Это действие удалит все продажи, закупки, расходы и вернёт стандартный пример товара. Рекомендуем сначала скачать резервную копию (.json).
-    </p>
-    <div class="flex flex-wrap justify-end gap-3">
-      <button onclick="closeModal()" class="btn-ghost">Отмена</button>
-      <button onclick="executeFullReset()" class="px-5 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold text-sm cursor-pointer">Да, очистить всё</button>
-    </div>
-  `);
-}
-
-function executeFullReset() {
-  try { localStorage.removeItem(LS_KEY); } catch (e) {}
-  DB = {
-    products: [{ id: 1, name: "Товар 1 (пример)", cost: 13.5, pcs: 20, pw: 17, pp: 1, stock: 200, min: 40 }],
-    sales: [],
-    buys: [],
-    exps: [],
-    tiers: [[2, 5], [3, 8], [5, 10], [10, 15]],
-    seq: 2
-  };
-  persistData();
-  closeModal();
-  renderApp();
-  notify("База данных очищена", "ok");
-}
-
-// --- MAIN RENDER ---
-function renderApp() {
-  renderNav();
-  const container = document.getElementById("app-content");
-  if (container && PAGES[activeTab]) {
-    container.innerHTML = PAGES[activeTab]();
+  var previewHtml = "";
+  if (sampleProd) {
+    var testQtys = [1].concat(tiers.map(function(t) { return Number(t[0]); })).sort(function(a, b) { return a - b; });
+    previewHtml = '' +
+      '<div class="card">' +
+        '<h2>Проверка выгоды на примере «' + esc(sampleProd.name) + '»</h2>' +
+        '<p class="subtitle" style="margin-bottom:12px;">Проверьте, чтобы даже со скидкой вы оставались в хорошем плюсе</p>' +
+        '<div class="table-wrap"><table><thead><tr><th>Упаковок</th><th>Скидка</th><th>Цена клиенту</th><th>Ваша прибыль</th></tr></thead><tbody>' +
+          testQtys.map(function(q) {
+            var d = getDiscountPct(q);
+            var total = Math.round(Number(sampleProd.pw) * q * (1 - d / 100) * 2) / 2;
+            var prof = total - (Number(sampleProd.cost) * q);
+            return '<tr>' +
+              '<td class="num">' + q + ' уп.</td>' +
+              '<td class="num">' + d + '%</td>' +
+              '<td class="num">' + money(total) + '</td>' +
+              '<td class="num ' + (prof >= 0 ? "pos" : "neg") + '" style="font-weight:700;">+' + money(prof) + '</td>' +
+            '</tr>';
+          }).join("") +
+        '</tbody></table></div>' +
+      '</div>';
   }
-  if (activeTab === "sell") updateSaleCalc();
-  if (activeTab === "stock" && stockSubTab === "buy") updateBuyCalc();
+
+  return '' +
+    '<div class="card">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">' +
+        '<div>' +
+          '<h2 style="margin:0;">Автоматические скидки за количество</h2>' +
+          '<p class="subtitle" style="margin:4px 0 0;">Срабатывают автоматически в разделе «Продать» при покупке нескольких упаковок</p>' +
+        '</div>' +
+        '<button type="button" class="btn" onclick="addTier()">+ Добавить скидку</button>' +
+      '</div>' +
+      '<div class="table-wrap"><table><thead><tr><th>От скольких упаковок</th><th>Размер скидки (%)</th><th></th></tr></thead><tbody>' +
+        (tierRows || '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Скидок пока нет</td></tr>') +
+      '</tbody></table></div>' +
+    '</div>' +
+
+    previewHtml +
+
+    '<div class="card">' +
+      '<h2>Сохранение и перенос базы данных</h2>' +
+      '<p class="subtitle" style="margin-bottom:16px;">Весь проект автоматически сохраняется в постоянной памяти браузера (localStorage + IndexedDB) и остаётся на месте даже после полного закрытия вкладки или перезагрузки устройства.</p>' +
+      '<div class="grid-2 form-split" style="margin-bottom:16px;">' +
+        '<button type="button" class="btn" onclick="exportBackup()">↓ Скачать резервную копию (.json)</button>' +
+        '<label class="btn btn-secondary" style="margin:0;cursor:pointer;">↑ Восстановить из файла<input type="file" accept=".json" style="display:none;" onchange="importBackup(event)"></label>' +
+      '</div>' +
+      '<div style="padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">' +
+        '<span style="font-size:13.5px;color:var(--text-muted);">Хотите начать учёт полностью с чистого листа?</span>' +
+        '<button type="button" class="btn-danger" onclick="resetAllData()">Очистить все данные</button>' +
+      '</div>' +
+    '</div>';
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-  initTheme();
-  await initData();
-  renderApp();
+function addTier() {
+  var tiers = STATE.data.tiers;
+  var nextQty = tiers.length > 0 ? (Number(tiers[tiers.length - 1][0]) + 5) : 2;
+  var nextPct = tiers.length > 0 ? Math.min(80, Number(tiers[tiers.length - 1][1]) + 3) : 5;
+  tiers.push([nextQty, nextPct]);
+  saveData();
+  render();
+  showToast("Новая ступень скидки добавлена");
+}
+
+function updateTier(idx, col, val) {
+  var num = Number(val) || 0;
+  STATE.data.tiers[idx][col] = col === 0 ? Math.max(2, Math.round(num)) : Math.min(90, Math.max(0, num));
+  saveData();
+  render();
+}
+
+function removeTier(idx) {
+  STATE.data.tiers.splice(idx, 1);
+  saveData();
+  render();
+  showToast("Правило скидки удалено");
+}
+
+function exportBackup() {
+  var blob = new Blob([JSON.stringify(STATE.data, null, 2)], { type: "application/json" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "business-backup-" + todayStr() + ".json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("Файл резервной копии скачан");
+}
+
+function importBackup(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var parsed = JSON.parse(e.target.result);
+      if (!parsed || !Array.isArray(parsed.products)) throw new Error("Invalid format");
+      STATE.data = normalizeData(parsed);
+      saveData();
+      render();
+      showToast("База данных успешно восстановлена!");
+    } catch (err) {
+      showToast("Ошибка: выбран неверный файл резервной копии", true);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetAllData() {
+  if (!confirm("Вы уверены? Все товары, продажи, закупки и расходы будут полностью удалены.")) return;
+  STATE.data = defaultData();
+  saveData();
+  render();
+  showToast("База очищена. Можно начать с чистого листа");
+}
+
+function openHelpModal() { $("help-modal").classList.add("open"); }
+function closeHelpModal() { $("help-modal").classList.remove("open"); }
+
+// Save automatically before closing tab, minimizing app, or switching pages
+window.addEventListener("beforeunload", function() { saveData(true); });
+window.addEventListener("pagehide", function() { saveData(true); });
+document.addEventListener("visibilitychange", function() {
+  if (document.visibilityState === "hidden") saveData(true);
 });
+
+// Init
+(function() {
+  try {
+    var savedTheme = localStorage.getItem("biz_theme");
+    if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+  } catch (e) {}
+  initLoad();
+  render();
+  document.addEventListener("input", function(e) {
+    if (e.target && e.target.id === "buy-total") e.target.dataset.touched = "1";
+  });
+})();
 </script>
 </body>
 </html>
