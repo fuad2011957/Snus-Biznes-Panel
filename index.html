@@ -1,589 +1,172 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Бизнес-панель — Учёт и Прибыль</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #090b10;
-  --bg-elev: #10131c;
-  --card: #151924;
-  --card-hover: #1b202e;
-  --border: #23293a;
-  --border-gold: rgba(229, 185, 76, 0.38);
-  --text: #f5f7fa;
-  --text-muted: #939bb0;
-  --gold: #e5b94c;
-  --gold-bright: #f8d474;
-  --gold-dim: rgba(229, 185, 76, 0.13);
-  --ok: #2dd4bf;
-  --ok-dim: rgba(45, 212, 191, 0.13);
-  --bad: #fb7185;
-  --bad-dim: rgba(251, 113, 133, 0.13);
-  --warn: #fbbf24;
-  --warn-dim: rgba(251, 191, 36, 0.13);
-  --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
-  --radius: 18px;
+  --bg:#090b10; --bg-elev:#10131c; --card:#151924; --card-hover:#1b202e; --border:#23293a;
+  --border-gold:rgba(229,185,76,.38); --text:#f2f4f8; --text-muted:#8f97ab;
+  --gold:#e5b94c; --gold-bright:#f3cd72; --gold-dim:rgba(229,185,76,.12);
+  --ok:#2dd4bf; --ok-dim:rgba(45,212,191,.12); --bad:#fb7185; --bad-dim:rgba(251,113,133,.12);
+  --warn:#fbbf24; --warn-dim:rgba(251,191,36,.12);
+  --shadow:0 12px 32px rgba(0,0,0,.4); --radius:18px;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  padding-top:env(safe-area-inset-top,0px);
 }
-
 :root[data-theme="light"] {
-  --bg: #f4f6fa;
-  --bg-elev: #ffffff;
-  --card: #ffffff;
-  --card-hover: #f8fafd;
-  --border: #e1e5ef;
-  --border-gold: rgba(180, 134, 24, 0.4);
-  --text: #111521;
-  --text-muted: #5e667a;
-  --gold: #b88618;
-  --gold-bright: #9c6f0e;
-  --gold-dim: rgba(184, 134, 24, 0.1);
-  --ok: #0d9488;
-  --ok-dim: rgba(13, 148, 136, 0.1);
-  --bad: #e11d48;
-  --bad-dim: rgba(225, 29, 72, 0.1);
-  --warn: #d97706;
-  --warn-dim: rgba(217, 119, 6, 0.1);
-  --shadow: 0 8px 24px rgba(17, 21, 33, 0.06);
+  --bg:#f5f6fa; --bg-elev:#fff; --card:#fff; --card-hover:#f8fafd; --border:#e4e7f0;
+  --border-gold:rgba(180,134,24,.4); --text:#151926; --text-muted:#626a7e;
+  --gold:#b88618; --gold-bright:#9c6f0e; --gold-dim:rgba(184,134,24,.09);
+  --ok:#0d9488; --ok-dim:rgba(13,148,136,.09); --bad:#e11d48; --bad-dim:rgba(225,29,72,.08);
+  --warn:#d97706; --warn-dim:rgba(217,119,6,.09); --shadow:0 8px 24px rgba(17,21,33,.05);
 }
-
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
-  -webkit-text-size-adjust: 100%;
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;font-weight:400;
+  line-height:1.6;letter-spacing:-.003em;min-height:100vh;min-height:100dvh;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-feature-settings:'cv11','ss03';
 }
+.num{font-variant-numeric:tabular-nums;font-feature-settings:'tnum','cv11';letter-spacing:-.01em}
+b,strong{font-weight:600}
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Manrope', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 15.5px;
-  line-height: 1.55;
-  letter-spacing: 0.01em;
-  min-height: 100vh;
+.layout{display:flex;min-height:100vh;min-height:100dvh;width:100%}
+.sidebar{width:264px;flex:0 0 264px;background:var(--bg-elev);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;height:100dvh}
+.brand{display:flex;align-items:center;gap:12px;padding:0 8px 22px;border-bottom:1px solid var(--border);margin-bottom:20px}
+.brand-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--gold),#b88618);color:#090b10;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:18px;flex:none}
+.brand-title{font-weight:600;font-size:16px;letter-spacing:-.015em}
+.brand-sub{font-size:12px;color:var(--text-muted)}
+.nav-list{display:flex;flex-direction:column;gap:4px;flex:1}
+.nav-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:12px;border:1px solid transparent;background:transparent;color:var(--text-muted);font:inherit;font-weight:500;font-size:14px;cursor:pointer;text-align:left;transition:all .18s ease}
+.nav-btn:hover{background:var(--card);color:var(--text)}
+.nav-btn.active{background:var(--gold-dim);border-color:var(--border-gold);color:var(--gold-bright)}
+.nav-btn svg{width:19px;height:19px;flex:none}
+.save-box{margin-top:auto;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--border);font-size:12.5px}
+.save-status{display:flex;align-items:center;gap:8px;color:var(--ok);font-weight:500;margin-bottom:4px}
+.save-dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);flex:none}
+
+.main{flex:1;min-width:0;width:100%;padding:32px 32px 64px;max-width:1080px;margin:0 auto}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:26px}
+h1{font-size:26px;font-weight:600;margin:0 0 4px;letter-spacing:-.025em;line-height:1.25}
+.subtitle{color:var(--text-muted);font-size:14px;margin:0;line-height:1.55}
+h2{font-size:17px;font-weight:600;margin:0 0 6px;letter-spacing:-.018em;line-height:1.35}
+h3{font-size:15px;font-weight:600;margin:0 0 8px;letter-spacing:-.01em}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;white-space:nowrap;flex:none}
+.icon-btn:hover{border-color:var(--gold)}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:18px;box-shadow:var(--shadow);min-width:0}
+.card-gold{background:linear-gradient(145deg,var(--card),rgba(229,185,76,.06));border-color:var(--border-gold)}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+
+.metric{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+.metric-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.metric-title{font-size:13px;font-weight:500;color:var(--text-muted)}
+.metric-val{font-size:23px;font-weight:500;letter-spacing:-.025em;white-space:nowrap;line-height:1.25}
+.metric-desc{font-size:12.5px;color:var(--text-muted);margin-top:8px;line-height:1.5}
+.help-tip{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--bg);border:1px solid var(--border);color:var(--text-muted);font-size:11px;font-weight:500;cursor:help;flex:none}
+
+.step-box{border:1px solid var(--border);background:var(--bg-elev);border-radius:15px;padding:18px;margin-bottom:14px;min-width:0}
+.step-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border-gold);color:var(--gold-bright);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex:none}
+label{display:block;font-size:13px;font-weight:500;color:var(--text-muted);margin-bottom:6px;line-height:1.4}
+.field-hint{font-size:12.5px;color:var(--text-muted);margin-top:6px;line-height:1.45}
+input,select{display:block;width:100%;max-width:100%;min-width:0;height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit;font-size:16px;font-weight:400;transition:border-color .15s}
+select{text-overflow:ellipsis}
+input[type="date"]{-webkit-appearance:none;appearance:none;min-height:48px;line-height:46px}
+input[type="date"]::-webkit-date-and-time-value{text-align:left}
+input:focus,select:focus{outline:none;border-color:var(--gold)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;border-radius:12px;border:1px solid transparent;background:linear-gradient(135deg,var(--gold),#c99722);color:#090b10;font:inherit;font-weight:600;font-size:14px;letter-spacing:-.003em;cursor:pointer;transition:transform .1s,opacity .15s;white-space:nowrap}
+.btn:hover{opacity:.94}.btn:active{transform:scale(.98)}
+.btn-full{width:100%}
+.btn-secondary{background:var(--bg-elev);border-color:var(--border);color:var(--text);font-weight:500}
+.btn-secondary:hover{border-color:var(--gold)}
+.btn-danger{background:var(--bad-dim);border:1px solid rgba(251,113,133,.28);color:var(--bad);height:36px;padding:0 12px;border-radius:10px;font:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+
+.seg-group{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg-btn{min-height:48px;padding:6px 10px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text-muted);font:inherit;font-weight:500;font-size:14px;line-height:1.3;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center}
+.seg-btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold-bright)}
+.quick-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{padding:8px 14px;border-radius:11px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit;font-size:13.5px;font-weight:500;cursor:pointer}
+.chip:hover,.chip.active{border-color:var(--gold);background:var(--gold-dim);color:var(--gold-bright)}
+
+.preview-box{border-radius:15px;padding:16px;background:var(--ok-dim);border:1px solid rgba(45,212,191,.3);margin:14px 0}
+.preview-box.warn{background:var(--bad-dim);border-color:rgba(251,113,133,.36)}
+.preview-row{display:flex;justify-content:space-between;align-items:center;gap:6px 12px;flex-wrap:wrap}
+.preview-row+.preview-row{margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.badge{display:inline-flex;align-items:center;padding:4px 11px;border-radius:99px;font-size:12.5px;font-weight:500;white-space:nowrap}
+.badge-ok{background:var(--ok-dim);color:var(--ok)}.badge-bad{background:var(--bad-dim);color:var(--bad)}
+.badge-warn{background:var(--warn-dim);color:var(--warn)}.badge-gold{background:var(--gold-dim);color:var(--gold-bright)}
+.pos{color:var(--ok)}.neg{color:var(--bad)}.gold{color:var(--gold-bright)}
+
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:440px}
+th,td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);font-size:14px}
+th{color:var(--text-muted);font-size:11.5px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+td{font-weight:400}
+tr:last-child td{border-bottom:none}
+
+.empty-state{text-align:center;padding:36px 20px;border:1px dashed var(--border);border-radius:var(--radius);background:var(--bg-elev)}
+.empty-icon{width:54px;height:54px;border-radius:16px;background:var(--gold-dim);color:var(--gold-bright);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px}
+.onboarding-step{display:flex;align-items:flex-start;gap:14px;padding:15px;border-radius:15px;background:var(--bg-elev);border:1px solid var(--border)}
+.fw6{font-weight:600}.fw5{font-weight:500}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:14px;z-index:100}
+.modal-backdrop.open{display:flex}
+.modal{width:100%;max-width:480px;max-height:90vh;max-height:90dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--card);border:1px solid var(--border-gold);border-radius:20px;padding:24px;box-shadow:var(--shadow)}
+.toast{position:fixed;top:calc(20px + env(safe-area-inset-top,0px));right:20px;max-width:calc(100% - 40px);background:var(--card);border:1px solid var(--gold);color:var(--text);padding:13px 18px;border-radius:13px;font-weight:500;font-size:14px;box-shadow:var(--shadow);z-index:200;transform:translateY(-200%);transition:transform .25s ease}
+.toast.show{transform:translateY(0)}
+.mobile-save-pill,.mobile-nav{display:none}
+
+@media (max-width:860px){
+  .sidebar{display:none!important}
+  .main{padding:16px 14px 108px;max-width:100%}
+  .topbar{align-items:center;margin-bottom:18px}
+  h1{font-size:21px}.subtitle{font-size:13.5px}
+  .grid-4{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .grid-3,.grid-2{grid-template-columns:1fr}
+  .metric{padding:14px}.metric-val{font-size:19px}
+  .card{padding:18px 16px;border-radius:16px}
+  .step-box{padding:14px}
+  .toast{left:14px;right:14px;max-width:none;text-align:center}
+  .mobile-save-pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;color:var(--ok);background:var(--ok-dim);border:1px solid rgba(45,212,191,.25);padding:4px 10px;border-radius:99px;margin-bottom:14px;max-width:100%}
+  .mobile-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;width:100%;background:var(--bg-elev);border-top:1px solid var(--border);padding:6px 2px calc(8px + env(safe-area-inset-bottom,0px));z-index:50}
+  .m-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:0;background:transparent;color:var(--text-muted);font:inherit;font-size:11px;font-weight:500;padding:6px 2px;cursor:pointer;min-width:0}
+  .m-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+  .m-btn svg{width:21px;height:21px;flex:none}
+  .m-btn.active{color:var(--gold-bright)}
+  .modal-backdrop{align-items:flex-end;padding:0}
+  .modal{max-width:none;border-radius:22px 22px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px));max-height:92vh;max-height:92dvh}
+  .onboarding-step .btn{width:100%}
 }
-
-.num {
-  font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+@media (max-width:560px){
+  .form-split{grid-template-columns:1fr!important}
+  .seg-btn{font-size:13px;padding:6px}
+  .icon-btn span{display:none}.icon-btn{padding:10px 11px}
+  .card{margin-bottom:14px}
+  .btn{padding:0 16px}
+  .preview-row{flex-direction:column;align-items:flex-start}
 }
-
-/* Layout */
-.layout { display: flex; min-height: 100vh; width: 100%; }
-
-.sidebar {
-  width: 264px;
-  flex: 0 0 264px;
-  background: var(--bg-elev);
-  border-right: 1px solid var(--border);
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0 8px 22px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 20px;
-}
-
-.brand-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--gold), #b88618);
-  color: #090b10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 18px;
-  flex: none;
-}
-
-.brand-title { font-weight: 800; font-size: 17px; letter-spacing: -0.01em; }
-.brand-sub { font-size: 12.5px; color: var(--text-muted); }
-
-.nav-list { display: flex; flex-direction: column; gap: 6px; flex: 1; }
-
-.nav-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 13px 14px;
-  border-radius: 13px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-muted);
-  font: inherit;
-  font-weight: 600;
-  font-size: 14.5px;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.18s ease;
-}
-
-.nav-btn:hover { background: var(--card); color: var(--text); }
-.nav-btn.active {
-  background: var(--gold-dim);
-  border-color: var(--border-gold);
-  color: var(--gold-bright);
-}
-
-.nav-btn svg { width: 20px; height: 20px; flex: none; }
-
-.save-box {
-  margin-top: auto;
-  padding: 14px;
-  border-radius: 14px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  font-size: 12.5px;
-}
-
-.save-status { display: flex; align-items: center; gap: 8px; color: var(--ok); font-weight: 700; margin-bottom: 4px; }
-.save-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); flex: none; }
-
-/* Main Content */
-.main {
-  flex: 1;
-  min-width: 0;
-  width: 100%;
-  padding: 28px 32px 64px;
-  max-width: 1080px;
-  margin: 0 auto;
-}
-
-.topbar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 24px;
-}
-
-h1 { font-size: 27px; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.02em; }
-.subtitle { color: var(--text-muted); font-size: 14.5px; margin: 0; }
-h2 { font-size: 18px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
-h3 { font-size: 15.5px; font-weight: 700; margin: 0 0 8px; }
-
-.icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  font: inherit;
-  font-size: 13.5px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  flex: none;
-}
-.icon-btn:hover { border-color: var(--gold); }
-
-/* Cards & Grids */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px;
-  margin-bottom: 18px;
-  box-shadow: var(--shadow);
-  min-width: 0;
-}
-
-.card-gold {
-  background: linear-gradient(145deg, var(--card), rgba(229, 185, 76, 0.06));
-  border-color: var(--border-gold);
-}
-
-.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-
-/* Metric Cards */
-.metric {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-width: 0;
-}
-.metric-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
-.metric-title { font-size: 13.5px; font-weight: 600; color: var(--text-muted); }
-.metric-val { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
-.metric-desc { font-size: 12.5px; color: var(--text-muted); margin-top: 8px; line-height: 1.45; }
-
-.help-tip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 700;
-  cursor: help;
-  flex: none;
-}
-
-/* Forms */
-.step-box {
-  border: 1px solid var(--border);
-  background: var(--bg-elev);
-  border-radius: 15px;
-  padding: 16px;
-  margin-bottom: 14px;
-  min-width: 0;
-}
-.step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.step-num {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--gold-dim);
-  border: 1px solid var(--border-gold);
-  color: var(--gold-bright);
-  font-size: 12.5px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-}
-
-label { display: block; font-size: 13.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-.field-hint { font-size: 12.5px; color: var(--text-muted); margin-top: 6px; }
-
-input, select {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  height: 48px;
-  padding: 0 14px;
-  border-radius: 13px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font: inherit;
-  font-size: 16px;
-  transition: border-color 0.15s;
-}
-input[type="date"] {
-  -webkit-appearance: none;
-  appearance: none;
-  min-height: 48px;
-  line-height: 48px;
-}
-input:focus, select:focus { outline: none; border-color: var(--gold); }
-
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 48px;
-  padding: 0 20px;
-  border-radius: 13px;
-  border: 1px solid transparent;
-  background: linear-gradient(135deg, var(--gold), #c99722);
-  color: #090b10;
-  font: inherit;
-  font-weight: 700;
-  font-size: 14.5px;
-  cursor: pointer;
-  transition: transform 0.1s, opacity 0.15s;
-  white-space: nowrap;
-}
-.btn:hover { opacity: 0.94; }
-.btn:active { transform: scale(0.98); }
-.btn-full { width: 100%; }
-
-.btn-secondary {
-  background: var(--bg-elev);
-  border-color: var(--border);
-  color: var(--text);
-}
-.btn-secondary:hover { border-color: var(--gold); }
-
-.btn-danger {
-  background: var(--bad-dim);
-  border-color: rgba(251, 113, 133, 0.3);
-  color: var(--bad);
-  height: 36px;
-  padding: 0 12px;
-  border-radius: 10px;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.seg-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.seg-btn {
-  height: 48px;
-  padding: 0 10px;
-  border-radius: 13px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text-muted);
-  font: inherit;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-align: center;
-}
-.seg-btn.active {
-  background: var(--gold-dim);
-  border-color: var(--gold);
-  color: var(--gold-bright);
-}
-
-.quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-.chip {
-  padding: 8px 14px;
-  border-radius: 11px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font: inherit;
-  font-size: 13.5px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.chip:hover, .chip.active { border-color: var(--gold); background: var(--gold-dim); color: var(--gold-bright); }
-
-/* Preview & Badges */
-.preview-box {
-  border-radius: 15px;
-  padding: 16px;
-  background: var(--ok-dim);
-  border: 1px solid rgba(45, 212, 191, 0.32);
-  margin: 14px 0;
-}
-.preview-box.warn {
-  background: var(--bad-dim);
-  border-color: rgba(251, 113, 133, 0.38);
-}
-.preview-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.preview-row + .preview-row { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); }
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 11px;
-  border-radius: 99px;
-  font-size: 12.5px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-.badge-ok { background: var(--ok-dim); color: var(--ok); }
-.badge-bad { background: var(--bad-dim); color: var(--bad); }
-.badge-warn { background: var(--warn-dim); color: var(--warn); }
-.badge-gold { background: var(--gold-dim); color: var(--gold-bright); }
-
-.pos { color: var(--ok); }
-.neg { color: var(--bad); }
-.gold { color: var(--gold-bright); }
-
-/* Tables */
-.table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
-th { color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
-tr:last-child td { border-bottom: none; }
-
-/* Empty State & Onboarding */
-.empty-state {
-  text-align: center;
-  padding: 36px 20px;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-elev);
-}
-.empty-icon {
-  width: 54px;
-  height: 54px;
-  border-radius: 16px;
-  background: var(--gold-dim);
-  color: var(--gold-bright);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-}
-
-.onboarding-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 15px;
-  border-radius: 15px;
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-}
-
-/* Modal */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.74);
-  backdrop-filter: blur(5px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 14px;
-  z-index: 100;
-}
-.modal-backdrop.open { display: flex; }
-.modal {
-  width: 100%;
-  max-width: 480px;
-  max-height: 90vh;
-  overflow-y: auto;
-  background: var(--card);
-  border: 1px solid var(--border-gold);
-  border-radius: 20px;
-  padding: 22px;
-  box-shadow: var(--shadow);
-}
-
-/* Toast Notification */
-.toast {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: var(--card);
-  border: 1px solid var(--gold);
-  color: var(--text);
-  padding: 13px 18px;
-  border-radius: 13px;
-  font-weight: 700;
-  font-size: 14px;
-  box-shadow: var(--shadow);
-  z-index: 200;
-  transform: translateY(-150%);
-  transition: transform 0.25s ease;
-}
-.toast.show { transform: translateY(0); }
-
-/* Mobile Status Pill & Bottom Bar */
-.mobile-save-pill { display: none; }
-.mobile-nav { display: none; }
-
-@media (max-width: 860px) {
-  .sidebar { display: none !important; }
-  .main { padding: 16px 14px 104px; width: 100%; max-width: 100%; }
-  .topbar { align-items: center; margin-bottom: 18px; }
-  h1 { font-size: 21px; }
-  .subtitle { font-size: 13.5px; }
-  .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .grid-3 { grid-template-columns: 1fr; }
-  .grid-2 { grid-template-columns: 1fr; }
-  .metric { padding: 14px; }
-  .metric-val { font-size: 19px; }
-  .card { padding: 16px; border-radius: 16px; }
-  .step-box { padding: 14px; }
-  .toast { left: 14px; right: 14px; top: 14px; text-align: center; }
-
-  .mobile-save-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11.5px;
-    font-weight: 700;
-    color: var(--ok);
-    background: var(--ok-dim);
-    border: 1px solid rgba(45, 212, 191, 0.25);
-    padding: 4px 10px;
-    border-radius: 99px;
-    margin-bottom: 14px;
-  }
-
-  .mobile-nav {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    background: var(--bg-elev);
-    border-top: 1px solid var(--border);
-    padding: 6px 2px calc(8px + env(safe-area-inset-bottom, 0px));
-    z-index: 50;
-  }
-  .m-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    border: 0;
-    background: transparent;
-    color: var(--text-muted);
-    font: inherit;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 6px 2px;
-    cursor: pointer;
-    min-width: 0;
-  }
-  .m-btn span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 100%;
-  }
-  .m-btn svg { width: 20px; height: 20px; flex: none; }
-  .m-btn.active { color: var(--gold-bright); }
-}
-
-@media (max-width: 560px) {
-  .form-split { grid-template-columns: 1fr !important; }
-  .seg-btn { font-size: 13px; padding: 0 6px; }
-  .icon-btn span { display: none; }
-  .icon-btn { padding: 10px 11px; }
+@media (max-width:380px){
+  .main{padding-left:12px;padding-right:12px}
+  h1{font-size:19px}
+  .metric{padding:12px}.metric-val{font-size:16.5px}.metric-title{font-size:12px}
+  .metric-desc{font-size:11.5px}.help-tip{display:none}
+  .m-btn{font-size:10px}
+  th,td{padding:10px 8px;font-size:13px}
 }
 </style>
 </head>
 <body>
 
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -594,96 +177,79 @@ tr:last-child td { border-bottom: none; }
         <div class="brand-sub">Учёт товаров и прибыли</div>
       </div>
     </div>
-
     <nav class="nav-list" id="desktop-nav"></nav>
-
     <div class="save-box">
-      <div class="save-status">
-        <span class="save-dot"></span>
-        <span>Автосохранение в памяти</span>
-      </div>
+      <div class="save-status"><span class="save-dot"></span><span>Автосохранение в памяти</span></div>
       <div id="save-time" style="color:var(--text-muted)">Всё сохранено навсегда</div>
     </div>
   </aside>
 
   <main class="main">
-    <div class="mobile-save-pill">
-      <span class="save-dot"></span>
-      <span id="mobile-save-time">Данные сохранены в памяти</span>
-    </div>
-
+    <div class="mobile-save-pill"><span class="save-dot"></span><span id="mobile-save-time">Данные сохранены в памяти</span></div>
     <div class="topbar">
       <div style="min-width:0;">
         <h1 id="page-title">Сводка бизнеса</h1>
         <p class="subtitle" id="page-subtitle">Главные показатели вашей работы</p>
       </div>
       <div style="display:flex;gap:8px;flex:none;">
-        <button class="icon-btn" onclick="openHelpModal()" title="Инструкция для новичка">
+        <button class="icon-btn" onclick="openHelpModal()" title="Инструкция для новичка" aria-label="Помощь">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <span>Помощь</span>
         </button>
-        <button class="icon-btn" onclick="toggleTheme()" title="Сменить тему оформления">
+        <button class="icon-btn" onclick="toggleTheme()" title="Сменить тему оформления" aria-label="Сменить тему">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         </button>
       </div>
     </div>
-
     <div id="app-content"></div>
   </main>
 </div>
 
 <nav class="mobile-nav" id="mobile-nav"></nav>
 
-<!-- Product Modal (Add / Edit) -->
+<!-- Product Modal -->
 <div class="modal-backdrop" id="prod-modal" onclick="if(event.target===this)closeProdModal()">
   <div class="modal">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <h2 id="pm-title" style="margin:0;">Новый товар</h2>
-      <button class="icon-btn" style="padding:6px 10px;" onclick="closeProdModal()">✕</button>
+      <button class="icon-btn" style="padding:6px 10px;" onclick="closeProdModal()" aria-label="Закрыть">✕</button>
     </div>
-
     <input type="hidden" id="pm-id">
-
     <div style="margin-bottom:14px;">
       <label>1. Название товара</label>
       <input id="pm-name" type="text" placeholder="Например: Классический вкус">
       <div class="field-hint">Укажите понятное название, чтобы легко выбирать при продаже</div>
     </div>
-
     <div class="grid-2 form-split" style="margin-bottom:14px;">
       <div>
         <label>2. Закупочная цена 1 упаковки (₼)</label>
-        <input id="pm-cost" class="num" type="number" step="0.1" min="0" placeholder="13.50" oninput="calcModalMargin()">
+        <input id="pm-cost" class="num" type="number" inputmode="decimal" step="0.1" min="0" placeholder="13.50" oninput="calcModalMargin()">
         <div class="field-hint">За сколько вы сами покупаете 1 банку</div>
       </div>
       <div>
         <label>3. Штук в 1 упаковке</label>
-        <input id="pm-pcs" class="num" type="number" step="1" min="1" value="20" oninput="calcModalMargin()">
+        <input id="pm-pcs" class="num" type="number" inputmode="numeric" step="1" min="1" value="20" oninput="calcModalMargin()">
         <div class="field-hint">Сколько порций/штук внутри одной банки</div>
       </div>
     </div>
-
     <div class="grid-2 form-split" style="margin-bottom:14px;">
       <div>
         <label>4. Цена продажи целой упаковки (₼)</label>
-        <input id="pm-pw" class="num" type="number" step="0.5" min="0" placeholder="17.00" oninput="calcModalMargin()">
+        <input id="pm-pw" class="num" type="number" inputmode="decimal" step="0.5" min="0" placeholder="17.00" oninput="calcModalMargin()">
         <div class="field-hint">За сколько продаёте клиенту целую банку</div>
       </div>
       <div>
         <label>5. Цена продажи поштучно (₼)</label>
-        <input id="pm-pp" class="num" type="number" step="0.1" min="0" placeholder="1.00" oninput="calcModalMargin()">
+        <input id="pm-pp" class="num" type="number" inputmode="decimal" step="0.1" min="0" placeholder="1.00" oninput="calcModalMargin()">
         <div class="field-hint">За сколько продаёте 1 штуку отдельно</div>
       </div>
     </div>
-
     <div style="margin-bottom:14px;">
       <label>6. Напомнить, когда останется меньше (штук)</label>
-      <input id="pm-min" class="num" type="number" step="1" min="0" value="20">
+      <input id="pm-min" class="num" type="number" inputmode="numeric" step="1" min="0" value="20">
       <div class="field-hint">Например: 20 шт. = 1 целая банка. Панель предупредит, когда пора закупаться</div>
     </div>
-
     <div class="preview-box" id="pm-preview" style="margin-bottom:16px;"></div>
-
     <div style="display:flex;gap:10px;">
       <button class="btn btn-secondary" style="flex:1;" onclick="closeProdModal()">Отмена</button>
       <button class="btn" style="flex:2;" onclick="saveProdModal()">Сохранить товар</button>
@@ -691,139 +257,116 @@ tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
-<!-- Beginner Guide Modal -->
+<!-- Help Modal -->
 <div class="modal-backdrop" id="help-modal" onclick="if(event.target===this)closeHelpModal()">
   <div class="modal">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <h2 style="margin:0;">Как пользоваться панелью</h2>
-      <button class="icon-btn" style="padding:6px 10px;" onclick="closeHelpModal()">✕</button>
+      <button class="icon-btn" style="padding:6px 10px;" onclick="closeHelpModal()" aria-label="Закрыть">✕</button>
     </div>
     <p class="subtitle" style="margin-bottom:16px;">Простая инструкция за 1 минуту:</p>
-
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px;">
-      <div class="onboarding-step">
-        <div class="step-num">1</div>
-        <div>
-          <div style="font-weight:700;font-size:14.5px;">Добавьте ваши товары (раздел «Склад»)</div>
-          <div style="font-size:13.5px;color:var(--text-muted);">Нажмите «+ Добавить товар», укажите название, вашу закупочную цену и цену продажи.</div>
-        </div>
-      </div>
-      <div class="onboarding-step">
-        <div class="step-num">2</div>
-        <div>
-          <div style="font-weight:700;font-size:14.5px;">Запишите закупку (раздел «Склад»)</div>
-          <div style="font-size:13.5px;color:var(--text-muted);">Когда купили партию товара, внесите её в «Пополнить склад». Остаток прибавится сам.</div>
-        </div>
-      </div>
-      <div class="onboarding-step">
-        <div class="step-num">3</div>
-        <div>
-          <div style="font-weight:700;font-size:14.5px;">Оформляйте продажи (раздел «Продать»)</div>
-          <div style="font-size:13.5px;color:var(--text-muted);">Выберите товар и количество. Панель сама спишет остаток со склада и посчитает вашу чистую прибыль.</div>
-        </div>
-      </div>
-      <div class="onboarding-step">
-        <div class="step-num">4</div>
-        <div>
-          <div style="font-weight:700;font-size:14.5px;">Данные сохраняются автоматически</div>
-          <div style="font-size:13.5px;color:var(--text-muted);">Даже если полностью закрыть браузер или выключить телефон/ноутбук, все записи останутся на месте.</div>
-        </div>
-      </div>
+      <div class="onboarding-step"><div class="step-num">1</div><div>
+        <div class="fw5">Добавьте ваши товары (раздел «Склад»)</div>
+        <div style="font-size:13.5px;color:var(--text-muted);">Нажмите «+ Добавить товар», укажите название, вашу закупочную цену и цену продажи.</div></div></div>
+      <div class="onboarding-step"><div class="step-num">2</div><div>
+        <div class="fw5">Запишите закупку (раздел «Склад»)</div>
+        <div style="font-size:13.5px;color:var(--text-muted);">Когда купили партию товара, внесите её в «Пополнить склад». Остаток прибавится сам.</div></div></div>
+      <div class="onboarding-step"><div class="step-num">3</div><div>
+        <div class="fw5">Оформляйте продажи (раздел «Продать»)</div>
+        <div style="font-size:13.5px;color:var(--text-muted);">Выберите товар и количество. Панель сама спишет остаток со склада и посчитает вашу чистую прибыль.</div></div></div>
+      <div class="onboarding-step"><div class="step-num">4</div><div>
+        <div class="fw5">Данные сохраняются автоматически</div>
+        <div style="font-size:13.5px;color:var(--text-muted);">Даже если закрыть браузер или выключить устройство, записи, выбранный раздел и настройки останутся на месте.</div></div></div>
     </div>
-
     <button class="btn btn-full" onclick="closeHelpModal()">Всё понятно, приступить</button>
   </div>
 </div>
 
 <script>
 // ==========================================
-// 1. TRIPLE PERSISTENCE (localStorage + IndexedDB + Cookie/Session fallback + auto-save on exit)
+// 1. PERSISTENCE
+//    - DATA  (products, sales, buys, exps, tiers): localStorage + backup + IndexedDB
+//    - UI    (section, period, tabs, selections): separate localStorage key
+//    - THEME: separate localStorage key
 // ==========================================
 var STORAGE_KEY = "biz1";
+var UI_KEY = "biz1_ui";
+var THEME_KEY = "biz_theme";
+var EXP_CATS = ["Транспорт", "Реклама", "Упаковка", "Связь", "Аренда", "Другое"];
+var VIEWS = ["dash", "sell", "stock", "exp", "more"];
+
 var STATE = {
   view: "dash",
   period: 7,
   stockTab: "add",
   sellType: "can",
   sellQty: 1,
+  sellProd: "",
+  buyProd: "",
   expCat: "Транспорт",
-  data: {
-    products: [],
-    sales: [],
-    buys: [],
-    exps: [],
-    tiers: [[2, 5], [3, 8], [5, 10]],
-    seq: 1,
-    updatedAt: 0
-  }
+  sellSplit: false,   // temporary: split sale by prices (not saved)
+  sellParts: [],      // temporary: [{q: pieces, p: price per piece}]
+  data: null
 };
 
 function defaultData() {
-  return {
-    products: [],
-    sales: [],
-    buys: [],
-    exps: [],
-    tiers: [[2, 5], [3, 8], [5, 10]],
-    seq: 1,
-    updatedAt: 0
-  };
+  return { products: [], sales: [], buys: [], exps: [], tiers: [[2, 5], [3, 8], [5, 10]], seq: 1, updatedAt: 0 };
 }
 
 function normalizeData(raw) {
   var base = defaultData();
   if (!raw || typeof raw !== "object") return base;
-  base.products = Array.isArray(raw.products) ? raw.products : [];
-  base.sales = Array.isArray(raw.sales) ? raw.sales : [];
-  base.buys = Array.isArray(raw.buys) ? raw.buys : [];
-  base.exps = Array.isArray(raw.exps) ? raw.exps : [];
-  base.tiers = Array.isArray(raw.tiers) ? raw.tiers : [[2, 5], [3, 8], [5, 10]];
-  base.seq = typeof raw.seq === "number" && raw.seq > 0 ? raw.seq : 1;
+  function onlyObjects(a) { return Array.isArray(a) ? a.filter(function(x) { return x && typeof x === "object"; }) : []; }
+  base.products = onlyObjects(raw.products);
+  base.sales = onlyObjects(raw.sales);
+  base.buys = onlyObjects(raw.buys);
+  base.exps = onlyObjects(raw.exps);
+  if (Array.isArray(raw.tiers)) {
+    base.tiers = raw.tiers.filter(function(t) { return Array.isArray(t) && t.length >= 2; })
+      .map(function(t) { return [Number(t[0]) || 2, Number(t[1]) || 0]; });
+  }
+  var maxId = 0;
+  [base.products, base.sales, base.buys, base.exps].forEach(function(list) {
+    list.forEach(function(it) { if (Number(it.id) > maxId) maxId = Number(it.id); });
+  });
+  base.seq = Math.max(typeof raw.seq === "number" && raw.seq > 0 ? raw.seq : 1, maxId + 1);
   base.updatedAt = typeof raw.updatedAt === "number" ? raw.updatedAt : Date.now();
   return base;
 }
 
+STATE.data = defaultData();
+
 function requestPersistentStorage() {
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+}
+
+function openIDB(cb) {
   try {
-    if (navigator.storage && navigator.storage.persist) {
-      navigator.storage.persist();
-    }
-  } catch (e) {}
+    if (!window.indexedDB) return;
+    var req = indexedDB.open("BizPanelDB", 2);
+    req.onupgradeneeded = function(e) {
+      var db = e.target.result;
+      if (!db.objectStoreNames.contains("store")) db.createObjectStore("store");
+    };
+    req.onsuccess = function(e) { try { cb(e.target.result); } catch (err) {} };
+    req.onerror = function() {};
+  } catch (err) {}
 }
 
 function saveToIDB(dataObj) {
-  try {
-    if (!window.indexedDB) return;
-    var req = indexedDB.open("BizPanelDB", 2);
-    req.onupgradeneeded = function(e) {
-      var db = e.target.result;
-      if (!db.objectStoreNames.contains("store")) db.createObjectStore("store");
-    };
-    req.onsuccess = function(e) {
-      var db = e.target.result;
-      var tx = db.transaction("store", "readwrite");
-      tx.objectStore("store").put(dataObj, STORAGE_KEY);
-    };
-  } catch (err) {}
+  openIDB(function(db) {
+    var tx = db.transaction("store", "readwrite");
+    tx.objectStore("store").put(JSON.parse(JSON.stringify(dataObj)), STORAGE_KEY);
+    tx.oncomplete = function() { db.close(); };
+  });
 }
 
 function loadFromIDB(callback) {
-  try {
-    if (!window.indexedDB) return;
-    var req = indexedDB.open("BizPanelDB", 2);
-    req.onupgradeneeded = function(e) {
-      var db = e.target.result;
-      if (!db.objectStoreNames.contains("store")) db.createObjectStore("store");
-    };
-    req.onsuccess = function(e) {
-      var db = e.target.result;
-      var tx = db.transaction("store", "readonly");
-      var getReq = tx.objectStore("store").get(STORAGE_KEY);
-      getReq.onsuccess = function() {
-        if (getReq.result) callback(getReq.result);
-      };
-    };
-  } catch (err) {}
+  openIDB(function(db) {
+    var getReq = db.transaction("store", "readonly").objectStore("store").get(STORAGE_KEY);
+    getReq.onsuccess = function() { if (getReq.result) callback(getReq.result); db.close(); };
+  });
 }
 
 function saveData(silent) {
@@ -834,49 +377,68 @@ function saveData(silent) {
     localStorage.setItem(STORAGE_KEY + "_backup", serialized);
   } catch (e) {}
   saveToIDB(STATE.data);
-
   if (!silent) {
     var now = new Date();
-    var hh = String(now.getHours()).padStart(2, "0");
-    var mm = String(now.getMinutes()).padStart(2, "0");
-    var ss = String(now.getSeconds()).padStart(2, "0");
-    var timeStr = hh + ":" + mm + ":" + ss;
+    var t = [now.getHours(), now.getMinutes(), now.getSeconds()].map(function(n) { return String(n).padStart(2, "0"); }).join(":");
     var el = document.getElementById("save-time");
-    if (el) el.textContent = "Сохранено в " + timeStr;
+    if (el) el.textContent = "Сохранено в " + t;
     var mel = document.getElementById("mobile-save-time");
-    if (mel) mel.textContent = "Сохранено в " + timeStr;
+    if (mel) mel.textContent = "Сохранено в " + t;
   }
 }
 
+// UI progress: which section is open, filters, tabs, selected product, etc.
+function saveUI() {
+  try {
+    localStorage.setItem(UI_KEY, JSON.stringify({
+      view: STATE.view, period: STATE.period, stockTab: STATE.stockTab,
+      sellType: STATE.sellType, sellQty: STATE.sellQty,
+      sellProd: STATE.sellProd, buyProd: STATE.buyProd, expCat: STATE.expCat
+    }));
+  } catch (e) {}
+}
+
+function loadUI() {
+  try {
+    var raw = localStorage.getItem(UI_KEY);
+    if (!raw) return;
+    var u = JSON.parse(raw);
+    if (!u || typeof u !== "object") return;
+    if (VIEWS.indexOf(u.view) !== -1) STATE.view = u.view;
+    if ([0, 1, 7, 30].indexOf(u.period) !== -1) STATE.period = u.period;
+    if (u.stockTab === "add" || u.stockTab === "list") STATE.stockTab = u.stockTab;
+    if (u.sellType === "can" || u.sellType === "pc") STATE.sellType = u.sellType;
+    if (Number(u.sellQty) >= 1) STATE.sellQty = Math.floor(Number(u.sellQty));
+    if (u.sellProd != null) STATE.sellProd = String(u.sellProd);
+    if (u.buyProd != null) STATE.buyProd = String(u.buyProd);
+    if (EXP_CATS.indexOf(u.expCat) !== -1) STATE.expCat = u.expCat;
+  } catch (e) {}
+}
+
 function hasAnyContent(d) {
-  if (!d) return false;
-  return (d.products && d.products.length > 0) ||
-         (d.sales && d.sales.length > 0) ||
-         (d.buys && d.buys.length > 0) ||
-         (d.exps && d.exps.length > 0);
+  return !!d && ((d.products && d.products.length) || (d.sales && d.sales.length) ||
+    (d.buys && d.buys.length) || (d.exps && d.exps.length));
 }
 
 function initLoad() {
   requestPersistentStorage();
   var loaded = null;
-  try {
-    var str = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(STORAGE_KEY + "_backup");
-    if (str) loaded = JSON.parse(str);
-  } catch (e) {}
+  [STORAGE_KEY, STORAGE_KEY + "_backup"].forEach(function(k) {
+    if (loaded) return;
+    try {
+      var str = localStorage.getItem(k);
+      if (str) { var parsed = JSON.parse(str); if (parsed && typeof parsed === "object") loaded = parsed; }
+    } catch (e) {}
+  });
+  STATE.data = loaded ? normalizeData(loaded) : defaultData();
+  loadUI();
 
-  if (loaded && typeof loaded === "object") {
-    STATE.data = normalizeData(loaded);
-  } else {
-    STATE.data = defaultData();
-  }
-
-  // Always check IndexedDB in case localStorage was cleared by browser cleanup
+  // If localStorage was cleaned by the browser, recover from IndexedDB
   loadFromIDB(function(idbData) {
     if (!idbData || typeof idbData !== "object") return;
     var normIdb = normalizeData(idbData);
-    var localHas = hasAnyContent(STATE.data);
-    var idbHas = hasAnyContent(normIdb);
-    if ((!localHas && idbHas) || (normIdb.updatedAt > (STATE.data.updatedAt || 0) && idbHas)) {
+    var localHas = hasAnyContent(STATE.data), idbHas = hasAnyContent(normIdb);
+    if (idbHas && (!localHas || normIdb.updatedAt > (STATE.data.updatedAt || 0))) {
       STATE.data = normIdb;
       saveData(true);
       render();
@@ -885,100 +447,79 @@ function initLoad() {
 }
 
 // ==========================================
-// 2. HELPERS & FORMATTERS
+// 2. HELPERS
 // ==========================================
 function $(id) { return document.getElementById(id); }
-
 function money(val) {
-  var num = Number(val) || 0;
-  return num.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₼";
+  return (Number(val) || 0).toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₼";
 }
-
+function signedMoney(v) { return (v >= 0 ? "+" : "−") + money(Math.abs(v)); }
 function esc(str) {
-  return String(str == null ? "" : str).replace(/[&<>"]/g, function(c) {
-    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  return String(str == null ? "" : str).replace(/[&<>"']/g, function(c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
   });
 }
-
-function todayStr() {
-  var d = new Date();
-  var y = d.getFullYear();
-  var m = String(d.getMonth() + 1).padStart(2, "0");
-  var day = String(d.getDate()).padStart(2, "0");
-  return y + "-" + m + "-" + day;
+function isoDate(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
-
+function todayStr() { return isoDate(new Date()); }
 function formatDateRu(iso) {
   if (!iso || iso.length < 10) return iso || "";
   var p = iso.split("-");
   return p[2] + "." + p[1] + "." + p[0];
 }
-
 function getProduct(id) {
-  for (var i = 0; i < STATE.data.products.length; i++) {
-    if (STATE.data.products[i].id == id) return STATE.data.products[i];
-  }
+  for (var i = 0; i < STATE.data.products.length; i++) if (STATE.data.products[i].id == id) return STATE.data.products[i];
   return null;
 }
-
 function sumBy(arr, fn) {
   var total = 0;
   for (var i = 0; i < arr.length; i++) total += Number(fn(arr[i])) || 0;
   return total;
 }
-
 function getDiscountPct(qty) {
   var best = 0;
-  STATE.data.tiers.forEach(function(t) {
-    if (qty >= Number(t[0]) && Number(t[1]) > best) best = Number(t[1]);
-  });
+  STATE.data.tiers.forEach(function(t) { if (qty >= Number(t[0]) && Number(t[1]) > best) best = Number(t[1]); });
   return best;
 }
-
 function formatStock(prod) {
-  var pcsPerPack = Math.max(1, Number(prod.pcs) || 1);
-  var totalPcs = Math.max(0, Math.round(Number(prod.stock) || 0));
-  var packs = Math.floor(totalPcs / pcsPerPack);
-  var rem = totalPcs % pcsPerPack;
-  return packs + " уп. + " + rem + " шт.";
+  var per = Math.max(1, Number(prod.pcs) || 1);
+  var total = Math.max(0, Math.round(Number(prod.stock) || 0));
+  return Math.floor(total / per) + " уп. + " + (total % per) + " шт.";
 }
-
 function cutoffDate() {
   if (!STATE.period) return "0000-00-00";
   var d = new Date();
   d.setDate(d.getDate() - STATE.period + 1);
-  var y = d.getFullYear();
-  var m = String(d.getMonth() + 1).padStart(2, "0");
-  var day = String(d.getDate()).padStart(2, "0");
-  return y + "-" + m + "-" + day;
+  return isoDate(d);
 }
-
 function showToast(msg, isError) {
   var t = $("toast");
   t.textContent = msg;
   t.style.borderColor = isError ? "var(--bad)" : "var(--gold)";
   t.classList.add("show");
   clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(function() {
-    t.classList.remove("show");
-  }, 2800);
+  window._toastTimer = setTimeout(function() { t.classList.remove("show"); }, 2800);
+}
+function selectedId(list, wanted) {
+  for (var i = 0; i < list.length; i++) if (String(list[i].id) === String(wanted)) return list[i].id;
+  return list.length ? list[0].id : "";
 }
 
 // ==========================================
 // 3. NAVIGATION & THEME
 // ==========================================
 var NAV_ITEMS = [
-  { id: "dash", label: "Сводка", title: "Сводка бизнеса", sub: "Понятная картина ваших доходов, расходов и чистой прибыли", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>' },
-  { id: "sell", label: "Продать", title: "Оформить продажу", sub: "Выберите товар — склад и прибыль посчитаются автоматически", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>' },
-  { id: "stock", label: "Склад", title: "Склад и Товары", sub: "Добавляйте новые товары и записывайте пополнение запасов", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>' },
-  { id: "exp", label: "Расходы", title: "Расходы бизнеса", sub: "Записывайте траты на дорогу, рекламу или упаковку", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>' },
-  { id: "more", label: "Скидки и База", title: "Скидки и База", sub: "Автоматические скидки и резервное копирование", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>' }
+  { id: "dash", label: "Сводка", short: "Сводка", title: "Сводка бизнеса", sub: "Понятная картина ваших доходов, расходов и чистой прибыли", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>' },
+  { id: "sell", label: "Продать", short: "Продать", title: "Оформить продажу", sub: "Выберите товар — склад и прибыль посчитаются автоматически", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>' },
+  { id: "stock", label: "Склад", short: "Склад", title: "Склад и Товары", sub: "Добавляйте новые товары и записывайте пополнение запасов", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>' },
+  { id: "exp", label: "Расходы", short: "Расходы", title: "Расходы бизнеса", sub: "Записывайте траты на дорогу, рекламу или упаковку", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>' },
+  { id: "more", label: "Скидки и База", short: "Ещё", title: "Скидки и База", sub: "Автоматические скидки и резервное копирование", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>' }
 ];
 
 function go(viewId, subTab) {
   STATE.view = viewId;
   if (subTab) STATE.stockTab = subTab;
-  saveData(true);
   render();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -987,70 +528,56 @@ function toggleTheme() {
   var root = document.documentElement;
   var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
   root.setAttribute("data-theme", next);
-  try { localStorage.setItem("biz_theme", next); } catch (e) {}
+  try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
 }
 
 // ==========================================
-// 4. VIEW RENDERERS
+// 4. RENDER
 // ==========================================
 function render() {
   $("desktop-nav").innerHTML = NAV_ITEMS.map(function(n) {
     return '<button class="nav-btn ' + (n.id === STATE.view ? "active" : "") + '" onclick="go(&apos;' + n.id + '&apos;)">' + n.icon + '<span>' + n.label + '</span></button>';
   }).join("");
-
   $("mobile-nav").innerHTML = NAV_ITEMS.map(function(n) {
-    return '<button class="m-btn ' + (n.id === STATE.view ? "active" : "") + '" onclick="go(&apos;' + n.id + '&apos;)">' + n.icon + '<span>' + n.label + '</span></button>';
+    return '<button class="m-btn ' + (n.id === STATE.view ? "active" : "") + '" onclick="go(&apos;' + n.id + '&apos;)" aria-label="' + n.label + '">' + n.icon + '<span>' + n.short + '</span></button>';
   }).join("");
 
-  var currentNav = NAV_ITEMS.filter(function(n) { return n.id === STATE.view; })[0] || NAV_ITEMS[0];
-  $("page-title").textContent = currentNav.title;
-  $("page-subtitle").textContent = currentNav.sub;
+  var cur = NAV_ITEMS.filter(function(n) { return n.id === STATE.view; })[0] || NAV_ITEMS[0];
+  $("page-title").textContent = cur.title;
+  $("page-subtitle").textContent = cur.sub;
 
-  if (STATE.view === "dash") $("app-content").innerHTML = renderDashboard();
-  else if (STATE.view === "sell") { $("app-content").innerHTML = renderSell(); updateSellPreview(); }
-  else if (STATE.view === "stock") { $("app-content").innerHTML = renderStock(); if (STATE.stockTab === "add") updateBuyPreview(); }
-  else if (STATE.view === "exp") $("app-content").innerHTML = renderExpenses();
-  else if (STATE.view === "more") $("app-content").innerHTML = renderMore();
+  var c = $("app-content");
+  if (STATE.view === "dash") c.innerHTML = renderDashboard();
+  else if (STATE.view === "sell") { c.innerHTML = renderSell(); updateSellPreview(); }
+  else if (STATE.view === "stock") { c.innerHTML = renderStock(); if (STATE.stockTab === "add" && $("buy-prod")) updateBuyPreview(); }
+  else if (STATE.view === "exp") c.innerHTML = renderExpenses();
+  else if (STATE.view === "more") c.innerHTML = renderMore();
+  saveUI();
 }
 
-// ------------------------------------------
-// VIEW 1: DASHBOARD (СВОДКА)
-// ------------------------------------------
+// ---------- DASHBOARD ----------
 function renderDashboard() {
   var prods = STATE.data.products;
-  var hasProducts = prods.length > 0;
   var hasStock = sumBy(prods, function(p) { return p.stock; }) > 0;
   var hasSales = STATE.data.sales.length > 0;
 
-  if (!hasProducts) {
+  if (!prods.length) {
     return '' +
       '<div class="card card-gold">' +
         '<div class="badge badge-gold" style="margin-bottom:10px;">Добро пожаловать в ваш личный кабинет</div>' +
-        '<h2 style="font-size:21px;margin-bottom:8px;">Начнём работу за 3 простых шага</h2>' +
+        '<h2 style="font-size:20px;margin-bottom:8px;">Начнём работу за 3 простых шага</h2>' +
         '<p class="subtitle" style="margin-bottom:18px;">Сейчас база пуста. Следуйте шагам ниже — все данные автоматически сохраняются в памяти устройства:</p>' +
         '<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:8px;">' +
           '<div class="onboarding-step" style="flex-wrap:wrap;">' +
             '<div class="step-num">1</div>' +
-            '<div style="flex:1;min-width:200px;">' +
-              '<div style="font-weight:700;">Создайте свой первый товар</div>' +
-              '<div style="font-size:13.5px;color:var(--text-muted);">Укажите название, вашу закупочную цену и цену продажи.</div>' +
-            '</div>' +
+            '<div style="flex:1;min-width:180px;"><div class="fw5">Создайте свой первый товар</div>' +
+            '<div style="font-size:13.5px;color:var(--text-muted);">Укажите название, вашу закупочную цену и цену продажи.</div></div>' +
             '<button class="btn" onclick="go(&apos;stock&apos;, &apos;list&apos;); setTimeout(openNewProdModal, 120);">+ Создать товар</button>' +
           '</div>' +
-          '<div class="onboarding-step" style="opacity:0.65;">' +
-            '<div class="step-num">2</div>' +
-            '<div>' +
-              '<div style="font-weight:700;">Пополните склад (Закупка)</div>' +
-              '<div style="font-size:13.5px;color:var(--text-muted);">Укажите, сколько упаковок вы закупили, чтобы товар появился на складе.</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="onboarding-step" style="opacity:0.65;">' +
-            '<div class="step-num">3</div>' +
-            '<div>' +
-              '<div style="font-weight:700;">Запишите первую продажу</div>' +
-              '<div style="font-size:13.5px;color:var(--text-muted);">Панель сама вычтет товар со склада и покажет вашу чистую прибыль.</div>' +
-            '</div>' +
-          '</div>' +
+          '<div class="onboarding-step" style="opacity:.65;"><div class="step-num">2</div><div><div class="fw5">Пополните склад (Закупка)</div>' +
+            '<div style="font-size:13.5px;color:var(--text-muted);">Укажите, сколько упаковок вы закупили, чтобы товар появился на складе.</div></div></div>' +
+          '<div class="onboarding-step" style="opacity:.65;"><div class="step-num">3</div><div><div class="fw5">Запишите первую продажу</div>' +
+            '<div style="font-size:13.5px;color:var(--text-muted);">Панель сама вычтет товар со склада и покажет вашу чистую прибыль.</div></div></div>' +
         '</div>' +
       '</div>';
   }
@@ -1067,38 +594,28 @@ function renderDashboard() {
   var netProfit = grossProfit - opExpenses;
   var purchasesSpent = sumBy(periodBuys, function(b) { return b.total; });
   var inventoryValue = sumBy(prods, function(p) {
-    var pcs = Math.max(1, Number(p.pcs) || 1);
-    return (Number(p.stock) || 0) * (Number(p.cost) || 0) / pcs;
+    return (Number(p.stock) || 0) * (Number(p.cost) || 0) / Math.max(1, Number(p.pcs) || 1);
   });
-
   var lowStock = prods.filter(function(p) { return (Number(p.stock) || 0) <= (Number(p.min) || 0); });
 
-  var nextStepBanner = "";
+  var banner = "";
   if (!hasStock && !hasSales) {
-    nextStepBanner = '' +
-      '<div class="card card-gold" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">' +
-        '<div>' +
-          '<div style="font-weight:700;color:var(--gold-bright);">Шаг 2 из 3: Пополните остатки на складе</div>' +
-          '<div style="font-size:13.5px;color:var(--text-muted);">Товар создан, но на складе пока 0 шт. Запишите первую закупку, чтобы начать продавать.</div>' +
-        '</div>' +
-        '<button class="btn" onclick="go(&apos;stock&apos;, &apos;add&apos;)">+ Записать закупку</button>' +
-      '</div>';
+    banner = '<div class="card card-gold" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">' +
+      '<div style="min-width:0;flex:1 1 240px;"><div class="fw6 gold">Шаг 2 из 3: Пополните остатки на складе</div>' +
+      '<div style="font-size:13.5px;color:var(--text-muted);">Товар создан, но на складе пока 0 шт. Запишите первую закупку, чтобы начать продавать.</div></div>' +
+      '<button class="btn" onclick="go(&apos;stock&apos;, &apos;add&apos;)">+ Записать закупку</button></div>';
   } else if (hasStock && !hasSales) {
-    nextStepBanner = '' +
-      '<div class="card card-gold" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">' +
-        '<div>' +
-          '<div style="font-weight:700;color:var(--gold-bright);">Шаг 3 из 3: Всё готово к первой продаже!</div>' +
-          '<div style="font-size:13.5px;color:var(--text-muted);">Товар уже на складе. Нажмите кнопку справа, чтобы оформить продажу клиенту.</div>' +
-        '</div>' +
-        '<button class="btn" onclick="go(&apos;sell&apos;)">Оформить продажу →</button>' +
-      '</div>';
+    banner = '<div class="card card-gold" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">' +
+      '<div style="min-width:0;flex:1 1 240px;"><div class="fw6 gold">Шаг 3 из 3: Всё готово к первой продаже!</div>' +
+      '<div style="font-size:13.5px;color:var(--text-muted);">Товар уже на складе. Нажмите кнопку справа, чтобы оформить продажу клиенту.</div></div>' +
+      '<button class="btn" onclick="go(&apos;sell&apos;)">Оформить продажу →</button></div>';
   }
 
   var days = [];
   for (var i = 6; i >= 0; i--) {
     var d = new Date();
     d.setDate(d.getDate() - i);
-    var iso = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    var iso = isoDate(d);
     var ds = STATE.data.sales.filter(function(s) { return s.date === iso; });
     days.push({
       label: iso.slice(8, 10) + "." + iso.slice(5, 7),
@@ -1111,13 +628,12 @@ function renderDashboard() {
     var x = 24 + idx * 76;
     var hRev = (d.rev / maxBar) * 120;
     var hProf = (Math.max(0, d.prof) / maxBar) * 120;
-    return '' +
-      '<rect x="' + x + '" y="' + (140 - hRev) + '" width="22" height="' + Math.max(hRev, 2) + '" rx="5" fill="var(--gold)" opacity="0.85"/>' +
+    return '<rect x="' + x + '" y="' + (140 - hRev) + '" width="22" height="' + Math.max(hRev, 2) + '" rx="5" fill="var(--gold)" opacity="0.85"/>' +
       '<rect x="' + (x + 25) + '" y="' + (140 - hProf) + '" width="22" height="' + Math.max(hProf, 2) + '" rx="5" fill="var(--ok)"/>' +
-      '<text x="' + (x + 23) + '" y="162" text-anchor="middle" font-size="11" fill="var(--text-muted)">' + d.label + '</text>';
+      '<text x="' + (x + 23) + '" y="162" text-anchor="middle" font-size="11" font-family="Inter,sans-serif" fill="var(--text-muted)">' + d.label + '</text>';
   }).join("");
 
-  return nextStepBanner +
+  return banner +
     '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;">' +
       '<div class="quick-chips" style="margin:0;">' +
         [[1, "Сегодня"], [7, "7 дней"], [30, "30 дней"], [0, "Всё время"]].map(function(p) {
@@ -1128,61 +644,36 @@ function renderDashboard() {
     '</div>' +
 
     '<div class="grid-4" style="margin-bottom:16px;">' +
-      '<div class="metric" style="border-color:var(--border-gold);">' +
-        '<div class="metric-head">' +
-          '<span class="metric-title">Чистая прибыль</span>' +
-          '<span class="help-tip" title="Ваши чистые деньги: Выручка минус себестоимость проданного товара и минус расходы">?</span>' +
-        '</div>' +
+      '<div class="metric" style="border-color:var(--border-gold);"><div class="metric-head"><span class="metric-title">Чистая прибыль</span>' +
+        '<span class="help-tip" title="Ваши чистые деньги: Выручка минус себестоимость проданного товара и минус расходы">?</span></div>' +
         '<div class="metric-val num ' + (netProfit >= 0 ? "pos" : "neg") + '">' + money(netProfit) + '</div>' +
-        '<div class="metric-desc">Остаётся вам на руки после всех вычетов</div>' +
-      '</div>' +
-
-      '<div class="metric">' +
-        '<div class="metric-head">' +
-          '<span class="metric-title">Выручка (Оборот)</span>' +
-          '<span class="help-tip" title="Вся сумма денег, которую заплатили покупатели за выбранный период">?</span>' +
-        '</div>' +
+        '<div class="metric-desc">Остаётся вам на руки после всех вычетов</div></div>' +
+      '<div class="metric"><div class="metric-head"><span class="metric-title">Выручка (Оборот)</span>' +
+        '<span class="help-tip" title="Вся сумма денег, которую заплатили покупатели за выбранный период">?</span></div>' +
         '<div class="metric-val num">' + money(revenue) + '</div>' +
-        '<div class="metric-desc">Всего продаж: ' + periodSales.length + ' шт.</div>' +
-      '</div>' +
-
-      '<div class="metric">' +
-        '<div class="metric-head">' +
-          '<span class="metric-title">Товар на складе</span>' +
-          '<span class="help-tip" title="На какую сумму сейчас лежит товара на складе по вашей закупочной цене">?</span>' +
-        '</div>' +
+        '<div class="metric-desc">Всего продаж: ' + periodSales.length + ' шт.</div></div>' +
+      '<div class="metric"><div class="metric-head"><span class="metric-title">Товар на складе</span>' +
+        '<span class="help-tip" title="На какую сумму сейчас лежит товара на складе по вашей закупочной цене">?</span></div>' +
         '<div class="metric-val num gold">' + money(inventoryValue) + '</div>' +
-        '<div class="metric-desc">Оценка запасов по закупочной цене</div>' +
-      '</div>' +
-
-      '<div class="metric">' +
-        '<div class="metric-head">' +
-          '<span class="metric-title">Расходы бизнеса</span>' +
-          '<span class="help-tip" title="Траты на транспорт, рекламу, упаковку и прочие нужды">?</span>' +
-        '</div>' +
+        '<div class="metric-desc">Оценка запасов по закупочной цене</div></div>' +
+      '<div class="metric"><div class="metric-head"><span class="metric-title">Расходы бизнеса</span>' +
+        '<span class="help-tip" title="Траты на транспорт, рекламу, упаковку и прочие нужды">?</span></div>' +
         '<div class="metric-val num ' + (opExpenses > 0 ? "neg" : "") + '">' + money(opExpenses) + '</div>' +
-        '<div class="metric-desc">Закуплено товара: <span class="num">' + money(purchasesSpent) + '</span></div>' +
-      '</div>' +
+        '<div class="metric-desc">Закуплено товара: <span class="num">' + money(purchasesSpent) + '</span></div></div>' +
     '</div>' +
 
     '<div class="card">' +
       '<h2>Как складывается ваша прибыль</h2>' +
       '<p class="subtitle" style="margin-bottom:14px;">Понятная формула расчёта без двойного учёта закупок</p>' +
       '<div class="grid-3">' +
-        '<div class="step-box" style="margin:0;">' +
-          '<div style="font-size:12.5px;color:var(--text-muted);">1. Пришло от клиентов (Выручка)</div>' +
-          '<div class="num" style="font-size:19px;font-weight:800;margin-top:4px;">' + money(revenue) + '</div>' +
-        '</div>' +
-        '<div class="step-box" style="margin:0;">' +
-          '<div style="font-size:12.5px;color:var(--text-muted);">2. Себестоимость проданного</div>' +
-          '<div class="num" style="font-size:19px;font-weight:800;margin-top:4px;color:var(--warn);">− ' + money(cogs) + '</div>' +
-          '<div class="field-hint">Валовая прибыль: <b class="num">' + money(grossProfit) + '</b></div>' +
-        '</div>' +
-        '<div class="step-box" style="margin:0;">' +
-          '<div style="font-size:12.5px;color:var(--text-muted);">3. Операционные расходы</div>' +
-          '<div class="num" style="font-size:19px;font-weight:800;margin-top:4px;color:var(--bad);">− ' + money(opExpenses) + '</div>' +
-          '<div class="field-hint">Итого чистыми: <b class="num ' + (netProfit >= 0 ? "pos" : "neg") + '">' + money(netProfit) + '</b></div>' +
-        '</div>' +
+        '<div class="step-box" style="margin:0;"><div style="font-size:12.5px;color:var(--text-muted);">1. Пришло от клиентов (Выручка)</div>' +
+          '<div class="num" style="font-size:19px;font-weight:500;margin-top:4px;">' + money(revenue) + '</div></div>' +
+        '<div class="step-box" style="margin:0;"><div style="font-size:12.5px;color:var(--text-muted);">2. Себестоимость проданного</div>' +
+          '<div class="num" style="font-size:19px;font-weight:500;margin-top:4px;color:var(--warn);">− ' + money(cogs) + '</div>' +
+          '<div class="field-hint">Валовая прибыль: <b class="num">' + money(grossProfit) + '</b></div></div>' +
+        '<div class="step-box" style="margin:0;"><div style="font-size:12.5px;color:var(--text-muted);">3. Операционные расходы</div>' +
+          '<div class="num" style="font-size:19px;font-weight:500;margin-top:4px;color:var(--bad);">− ' + money(opExpenses) + '</div>' +
+          '<div class="field-hint">Итого чистыми: <b class="num ' + (netProfit >= 0 ? "pos" : "neg") + '">' + money(netProfit) + '</b></div></div>' +
       '</div>' +
     '</div>' +
 
@@ -1194,130 +685,172 @@ function renderDashboard() {
         '</div>' +
         '<svg viewBox="0 0 560 175" style="width:100%;height:auto;display:block;">' + svgBars + '</svg>' +
       '</div>' +
-
       '<div class="card">' +
         '<h2>Контроль остатков на складе</h2>' +
         '<p class="subtitle" style="margin-bottom:12px;">Товары, которые пора докупить</p>' +
-        (lowStock.length > 0
+        (lowStock.length
           ? lowStock.map(function(p) {
               return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">' +
-                '<div style="min-width:0;"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(p.name) + '</div><div style="font-size:12px;color:var(--text-muted);">Минимум: ' + p.min + ' шт.</div></div>' +
-                '<span class="badge badge-bad num">' + formatStock(p) + '</span>' +
-              '</div>';
+                '<div style="min-width:0;"><div class="fw5" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(p.name) + '</div>' +
+                '<div style="font-size:12px;color:var(--text-muted);">Минимум: ' + p.min + ' шт.</div></div>' +
+                '<span class="badge badge-bad num">' + formatStock(p) + '</span></div>';
             }).join("") +
             '<button class="btn btn-secondary btn-full" style="margin-top:12px;" onclick="go(&apos;stock&apos;, &apos;add&apos;)">Пополнить склад →</button>'
-          : '<div class="empty-state" style="padding:24px 14px;">' +
-              '<div style="color:var(--ok);font-weight:700;margin-bottom:4px;">Все остатки в норме</div>' +
-              '<div style="font-size:13.5px;color:var(--text-muted);">Запасов достаточно, срочных закупок не требуется.</div>' +
-            '</div>') +
+          : '<div class="empty-state" style="padding:24px 14px;"><div class="pos fw5" style="margin-bottom:4px;">Все остатки в норме</div>' +
+            '<div style="font-size:13.5px;color:var(--text-muted);">Запасов достаточно, срочных закупок не требуется.</div></div>') +
       '</div>' +
     '</div>';
 }
 
-// ------------------------------------------
-// VIEW 2: SELL (ПРОДАТЬ)
-// ------------------------------------------
+// ---------- SELL ----------
 function renderSell() {
   var prods = STATE.data.products;
-  if (prods.length === 0) {
-    return '' +
-      '<div class="empty-state">' +
-        '<div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>' +
-        '<h2>Сначала добавьте товар</h2>' +
-        '<p class="subtitle" style="max-width:420px;margin:0 auto 18px;">Чтобы оформить продажу, в базе должен быть хотя бы один товар и остаток на складе.</p>' +
-        '<button class="btn" onclick="go(&apos;stock&apos;, &apos;list&apos;); setTimeout(openNewProdModal, 120);">+ Добавить первый товар</button>' +
-      '</div>';
+  if (!prods.length) {
+    return '<div class="empty-state">' +
+      '<div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>' +
+      '<h2>Сначала добавьте товар</h2>' +
+      '<p class="subtitle" style="max-width:420px;margin:0 auto 18px;">Чтобы оформить продажу, в базе должен быть хотя бы один товар и остаток на складе.</p>' +
+      '<button class="btn" onclick="go(&apos;stock&apos;, &apos;list&apos;); setTimeout(openNewProdModal, 120);">+ Добавить первый товар</button></div>';
   }
+  var sel = selectedId(prods, STATE.sellProd);
+  STATE.sellProd = String(sel);
 
   var recentRows = STATE.data.sales.slice().reverse().slice(0, 20).map(function(s) {
     var p = getProduct(s.pid);
     var prof = s.price - s.cogs;
     return '<tr>' +
       '<td class="num" style="font-size:13px;color:var(--text-muted);white-space:nowrap;">' + formatDateRu(s.date) + '</td>' +
-      '<td style="font-weight:600;">' + esc(p ? p.name : "Удалённый товар") + '</td>' +
-      '<td class="num" style="white-space:nowrap;">' + s.qty + (s.type === "can" ? " уп." : " шт.") + '</td>' +
+      '<td class="fw5">' + esc(p ? p.name : "Удалённый товар") + '</td>' +
+      '<td class="num" style="white-space:nowrap;">' + s.qty + (s.type === "can" ? " уп." : " шт.") +
+        (s.parts && s.parts.length > 1 ? '<div style="font-size:11.5px;color:var(--text-muted);">' + s.parts.map(function(x) { return x.q + '×' + Number(x.p).toFixed(2); }).join(' + ') + '</div>' : '') + '</td>' +
       '<td class="num" style="white-space:nowrap;">' + money(s.price) + '</td>' +
-      '<td class="num ' + (prof >= 0 ? "pos" : "neg") + '" style="white-space:nowrap;">' + (prof >= 0 ? "+" : "") + money(prof) + '</td>' +
-      '<td style="text-align:right;"><button class="btn-danger" onclick="deleteSale(' + s.id + ')">Отменить</button></td>' +
-    '</tr>';
+      '<td class="num ' + (prof >= 0 ? "pos" : "neg") + '" style="white-space:nowrap;">' + signedMoney(prof) + '</td>' +
+      '<td style="text-align:right;"><button class="btn-danger" onclick="deleteSale(' + s.id + ')">Отменить</button></td></tr>';
   }).join("");
 
   return '' +
     '<div class="card">' +
-      '<div class="step-box">' +
-        '<div class="step-header"><div class="step-num">1</div><h3 style="margin:0;">Выберите товар</h3></div>' +
-        '<select id="sell-prod" onchange="updateSellPreview()">' +
+      '<div class="step-box"><div class="step-header"><div class="step-num">1</div><h3 style="margin:0;">Выберите товар</h3></div>' +
+        '<select id="sell-prod" onchange="STATE.sellProd=this.value;updateSellPreview()">' +
           prods.map(function(p) {
-            return '<option value="' + p.id + '">' + esc(p.name) + ' — остаток: ' + formatStock(p) + '</option>';
+            return '<option value="' + p.id + '"' + (p.id == sel ? " selected" : "") + '>' + esc(p.name) + ' — остаток: ' + formatStock(p) + '</option>';
           }).join("") +
-        '</select>' +
-      '</div>' +
+        '</select></div>' +
 
-      '<div class="step-box">' +
-        '<div class="step-header"><div class="step-num">2</div><h3 style="margin:0;">Формат и количество</h3></div>' +
+      '<div class="step-box"><div class="step-header"><div class="step-num">2</div><h3 style="margin:0;">Формат и количество</h3></div>' +
         '<div class="seg-group" style="margin-bottom:12px;">' +
           '<button type="button" class="seg-btn ' + (STATE.sellType === "can" ? "active" : "") + '" onclick="setSellType(&apos;can&apos;)">Целой упаковкой</button>' +
           '<button type="button" class="seg-btn ' + (STATE.sellType === "pc" ? "active" : "") + '" onclick="setSellType(&apos;pc&apos;)">Поштучно</button>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:10px;">' +
-          '<button type="button" class="btn btn-secondary" style="width:52px;flex:none;font-size:20px;" onclick="changeSellQty(-1)">−</button>' +
-          '<input id="sell-qty" class="num" type="number" min="1" value="' + STATE.sellQty + '" style="text-align:center;font-size:19px;font-weight:800;" oninput="STATE.sellQty=Math.max(1, +this.value||1);updateSellPreview()">' +
-          '<button type="button" class="btn btn-secondary" style="width:52px;flex:none;font-size:20px;" onclick="changeSellQty(1)">+</button>' +
+          '<button type="button" class="btn btn-secondary" style="width:52px;flex:none;padding:0;font-size:20px;" onclick="changeSellQty(-1)" aria-label="Меньше">−</button>' +
+          '<input id="sell-qty" class="num" type="number" inputmode="numeric" min="1" value="' + STATE.sellQty + '" style="text-align:center;font-size:18px;font-weight:500;" oninput="STATE.sellQty=Math.max(1, Math.floor(+this.value||1));updateSellPreview()">' +
+          '<button type="button" class="btn btn-secondary" style="width:52px;flex:none;padding:0;font-size:20px;" onclick="changeSellQty(1)" aria-label="Больше">+</button>' +
         '</div>' +
         '<div class="quick-chips">' +
-          '<button type="button" class="chip" onclick="setSellQty(1)">1</button>' +
-          '<button type="button" class="chip" onclick="setSellQty(2)">2</button>' +
-          '<button type="button" class="chip" onclick="setSellQty(3)">3</button>' +
-          '<button type="button" class="chip" onclick="setSellQty(5)">5</button>' +
-          '<button type="button" class="chip" onclick="setSellQty(10)">10</button>' +
-        '</div>' +
-      '</div>' +
+          [1, 2, 3, 5, 10].map(function(n) { return '<button type="button" class="chip" onclick="setSellQty(' + n + ')">' + n + '</button>'; }).join("") +
+        '</div></div>' +
 
-      '<div class="step-box" style="margin-bottom:0;">' +
-        '<div class="step-header"><div class="step-num">3</div><h3 style="margin:0;">Сумма оплаты и дата</h3></div>' +
+      splitBlock() +
+      '<div class="step-box" style="margin-bottom:0;"><div class="step-header"><div class="step-num">3</div><h3 style="margin:0;">Сумма оплаты и дата</h3></div>' +
         '<div class="grid-2 form-split">' +
-          '<div>' +
-            '<label>Итого заплатит клиент (₼)</label>' +
-            '<input id="sell-amount" class="num" type="number" step="0.5" min="0" oninput="updateSellProfitOnly()">' +
-            '<div class="field-hint" id="sell-disc-note">Цена подставляется автоматически</div>' +
-          '</div>' +
-          '<div>' +
-            '<label>Дата продажи</label>' +
-            '<input id="sell-date" type="date" value="' + todayStr() + '">' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
+          '<div><label>Итого заплатит клиент (₼)</label>' +
+            '<input id="sell-amount" class="num" type="number" inputmode="decimal" step="0.5" min="0" oninput="updateSellProfitOnly()">' +
+            '<div class="field-hint" id="sell-disc-note">Цена подставляется автоматически</div></div>' +
+          '<div><label>Дата продажи</label><input id="sell-date" type="date" value="' + todayStr() + '"></div>' +
+        '</div></div>' +
 
       '<div id="sell-preview"></div>' +
-
-      '<button class="btn btn-full" style="height:52px;font-size:16px;" onclick="submitSale()">✓ Подтвердить продажу</button>' +
+      '<button class="btn btn-full" style="height:52px;font-size:15px;" onclick="submitSale()">✓ Подтвердить продажу</button>' +
     '</div>' +
 
     '<div class="card">' +
       '<h2>История последних продаж</h2>' +
       '<p class="subtitle" style="margin-bottom:14px;">Если ошиблись — нажмите «Отменить», и товар вернётся на склад</p>' +
       (recentRows
-        ? '<div class="table-wrap"><table><thead><tr><th>Дата</th><th>Товар</th><th>Кол-во</th><th>Сумма</th><th>Прибыль</th><th></th></tr></thead><tbody>' + recentRows + '</tbody></table></div>'
+        ? '<div class="table-wrap"><table style="min-width:520px;"><thead><tr><th>Дата</th><th>Товар</th><th>Кол-во</th><th>Сумма</th><th>Прибыль</th><th></th></tr></thead><tbody>' + recentRows + '</tbody></table></div>'
         : '<div class="empty-state" style="padding:24px;">Продаж пока не было</div>') +
     '</div>';
 }
 
-function setSellType(t) {
-  STATE.sellType = t;
+function setSellType(t) { STATE.sellType = t; render(); }
+
+// ----- Split sale: part of the pieces at one price, the rest at another -----
+function isSplit() { return STATE.sellType === "pc" && STATE.sellSplit; }
+function currentParts() {
+  if (!isSplit()) return undefined;
+  return STATE.sellParts.filter(function(x) { return x.q > 0; }).map(function(x) { return { q: x.q, p: x.p }; });
+}
+function splitTotalQty() { return sumBy(STATE.sellParts, function(x) { return x.q; }); }
+function toggleSplit(on) {
+  STATE.sellSplit = !!on;
+  if (on) {
+    var p = getProduct($("sell-prod").value);
+    var pp = p ? Number(p.pp) || 0 : 0;
+    STATE.sellParts = [{ q: Math.max(1, STATE.sellQty), p: pp }, { q: 0, p: pp }];
+  } else { STATE.sellParts = []; }
   render();
 }
-
+function addPart() {
+  var last = STATE.sellParts[STATE.sellParts.length - 1];
+  STATE.sellParts.push({ q: 0, p: last ? last.p : 0 });
+  render();
+}
+function removePart(i) { STATE.sellParts.splice(i, 1); if (!STATE.sellParts.length) STATE.sellSplit = false; render(); }
+function setPart(i, col, v) {
+  var pt = STATE.sellParts[i];
+  if (!pt) return;
+  var n = Number(v);
+  if (col === 0) pt.q = Math.max(0, Math.floor(n) || 0); else pt.p = Math.max(0, n || 0);
+  updateSellPreview();
+}
+function splitBlock() {
+  if (STATE.sellType !== "pc") return "";
+  var head = '<div class="step-box"><div class="step-header"><div class="step-num">+</div><h3 style="margin:0;">Разные цены в одной продаже</h3></div>';
+  if (!STATE.sellSplit) {
+    return head + '<p class="subtitle" style="margin-bottom:12px;">Например: из 20 шт. 13 продали по 2 ₼, а остальные 7 — по 3 ₼. Выручка и прибыль посчитаются точно.</p>' +
+      '<button type="button" class="btn btn-secondary btn-full" onclick="toggleSplit(true)">Разбить продажу по ценам</button></div>';
+  }
+  var rows = STATE.sellParts.map(function(x, i) {
+    return '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px;gap:8px;align-items:end;margin-bottom:10px;">' +
+      '<div><label>' + (i === 0 ? 'Штук' : '&nbsp;') + '</label><input class="num" type="number" inputmode="numeric" min="0" placeholder="шт." value="' + (x.q || "") + '" oninput="setPart(' + i + ',0,this.value)"></div>' +
+      '<div><label>' + (i === 0 ? 'Цена за 1 шт. (₼)' : '&nbsp;') + '</label><input class="num" type="number" inputmode="decimal" step="0.1" min="0" value="' + x.p + '" oninput="setPart(' + i + ',1,this.value)"></div>' +
+      (STATE.sellParts.length > 1 ? '<button type="button" class="btn-danger" style="height:48px;padding:0;" onclick="removePart(' + i + ')" aria-label="Убрать">✕</button>' : '<span></span>') +
+    '</div>';
+  }).join("");
+  return head + rows +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="chip" onclick="addPart()">+ Ещё одна цена</button>' +
+    '<button type="button" class="chip" onclick="toggleSplit(false)">Отменить разбивку</button></div>' +
+    '<div class="field-hint" id="split-summary"></div></div>';
+}
+function applySplitVisibility() {
+  var q = $("sell-qty");
+  if (!q || !q.parentNode) return;
+  var row = q.parentNode, chips = row.nextElementSibling, hide = isSplit();
+  row.style.display = hide ? "none" : "flex";
+  if (chips && chips.classList.contains("quick-chips")) chips.style.display = hide ? "none" : "flex";
+}
+function syncSplit() {
+  var total = splitTotalQty();
+  var amount = sumBy(STATE.sellParts, function(x) { return x.q * x.p; });
+  $("sell-qty").value = Math.max(1, total);
+  $("sell-amount").value = amount.toFixed(2);
+  $("sell-amount").readOnly = true;
+  $("sell-disc-note").textContent = "Сумма посчитана по частям";
+  var sm = $("split-summary");
+  if (sm) {
+    var txt = STATE.sellParts.filter(function(x) { return x.q > 0; }).map(function(x) { return x.q + " × " + x.p.toFixed(2); }).join(" + ");
+    sm.textContent = total > 0 ? ("Всего: " + total + " шт. = " + money(amount) + " (" + txt + ")") : "Укажите, сколько штук по какой цене";
+  }
+  updateSellProfitOnly();
+  saveUI();
+}
 function changeSellQty(delta) {
   STATE.sellQty = Math.max(1, (Number($("sell-qty").value) || 1) + delta);
   $("sell-qty").value = STATE.sellQty;
   updateSellPreview();
 }
-
-function setSellQty(val) {
-  STATE.sellQty = val;
-  $("sell-qty").value = val;
-  updateSellPreview();
-}
+function setSellQty(val) { STATE.sellQty = val; $("sell-qty").value = val; updateSellPreview(); }
 
 function updateSellPreview() {
   var sel = $("sell-prod");
@@ -1325,52 +858,39 @@ function updateSellPreview() {
   var p = getProduct(sel.value);
   if (!p) return;
   var qty = Math.max(1, Math.floor(Number($("sell-qty").value) || 1));
+  applySplitVisibility();
+  if (isSplit()) { syncSplit(); return; }
   var disc = STATE.sellType === "can" ? getDiscountPct(qty) : 0;
-  var rawPrice = STATE.sellType === "can" ? (Number(p.pw) * qty * (1 - disc / 100)) : (Number(p.pp) * qty);
-  var rounded = Math.round(rawPrice * 2) / 2;
-  $("sell-amount").value = rounded.toFixed(2);
+  var raw = STATE.sellType === "can" ? (Number(p.pw) * qty * (1 - disc / 100)) : (Number(p.pp) * qty);
+  $("sell-amount").value = (Math.round(raw * 2) / 2).toFixed(2);
   $("sell-disc-note").textContent = disc > 0 ? ("Применена скидка за объём: −" + disc + "%") : "Стандартная цена без скидки";
   updateSellProfitOnly();
+  saveUI();
 }
 
 function updateSellProfitOnly() {
-  var sel = $("sell-prod");
-  var box = $("sell-preview");
+  var sel = $("sell-prod"), box = $("sell-preview");
   if (!sel || !box) return;
   var p = getProduct(sel.value);
   if (!p) return;
-
   var qty = Math.max(1, Math.floor(Number($("sell-qty").value) || 1));
-  var pcsPerPack = Math.max(1, Number(p.pcs) || 1);
-  var piecesNeeded = STATE.sellType === "can" ? qty * pcsPerPack : qty;
+  var per = Math.max(1, Number(p.pcs) || 1);
+  var need = STATE.sellType === "can" ? qty * per : qty;
   var amount = Number($("sell-amount").value) || 0;
-  var cogs = piecesNeeded * (Number(p.cost) || 0) / pcsPerPack;
+  var cogs = need * (Number(p.cost) || 0) / per;
   var profit = amount - cogs;
-  var remPcs = (Number(p.stock) || 0) - piecesNeeded;
+  var remPcs = (Number(p.stock) || 0) - need;
 
   if (remPcs < 0) {
-    box.innerHTML = '' +
-      '<div class="preview-box warn">' +
-        '<div style="font-weight:700;color:var(--bad);margin-bottom:4px;">Недостаточно товара на складе!</div>' +
-        '<div style="font-size:13.5px;">Сейчас в наличии только <b class="num">' + formatStock(p) + '</b>. Сначала пополните склад в разделе «Склад».</div>' +
-      '</div>';
+    box.innerHTML = '<div class="preview-box warn"><div class="fw6 neg" style="margin-bottom:4px;">Недостаточно товара на складе!</div>' +
+      '<div style="font-size:13.5px;">Сейчас в наличии только <b class="num">' + formatStock(p) + '</b>. Сначала пополните склад в разделе «Склад».</div></div>';
     return;
   }
-
-  var remPacks = Math.floor(remPcs / pcsPerPack);
-  var remLeft = remPcs % pcsPerPack;
-
-  box.innerHTML = '' +
-    '<div class="preview-box">' +
-      '<div class="preview-row">' +
-        '<span style="font-size:14px;font-weight:600;">Ваша чистая прибыль со сделки:</span>' +
-        '<span class="num ' + (profit >= 0 ? "pos" : "neg") + '" style="font-size:20px;font-weight:800;white-space:nowrap;">' + (profit >= 0 ? "+" : "") + money(profit) + '</span>' +
-      '</div>' +
-      '<div class="preview-row" style="font-size:13.5px;color:var(--text-muted);">' +
-        '<span>Останется на складе после продажи:</span>' +
-        '<span class="num" style="color:var(--text);font-weight:700;white-space:nowrap;">' + remPacks + ' уп. + ' + remLeft + ' шт.</span>' +
-      '</div>' +
-    '</div>';
+  box.innerHTML = '<div class="preview-box">' +
+    '<div class="preview-row"><span class="fw5" style="font-size:14px;">Ваша чистая прибыль со сделки:</span>' +
+      '<span class="num ' + (profit >= 0 ? "pos" : "neg") + '" style="font-size:20px;font-weight:500;white-space:nowrap;">' + signedMoney(profit) + '</span></div>' +
+    '<div class="preview-row" style="font-size:13.5px;color:var(--text-muted);"><span>Останется на складе после продажи:</span>' +
+      '<span class="num fw5" style="color:var(--text);white-space:nowrap;">' + Math.floor(remPcs / per) + ' уп. + ' + (remPcs % per) + ' шт.</span></div></div>';
 }
 
 function submitSale() {
@@ -1378,29 +898,19 @@ function submitSale() {
   if (!p) return;
   var qty = Math.max(1, Math.floor(Number($("sell-qty").value) || 1));
   var amount = Number($("sell-amount").value);
+  if (isSplit() && splitTotalQty() < 1) { showToast("Укажите количество штук", true); return; }
   if (!(amount >= 0)) { showToast("Укажите корректную сумму оплаты", true); return; }
+  var per = Math.max(1, Number(p.pcs) || 1);
+  var need = STATE.sellType === "can" ? qty * per : qty;
+  if (need > (Number(p.stock) || 0)) { showToast("На складе недостаточно товара для этой продажи", true); return; }
 
-  var pcsPerPack = Math.max(1, Number(p.pcs) || 1);
-  var piecesNeeded = STATE.sellType === "can" ? qty * pcsPerPack : qty;
-  if (piecesNeeded > (Number(p.stock) || 0)) {
-    showToast("На складе недостаточно товара для этой продажи", true);
-    return;
-  }
-
-  var cogs = piecesNeeded * (Number(p.cost) || 0) / pcsPerPack;
-  p.stock = (Number(p.stock) || 0) - piecesNeeded;
-
+  var cogs = need * (Number(p.cost) || 0) / per;
+  p.stock = (Number(p.stock) || 0) - need;
   STATE.data.sales.push({
-    id: STATE.data.seq++,
-    date: $("sell-date").value || todayStr(),
-    pid: p.id,
-    type: STATE.sellType,
-    qty: qty,
-    pieces: piecesNeeded,
-    price: amount,
-    cogs: cogs
+    id: STATE.data.seq++, date: $("sell-date").value || todayStr(), pid: p.id,
+    type: STATE.sellType, qty: qty, pieces: need, price: amount, cogs: cogs,
+    parts: (function() { var r = currentParts(); STATE.sellSplit = false; STATE.sellParts = []; return r; })()
   });
-
   STATE.sellQty = 1;
   saveData();
   render();
@@ -1409,9 +919,7 @@ function submitSale() {
 
 function deleteSale(id) {
   var idx = -1;
-  for (var i = 0; i < STATE.data.sales.length; i++) {
-    if (STATE.data.sales[i].id === id) { idx = i; break; }
-  }
+  for (var i = 0; i < STATE.data.sales.length; i++) if (STATE.data.sales[i].id === id) { idx = i; break; }
   if (idx === -1) return;
   var sale = STATE.data.sales[idx];
   var p = getProduct(sale.pid);
@@ -1422,158 +930,97 @@ function deleteSale(id) {
   showToast("Продажа отменена, товар возвращён на склад");
 }
 
-// ------------------------------------------
-// VIEW 3: STOCK & PRODUCTS (СКЛАД И ТОВАРЫ)
-// ------------------------------------------
+// ---------- STOCK ----------
 function renderStock() {
   var prods = STATE.data.products;
-
-  var topTabs = '' +
-    '<div class="seg-group" style="margin-bottom:18px;">' +
-      '<button class="seg-btn ' + (STATE.stockTab === "add" ? "active" : "") + '" onclick="STATE.stockTab=&apos;add&apos;;render()">Пополнить склад (Закупка)</button>' +
-      '<button class="seg-btn ' + (STATE.stockTab === "list" ? "active" : "") + '" onclick="STATE.stockTab=&apos;list&apos;;render()">Мои товары и цены (' + prods.length + ')</button>' +
-    '</div>';
+  var topTabs = '<div class="seg-group" style="margin-bottom:18px;">' +
+    '<button class="seg-btn ' + (STATE.stockTab === "add" ? "active" : "") + '" onclick="STATE.stockTab=&apos;add&apos;;render()">Пополнить склад (Закупка)</button>' +
+    '<button class="seg-btn ' + (STATE.stockTab === "list" ? "active" : "") + '" onclick="STATE.stockTab=&apos;list&apos;;render()">Мои товары и цены (' + prods.length + ')</button></div>';
 
   if (STATE.stockTab === "list") {
     return topTabs +
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">' +
         '<p class="subtitle" style="margin:0;">Нажмите «+ Добавить товар», чтобы создать новую позицию</p>' +
-        '<button class="btn" onclick="openNewProdModal()">+ Добавить товар</button>' +
-      '</div>' +
-      (prods.length === 0
-        ? '<div class="empty-state">' +
-            '<div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>' +
-            '<h2>Список товаров пока пуст</h2>' +
-            '<p class="subtitle" style="max-width:400px;margin:0 auto 18px;">Добавьте ваш первый товар, чтобы задать закупочную цену и цену продажи.</p>' +
-            '<button class="btn" onclick="openNewProdModal()">+ Добавить первый товар</button>' +
-          '</div>'
-        : '<div class="grid-2">' +
-            prods.map(function(p) {
-              var profitPack = (Number(p.pw) || 0) - (Number(p.cost) || 0);
-              var isLow = (Number(p.stock) || 0) <= (Number(p.min) || 0);
-              return '' +
-                '<div class="card" style="margin:0;display:flex;flex-direction:column;justify-content:space-between;">' +
-                  '<div>' +
-                    '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px;">' +
-                      '<h3 style="font-size:17px;margin:0;word-break:break-word;">' + esc(p.name) + '</h3>' +
-                      '<span class="badge ' + (isLow ? "badge-bad" : "badge-ok") + ' num">' + formatStock(p) + '</span>' +
-                    '</div>' +
-                    '<div class="grid-2" style="gap:10px;margin-bottom:14px;">' +
-                      '<div class="step-box" style="margin:0;padding:11px 12px;">' +
-                        '<div style="font-size:11.5px;color:var(--text-muted);">Закупка (1 уп.)</div>' +
-                        '<div class="num" style="font-weight:700;">' + money(p.cost) + '</div>' +
-                      '</div>' +
-                      '<div class="step-box" style="margin:0;padding:11px 12px;">' +
-                        '<div style="font-size:11.5px;color:var(--text-muted);">Продажа (1 уп.)</div>' +
-                        '<div class="num gold" style="font-weight:700;">' + money(p.pw) + '</div>' +
-                      '</div>' +
-                      '<div class="step-box" style="margin:0;padding:11px 12px;">' +
-                        '<div style="font-size:11.5px;color:var(--text-muted);">Поштучно (' + p.pcs + ' шт/уп)</div>' +
-                        '<div class="num" style="font-weight:700;">' + money(p.pp) + ' / шт.</div>' +
-                      '</div>' +
-                      '<div class="step-box" style="margin:0;padding:11px 12px;">' +
-                        '<div style="font-size:11.5px;color:var(--text-muted);">Прибыль с 1 уп.</div>' +
-                        '<div class="num ' + (profitPack >= 0 ? "pos" : "neg") + '" style="font-weight:700;">+' + money(profitPack) + '</div>' +
-                      '</div>' +
-                    '</div>' +
-                  '</div>' +
-                  '<div style="display:flex;gap:8px;">' +
-                    '<button class="btn btn-secondary" style="flex:1;height:42px;" onclick="openEditProdModal(' + p.id + ')">Изменить цены</button>' +
-                    '<button class="btn-danger" style="height:42px;" onclick="deleteProduct(' + p.id + ')">Удалить</button>' +
-                  '</div>' +
-                '</div>';
-            }).join("") +
-          '</div>');
+        '<button class="btn" onclick="openNewProdModal()">+ Добавить товар</button></div>' +
+      (!prods.length
+        ? '<div class="empty-state"><div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>' +
+          '<h2>Список товаров пока пуст</h2>' +
+          '<p class="subtitle" style="max-width:400px;margin:0 auto 18px;">Добавьте ваш первый товар, чтобы задать закупочную цену и цену продажи.</p>' +
+          '<button class="btn" onclick="openNewProdModal()">+ Добавить первый товар</button></div>'
+        : '<div class="grid-2">' + prods.map(function(p) {
+            var profitPack = (Number(p.pw) || 0) - (Number(p.cost) || 0);
+            var isLow = (Number(p.stock) || 0) <= (Number(p.min) || 0);
+            var cell = function(l, v, cls) {
+              return '<div class="step-box" style="margin:0;padding:11px 12px;"><div style="font-size:11.5px;color:var(--text-muted);">' + l + '</div><div class="num fw5 ' + (cls || "") + '">' + v + '</div></div>';
+            };
+            return '<div class="card" style="margin:0;display:flex;flex-direction:column;justify-content:space-between;">' +
+              '<div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px;">' +
+                '<h3 style="font-size:16px;margin:0;word-break:break-word;">' + esc(p.name) + '</h3>' +
+                '<span class="badge ' + (isLow ? "badge-bad" : "badge-ok") + ' num">' + formatStock(p) + '</span></div>' +
+              '<div class="grid-2" style="gap:10px;margin-bottom:14px;">' +
+                cell("Закупка (1 уп.)", money(p.cost)) + cell("Продажа (1 уп.)", money(p.pw), "gold") +
+                cell("Поштучно (" + p.pcs + " шт/уп)", money(p.pp) + " / шт.") +
+                cell("Прибыль с 1 уп.", signedMoney(profitPack), profitPack >= 0 ? "pos" : "neg") +
+              '</div></div>' +
+              '<div style="display:flex;gap:8px;">' +
+                '<button class="btn btn-secondary" style="flex:1;height:42px;" onclick="openEditProdModal(' + p.id + ')">Изменить цены</button>' +
+                '<button class="btn-danger" style="height:42px;" onclick="deleteProduct(' + p.id + ')">Удалить</button></div></div>';
+          }).join("") + '</div>');
   }
 
-  if (prods.length === 0) {
-    return topTabs +
-      '<div class="empty-state">' +
-        '<h2>Сначала создайте карточку товара</h2>' +
-        '<p class="subtitle" style="max-width:420px;margin:0 auto 18px;">Прежде чем записать закупку на склад, добавьте товар во вкладке «Мои товары и цены».</p>' +
-        '<button class="btn" onclick="openNewProdModal()">+ Добавить первый товар</button>' +
-      '</div>';
+  if (!prods.length) {
+    return topTabs + '<div class="empty-state"><h2>Сначала создайте карточку товара</h2>' +
+      '<p class="subtitle" style="max-width:420px;margin:0 auto 18px;">Прежде чем записать закупку на склад, добавьте товар во вкладке «Мои товары и цены».</p>' +
+      '<button class="btn" onclick="openNewProdModal()">+ Добавить первый товар</button></div>';
   }
 
+  var sel = selectedId(prods, STATE.buyProd);
+  STATE.buyProd = String(sel);
   var buyRows = STATE.data.buys.slice().reverse().slice(0, 20).map(function(b) {
     var p = getProduct(b.pid);
-    var unitCost = b.qty > 0 ? b.total / b.qty : 0;
-    return '<tr>' +
-      '<td class="num" style="font-size:13px;color:var(--text-muted);white-space:nowrap;">' + formatDateRu(b.date) + '</td>' +
-      '<td style="font-weight:600;">' + esc(p ? p.name : "Удалённый товар") + '</td>' +
+    var unit = b.qty > 0 ? b.total / b.qty : 0;
+    return '<tr><td class="num" style="font-size:13px;color:var(--text-muted);white-space:nowrap;">' + formatDateRu(b.date) + '</td>' +
+      '<td class="fw5">' + esc(p ? p.name : "Удалённый товар") + '</td>' +
       '<td class="num" style="white-space:nowrap;">' + b.qty + ' уп.</td>' +
       '<td class="num" style="white-space:nowrap;">' + money(b.total) + '</td>' +
-      '<td class="num" style="color:var(--text-muted);white-space:nowrap;">' + money(unitCost) + ' / уп.</td>' +
-    '</tr>';
+      '<td class="num" style="color:var(--text-muted);white-space:nowrap;">' + money(unit) + ' / уп.</td></tr>';
   }).join("");
 
   return topTabs +
-    '<div class="card">' +
-      '<h2>Записать закупку товара</h2>' +
+    '<div class="card"><h2>Записать закупку товара</h2>' +
       '<p class="subtitle" style="margin-bottom:16px;">Укажите сколько упаковок купили — остаток на складе увеличится, а закупочная цена обновится автоматически</p>' +
-
-      '<div style="margin-bottom:14px;">' +
-        '<label>1. Какой товар закупили?</label>' +
-        '<select id="buy-prod" onchange="updateBuyPreview()">' +
+      '<div style="margin-bottom:14px;"><label>1. Какой товар закупили?</label>' +
+        '<select id="buy-prod" onchange="STATE.buyProd=this.value;var t=$(&apos;buy-total&apos;);if(t)delete t.dataset.touched;updateBuyPreview()">' +
           prods.map(function(p) {
-            return '<option value="' + p.id + '">' + esc(p.name) + ' (сейчас на складе: ' + formatStock(p) + ')</option>';
-          }).join("") +
-        '</select>' +
-      '</div>' +
-
+            return '<option value="' + p.id + '"' + (p.id == sel ? " selected" : "") + '>' + esc(p.name) + ' (сейчас на складе: ' + formatStock(p) + ')</option>';
+          }).join("") + '</select></div>' +
       '<div class="grid-3 form-split" style="margin-bottom:14px;">' +
-        '<div>' +
-          '<label>2. Сколько упаковок купили?</label>' +
-          '<input id="buy-qty" class="num" type="number" min="1" value="10" oninput="updateBuyPreview()">' +
-        '</div>' +
-        '<div>' +
-          '<label>3. Сколько заплатили всего (₼)?</label>' +
-          '<input id="buy-total" class="num" type="number" step="0.5" min="0" oninput="updateBuyPreview()">' +
-        '</div>' +
-        '<div>' +
-          '<label>4. Дата закупки</label>' +
-          '<input id="buy-date" type="date" value="' + todayStr() + '">' +
-        '</div>' +
+        '<div><label>2. Сколько упаковок купили?</label><input id="buy-qty" class="num" type="number" inputmode="numeric" min="1" value="10" oninput="updateBuyPreview()"></div>' +
+        '<div><label>3. Сколько заплатили всего (₼)?</label><input id="buy-total" class="num" type="number" inputmode="decimal" step="0.5" min="0" oninput="updateBuyPreview()"></div>' +
+        '<div><label>4. Дата закупки</label><input id="buy-date" type="date" value="' + todayStr() + '"></div>' +
       '</div>' +
-
       '<div id="buy-preview"></div>' +
-
-      '<button class="btn btn-full" onclick="submitBuy()">+ Добавить партию на склад</button>' +
-    '</div>' +
-
-    '<div class="card">' +
-      '<h2>История закупок</h2>' +
+      '<button class="btn btn-full" onclick="submitBuy()">+ Добавить партию на склад</button></div>' +
+    '<div class="card"><h2>История закупок</h2>' +
       (buyRows
         ? '<div class="table-wrap"><table><thead><tr><th>Дата</th><th>Товар</th><th>Куплено</th><th>Сумма</th><th>Цена за 1 уп.</th></tr></thead><tbody>' + buyRows + '</tbody></table></div>'
-        : '<div class="empty-state" style="padding:24px;">Закупок пока не было</div>') +
-    '</div>';
+        : '<div class="empty-state" style="padding:24px;">Закупок пока не было</div>') + '</div>';
 }
 
 function updateBuyPreview() {
-  var sel = $("buy-prod");
-  var box = $("buy-preview");
+  var sel = $("buy-prod"), box = $("buy-preview");
   if (!sel || !box) return;
   var p = getProduct(sel.value);
   if (!p) return;
-
   var qty = Math.max(1, Number($("buy-qty").value) || 1);
-  if (!$("buy-total").dataset.touched) {
-    $("buy-total").value = ((Number(p.cost) || 0) * qty).toFixed(2);
-  }
+  if (!$("buy-total").dataset.touched) $("buy-total").value = ((Number(p.cost) || 0) * qty).toFixed(2);
   var total = Number($("buy-total").value) || 0;
-  var perUnit = qty > 0 ? total / qty : 0;
-
-  box.innerHTML = '' +
-    '<div class="preview-box" style="background:var(--gold-dim);border-color:var(--border-gold);">' +
-      '<div class="preview-row">' +
-        '<span style="font-size:14px;">Цена 1 упаковки в этой партии:</span>' +
-        '<span class="num gold" style="font-size:18px;font-weight:800;white-space:nowrap;">' + money(perUnit) + '</span>' +
-      '</div>' +
-      '<div class="preview-row" style="font-size:13.5px;color:var(--text-muted);">' +
-        '<span>Будет добавлено на склад:</span>' +
-        '<span class="num" style="color:var(--text);font-weight:700;white-space:nowrap;">+' + qty + ' уп. (+' + (qty * p.pcs) + ' шт.)</span>' +
-      '</div>' +
-    '</div>';
+  box.innerHTML = '<div class="preview-box" style="background:var(--gold-dim);border-color:var(--border-gold);">' +
+    '<div class="preview-row"><span style="font-size:14px;">Цена 1 упаковки в этой партии:</span>' +
+      '<span class="num gold" style="font-size:18px;font-weight:500;white-space:nowrap;">' + money(total / qty) + '</span></div>' +
+    '<div class="preview-row" style="font-size:13.5px;color:var(--text-muted);"><span>Будет добавлено на склад:</span>' +
+      '<span class="num fw5" style="color:var(--text);white-space:nowrap;">+' + qty + ' уп. (+' + (qty * (Number(p.pcs) || 1)) + ' шт.)</span></div></div>';
+  saveUI();
 }
 
 function submitBuy() {
@@ -1581,124 +1028,69 @@ function submitBuy() {
   if (!p) return;
   var qty = Math.max(1, Math.floor(Number($("buy-qty").value) || 0));
   var total = Number($("buy-total").value);
-  if (!(qty > 0) || !(total >= 0)) {
-    showToast("Проверьте количество и сумму закупки", true);
-    return;
-  }
+  if (!(qty > 0) || !(total >= 0)) { showToast("Проверьте количество и сумму закупки", true); return; }
 
-  var pcsPerPack = Math.max(1, Number(p.pcs) || 1);
+  var per = Math.max(1, Number(p.pcs) || 1);
   var oldStock = Math.max(0, Number(p.stock) || 0);
-  var addedStock = qty * pcsPerPack;
-  var oldInventoryCost = oldStock * (Number(p.cost) || 0) / pcsPerPack;
-  var resultingStock = oldStock + addedStock;
+  var oldInvCost = oldStock * (Number(p.cost) || 0) / per;
+  var newStock = oldStock + qty * per;
+  p.stock = newStock;
+  if (newStock > 0) p.cost = Math.round(((oldInvCost + total) / newStock * per) * 100) / 100;
 
-  p.stock = resultingStock;
-  if (resultingStock > 0) {
-    p.cost = Math.round(((oldInventoryCost + total) / resultingStock * pcsPerPack) * 100) / 100;
-  }
-
-  STATE.data.buys.push({
-    id: STATE.data.seq++,
-    date: $("buy-date").value || todayStr(),
-    pid: p.id,
-    qty: qty,
-    total: total
-  });
-
-  if ($("buy-total")) delete $("buy-total").dataset.touched;
+  STATE.data.buys.push({ id: STATE.data.seq++, date: $("buy-date").value || todayStr(), pid: p.id, qty: qty, total: total });
   saveData();
   render();
   showToast("Склад пополнен и сохранён!");
 }
 
-// Product Modal Actions
+// Product modal
 function openNewProdModal() {
   $("pm-title").textContent = "Новый товар";
-  $("pm-id").value = "";
-  $("pm-name").value = "";
-  $("pm-cost").value = "";
-  $("pm-pcs").value = "20";
-  $("pm-pw").value = "";
-  $("pm-pp").value = "";
-  $("pm-min").value = "20";
+  $("pm-id").value = ""; $("pm-name").value = ""; $("pm-cost").value = "";
+  $("pm-pcs").value = "20"; $("pm-pw").value = ""; $("pm-pp").value = ""; $("pm-min").value = "20";
   calcModalMargin();
   $("prod-modal").classList.add("open");
 }
-
 function openEditProdModal(id) {
   var p = getProduct(id);
   if (!p) return;
   $("pm-title").textContent = "Редактировать товар";
-  $("pm-id").value = p.id;
-  $("pm-name").value = p.name;
-  $("pm-cost").value = p.cost;
-  $("pm-pcs").value = p.pcs;
-  $("pm-pw").value = p.pw;
-  $("pm-pp").value = p.pp;
-  $("pm-min").value = p.min;
+  $("pm-id").value = p.id; $("pm-name").value = p.name; $("pm-cost").value = p.cost;
+  $("pm-pcs").value = p.pcs; $("pm-pw").value = p.pw; $("pm-pp").value = p.pp; $("pm-min").value = p.min;
   calcModalMargin();
   $("prod-modal").classList.add("open");
 }
-
-function closeProdModal() {
-  $("prod-modal").classList.remove("open");
-}
+function closeProdModal() { $("prod-modal").classList.remove("open"); }
 
 function calcModalMargin() {
   var cost = Number($("pm-cost").value) || 0;
   var pcs = Math.max(1, Number($("pm-pcs").value) || 1);
-  var pw = Number($("pm-pw").value) || 0;
-  var pp = Number($("pm-pp").value) || 0;
-  var profPack = pw - cost;
-  var profPcs = (pp * pcs) - cost;
-
-  $("pm-preview").innerHTML = '' +
-    '<div class="preview-row" style="font-size:13.5px;">' +
-      '<span>Прибыль с продажи 1 целой упаковки:</span>' +
-      '<span class="num ' + (profPack >= 0 ? "pos" : "neg") + '" style="font-weight:700;white-space:nowrap;">' + (profPack >= 0 ? "+" : "") + money(profPack) + '</span>' +
-    '</div>' +
-    '<div class="preview-row" style="font-size:13.5px;">' +
-      '<span>Прибыль, если продать упаковку поштучно:</span>' +
-      '<span class="num ' + (profPcs >= 0 ? "pos" : "neg") + '" style="font-weight:700;white-space:nowrap;">' + (profPcs >= 0 ? "+" : "") + money(profPcs) + '</span>' +
-    '</div>';
+  var profPack = (Number($("pm-pw").value) || 0) - cost;
+  var profPcs = (Number($("pm-pp").value) || 0) * pcs - cost;
+  $("pm-preview").innerHTML =
+    '<div class="preview-row" style="font-size:13.5px;"><span>Прибыль с продажи 1 целой упаковки:</span>' +
+      '<span class="num fw5 ' + (profPack >= 0 ? "pos" : "neg") + '" style="white-space:nowrap;">' + signedMoney(profPack) + '</span></div>' +
+    '<div class="preview-row" style="font-size:13.5px;"><span>Прибыль, если продать упаковку поштучно:</span>' +
+      '<span class="num fw5 ' + (profPcs >= 0 ? "pos" : "neg") + '" style="white-space:nowrap;">' + signedMoney(profPcs) + '</span></div>';
 }
 
 function saveProdModal() {
   var name = $("pm-name").value.trim();
   if (!name) { showToast("Введите название товара", true); return; }
-
   var cost = Math.max(0, Number($("pm-cost").value) || 0);
   var pcs = Math.max(1, Math.round(Number($("pm-pcs").value) || 1));
   var pw = Math.max(0, Number($("pm-pw").value) || 0);
   var pp = Math.max(0, Number($("pm-pp").value) || 0);
   var min = Math.max(0, Math.round(Number($("pm-min").value) || 0));
-
   var editId = $("pm-id").value;
   if (editId) {
     var p = getProduct(editId);
-    if (p) {
-      p.name = name;
-      p.cost = cost;
-      p.pcs = pcs;
-      p.pw = pw;
-      p.pp = pp;
-      p.min = min;
-    }
+    if (p) { p.name = name; p.cost = cost; p.pcs = pcs; p.pw = pw; p.pp = pp; p.min = min; }
     showToast("Изменения сохранены");
   } else {
-    STATE.data.products.push({
-      id: STATE.data.seq++,
-      name: name,
-      cost: cost,
-      pcs: pcs,
-      pw: pw,
-      pp: pp,
-      stock: 0,
-      min: min
-    });
+    STATE.data.products.push({ id: STATE.data.seq++, name: name, cost: cost, pcs: pcs, pw: pw, pp: pp, stock: 0, min: min });
     showToast("Товар добавлен! Теперь пополните склад");
   }
-
   saveData();
   closeProdModal();
   render();
@@ -1712,82 +1104,46 @@ function deleteProduct(id) {
   showToast("Товар удалён");
 }
 
-// ------------------------------------------
-// VIEW 4: EXPENSES (РАСХОДЫ)
-// ------------------------------------------
+// ---------- EXPENSES ----------
 function renderExpenses() {
-  var cats = ["Транспорт", "Реклама", "Упаковка", "Связь", "Аренда", "Другое"];
   var totalExp = sumBy(STATE.data.exps, function(e) { return e.amt; });
-
   var rows = STATE.data.exps.slice().reverse().slice(0, 25).map(function(e) {
-    return '<tr>' +
-      '<td class="num" style="font-size:13px;color:var(--text-muted);white-space:nowrap;">' + formatDateRu(e.date) + '</td>' +
+    return '<tr><td class="num" style="font-size:13px;color:var(--text-muted);white-space:nowrap;">' + formatDateRu(e.date) + '</td>' +
       '<td><span class="badge badge-gold">' + esc(e.cat) + '</span></td>' +
       '<td>' + esc(e.note || "—") + '</td>' +
-      '<td class="num neg" style="font-weight:700;white-space:nowrap;">− ' + money(e.amt) + '</td>' +
-      '<td style="text-align:right;"><button class="btn-danger" onclick="deleteExpense(' + e.id + ')">Удалить</button></td>' +
-    '</tr>';
+      '<td class="num neg fw5" style="white-space:nowrap;">− ' + money(e.amt) + '</td>' +
+      '<td style="text-align:right;"><button class="btn-danger" onclick="deleteExpense(' + e.id + ')">Удалить</button></td></tr>';
   }).join("");
 
-  return '' +
-    '<div class="card">' +
-      '<h2>Добавить расход</h2>' +
+  return '<div class="card"><h2>Добавить расход</h2>' +
       '<p class="subtitle" style="margin-bottom:14px;">Эти суммы вычитаются из вашей чистой прибыли. Закупки товара записывайте в разделе «Склад».</p>' +
-
       '<label>1. На что потратили?</label>' +
       '<div class="quick-chips" style="margin-bottom:14px;margin-top:0;">' +
-        cats.map(function(c) {
+        EXP_CATS.map(function(c) {
           return '<button type="button" class="chip ' + (STATE.expCat === c ? "active" : "") + '" onclick="STATE.expCat=&apos;' + c + '&apos;;render()">' + c + '</button>';
-        }).join("") +
-      '</div>' +
-
+        }).join("") + '</div>' +
       '<div class="grid-3 form-split" style="margin-bottom:14px;">' +
-        '<div>' +
-          '<label>2. Сумма расхода (₼)</label>' +
-          '<input id="exp-amt" class="num" type="number" step="0.5" min="0" placeholder="5.00">' +
-        '</div>' +
-        '<div>' +
-          '<label>3. Комментарий (необязательно)</label>' +
-          '<input id="exp-note" type="text" placeholder="Например: такси или пакеты">' +
-        '</div>' +
-        '<div>' +
-          '<label>4. Дата</label>' +
-          '<input id="exp-date" type="date" value="' + todayStr() + '">' +
-        '</div>' +
+        '<div><label>2. Сумма расхода (₼)</label><input id="exp-amt" class="num" type="number" inputmode="decimal" step="0.5" min="0" placeholder="5.00"></div>' +
+        '<div><label>3. Комментарий (необязательно)</label><input id="exp-note" type="text" placeholder="Например: такси или пакеты"></div>' +
+        '<div><label>4. Дата</label><input id="exp-date" type="date" value="' + todayStr() + '"></div>' +
       '</div>' +
-
-      '<button class="btn btn-full" onclick="submitExpense()">Записать расход</button>' +
-    '</div>' +
-
+      '<button class="btn btn-full" onclick="submitExpense()">Записать расход</button></div>' +
     '<div class="card">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap;">' +
-        '<h2 style="margin:0;">История расходов</h2>' +
-        '<span class="num neg" style="font-weight:700;">Всего: ' + money(totalExp) + '</span>' +
-      '</div>' +
+        '<h2 style="margin:0;">История расходов</h2><span class="num neg fw5">Всего: ' + money(totalExp) + '</span></div>' +
       (rows
-        ? '<div class="table-wrap"><table><thead><tr><th>Дата</th><th>Категория</th><th>Заметка</th><th>Сумма</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
-        : '<div class="empty-state" style="padding:24px;">Расходов пока не записано</div>') +
-    '</div>';
+        ? '<div class="table-wrap"><table style="min-width:480px;"><thead><tr><th>Дата</th><th>Категория</th><th>Заметка</th><th>Сумма</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+        : '<div class="empty-state" style="padding:24px;">Расходов пока не записано</div>') + '</div>';
 }
 
 function submitExpense() {
   var amt = Number($("exp-amt").value);
-  if (!(amt > 0)) {
-    showToast("Введите сумму расхода больше нуля", true);
-    return;
-  }
-  STATE.data.exps.push({
-    id: STATE.data.seq++,
-    date: $("exp-date").value || todayStr(),
-    cat: STATE.expCat,
-    amt: amt,
-    note: $("exp-note").value.trim()
-  });
+  if (!(amt > 0)) { showToast("Введите сумму расхода больше нуля", true); return; }
+  STATE.data.exps.push({ id: STATE.data.seq++, date: $("exp-date").value || todayStr(), cat: STATE.expCat, amt: amt, note: $("exp-note").value.trim() });
   saveData();
   render();
   showToast("Расход записан и сохранён");
 }
-
 function deleteExpense(id) {
   STATE.data.exps = STATE.data.exps.filter(function(e) { return e.id !== id; });
   saveData();
@@ -1795,96 +1151,65 @@ function deleteExpense(id) {
   showToast("Запись о расходе удалена");
 }
 
-// ------------------------------------------
-// VIEW 5: DISCOUNTS & BACKUP (СКИДКИ И БАЗА)
-// ------------------------------------------
+// ---------- DISCOUNTS & BACKUP ----------
 function renderMore() {
   var tiers = STATE.data.tiers;
-  var sampleProd = STATE.data.products[0];
-
+  var sample = STATE.data.products[0];
   var tierRows = tiers.map(function(t, idx) {
-    return '<tr>' +
-      '<td><input class="num" type="number" min="2" value="' + t[0] + '" style="height:40px;min-width:72px;" onchange="updateTier(' + idx + ', 0, this.value)"></td>' +
-      '<td><input class="num" type="number" min="1" max="90" value="' + t[1] + '" style="height:40px;min-width:72px;" onchange="updateTier(' + idx + ', 1, this.value)"></td>' +
-      '<td style="text-align:right;"><button class="btn-danger" onclick="removeTier(' + idx + ')">Удалить</button></td>' +
-    '</tr>';
+    return '<tr><td><input class="num" type="number" inputmode="numeric" min="2" value="' + t[0] + '" style="height:40px;min-width:72px;" onchange="updateTier(' + idx + ', 0, this.value)"></td>' +
+      '<td><input class="num" type="number" inputmode="decimal" min="1" max="90" value="' + t[1] + '" style="height:40px;min-width:72px;" onchange="updateTier(' + idx + ', 1, this.value)"></td>' +
+      '<td style="text-align:right;"><button class="btn-danger" onclick="removeTier(' + idx + ')">Удалить</button></td></tr>';
   }).join("");
 
-  var previewHtml = "";
-  if (sampleProd) {
-    var testQtys = [1].concat(tiers.map(function(t) { return Number(t[0]); })).sort(function(a, b) { return a - b; });
-    previewHtml = '' +
-      '<div class="card">' +
-        '<h2>Проверка выгоды на примере «' + esc(sampleProd.name) + '»</h2>' +
-        '<p class="subtitle" style="margin-bottom:12px;">Проверьте, чтобы даже со скидкой вы оставались в хорошем плюсе</p>' +
-        '<div class="table-wrap"><table><thead><tr><th>Упаковок</th><th>Скидка</th><th>Цена клиенту</th><th>Ваша прибыль</th></tr></thead><tbody>' +
-          testQtys.map(function(q) {
-            var d = getDiscountPct(q);
-            var total = Math.round(Number(sampleProd.pw) * q * (1 - d / 100) * 2) / 2;
-            var prof = total - (Number(sampleProd.cost) * q);
-            return '<tr>' +
-              '<td class="num">' + q + ' уп.</td>' +
-              '<td class="num">' + d + '%</td>' +
-              '<td class="num">' + money(total) + '</td>' +
-              '<td class="num ' + (prof >= 0 ? "pos" : "neg") + '" style="font-weight:700;">+' + money(prof) + '</td>' +
-            '</tr>';
-          }).join("") +
-        '</tbody></table></div>' +
-      '</div>';
+  var preview = "";
+  if (sample) {
+    var qtys = [1].concat(tiers.map(function(t) { return Number(t[0]); })).sort(function(a, b) { return a - b; });
+    preview = '<div class="card"><h2>Проверка выгоды на примере «' + esc(sample.name) + '»</h2>' +
+      '<p class="subtitle" style="margin-bottom:12px;">Проверьте, чтобы даже со скидкой вы оставались в хорошем плюсе</p>' +
+      '<div class="table-wrap"><table><thead><tr><th>Упаковок</th><th>Скидка</th><th>Цена клиенту</th><th>Ваша прибыль</th></tr></thead><tbody>' +
+      qtys.map(function(q) {
+        var d = getDiscountPct(q);
+        var total = Math.round(Number(sample.pw) * q * (1 - d / 100) * 2) / 2;
+        var prof = total - (Number(sample.cost) * q);
+        return '<tr><td class="num">' + q + ' уп.</td><td class="num">' + d + '%</td><td class="num">' + money(total) + '</td>' +
+          '<td class="num fw5 ' + (prof >= 0 ? "pos" : "neg") + '">' + signedMoney(prof) + '</td></tr>';
+      }).join("") + '</tbody></table></div></div>';
   }
 
-  return '' +
-    '<div class="card">' +
+  return '<div class="card">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">' +
-        '<div>' +
-          '<h2 style="margin:0;">Автоматические скидки за количество</h2>' +
-          '<p class="subtitle" style="margin:4px 0 0;">Срабатывают автоматически в разделе «Продать» при покупке нескольких упаковок</p>' +
-        '</div>' +
-        '<button type="button" class="btn" onclick="addTier()">+ Добавить скидку</button>' +
-      '</div>' +
-      '<div class="table-wrap"><table><thead><tr><th>От скольких упаковок</th><th>Размер скидки (%)</th><th></th></tr></thead><tbody>' +
+        '<div style="min-width:0;"><h2 style="margin:0;">Автоматические скидки за количество</h2>' +
+        '<p class="subtitle" style="margin:4px 0 0;">Срабатывают автоматически в разделе «Продать» при покупке нескольких упаковок</p></div>' +
+        '<button type="button" class="btn" onclick="addTier()">+ Добавить скидку</button></div>' +
+      '<div class="table-wrap"><table style="min-width:340px;"><thead><tr><th>От скольких упаковок</th><th>Размер скидки (%)</th><th></th></tr></thead><tbody>' +
         (tierRows || '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Скидок пока нет</td></tr>') +
-      '</tbody></table></div>' +
-    '</div>' +
-
-    previewHtml +
-
-    '<div class="card">' +
-      '<h2>Сохранение и перенос базы данных</h2>' +
-      '<p class="subtitle" style="margin-bottom:16px;">Весь проект автоматически сохраняется в постоянной памяти браузера (localStorage + IndexedDB) и остаётся на месте даже после полного закрытия вкладки или перезагрузки устройства.</p>' +
+      '</tbody></table></div></div>' +
+    preview +
+    '<div class="card"><h2>Сохранение и перенос базы данных</h2>' +
+      '<p class="subtitle" style="margin-bottom:16px;">Весь проект автоматически сохраняется в постоянной памяти браузера (localStorage + IndexedDB) вместе с выбранным разделом, фильтрами и темой — и остаётся на месте после закрытия вкладки или браузера.</p>' +
       '<div class="grid-2 form-split" style="margin-bottom:16px;">' +
         '<button type="button" class="btn" onclick="exportBackup()">↓ Скачать резервную копию (.json)</button>' +
-        '<label class="btn btn-secondary" style="margin:0;cursor:pointer;">↑ Восстановить из файла<input type="file" accept=".json" style="display:none;" onchange="importBackup(event)"></label>' +
+        '<label class="btn btn-secondary" style="margin:0;cursor:pointer;color:var(--text);">↑ Восстановить из файла<input type="file" accept=".json" style="display:none;" onchange="importBackup(event)"></label>' +
       '</div>' +
       '<div style="padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">' +
         '<span style="font-size:13.5px;color:var(--text-muted);">Хотите начать учёт полностью с чистого листа?</span>' +
-        '<button type="button" class="btn-danger" onclick="resetAllData()">Очистить все данные</button>' +
-      '</div>' +
-    '</div>';
+        '<button type="button" class="btn-danger" onclick="resetAllData()">Очистить все данные</button></div></div>';
 }
 
 function addTier() {
   var tiers = STATE.data.tiers;
-  var nextQty = tiers.length > 0 ? (Number(tiers[tiers.length - 1][0]) + 5) : 2;
-  var nextPct = tiers.length > 0 ? Math.min(80, Number(tiers[tiers.length - 1][1]) + 3) : 5;
-  tiers.push([nextQty, nextPct]);
-  saveData();
-  render();
-  showToast("Новая ступень скидки добавлена");
+  var last = tiers[tiers.length - 1];
+  tiers.push([last ? Number(last[0]) + 5 : 2, last ? Math.min(80, Number(last[1]) + 3) : 5]);
+  saveData(); render(); showToast("Новая ступень скидки добавлена");
 }
-
 function updateTier(idx, col, val) {
   var num = Number(val) || 0;
   STATE.data.tiers[idx][col] = col === 0 ? Math.max(2, Math.round(num)) : Math.min(90, Math.max(0, num));
-  saveData();
-  render();
+  saveData(); render();
 }
-
 function removeTier(idx) {
   STATE.data.tiers.splice(idx, 1);
-  saveData();
-  render();
-  showToast("Правило скидки удалено");
+  saveData(); render(); showToast("Правило скидки удалено");
 }
 
 function exportBackup() {
@@ -1893,15 +1218,13 @@ function exportBackup() {
   var a = document.createElement("a");
   a.href = url;
   a.download = "business-backup-" + todayStr() + ".json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast("Файл резервной копии скачан");
 }
 
 function importBackup(event) {
-  var file = event.target.files[0];
+  var file = event.target.files && event.target.files[0];
   if (!file) return;
   var reader = new FileReader();
   reader.onload = function(e) {
@@ -1909,12 +1232,9 @@ function importBackup(event) {
       var parsed = JSON.parse(e.target.result);
       if (!parsed || !Array.isArray(parsed.products)) throw new Error("Invalid format");
       STATE.data = normalizeData(parsed);
-      saveData();
-      render();
+      saveData(); render();
       showToast("База данных успешно восстановлена!");
-    } catch (err) {
-      showToast("Ошибка: выбран неверный файл резервной копии", true);
-    }
+    } catch (err) { showToast("Ошибка: выбран неверный файл резервной копии", true); }
   };
   reader.readAsText(file);
 }
@@ -1922,32 +1242,34 @@ function importBackup(event) {
 function resetAllData() {
   if (!confirm("Вы уверены? Все товары, продажи, закупки и расходы будут полностью удалены.")) return;
   STATE.data = defaultData();
-  saveData();
-  render();
+  STATE.sellProd = ""; STATE.buyProd = ""; STATE.sellQty = 1;
+  saveData(); render();
   showToast("База очищена. Можно начать с чистого листа");
 }
 
 function openHelpModal() { $("help-modal").classList.add("open"); }
 function closeHelpModal() { $("help-modal").classList.remove("open"); }
 
-// Save automatically before closing tab, minimizing app, or switching pages
-window.addEventListener("beforeunload", function() { saveData(true); });
-window.addEventListener("pagehide", function() { saveData(true); });
-document.addEventListener("visibilitychange", function() {
-  if (document.visibilityState === "hidden") saveData(true);
+// Save before the tab is closed, hidden or navigated away
+function flush() { saveData(true); saveUI(); }
+window.addEventListener("beforeunload", flush);
+window.addEventListener("pagehide", flush);
+document.addEventListener("visibilitychange", function() { if (document.visibilityState === "hidden") flush(); });
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") { closeProdModal(); closeHelpModal(); }
+});
+document.addEventListener("input", function(e) {
+  if (e.target && e.target.id === "buy-total") e.target.dataset.touched = "1";
 });
 
 // Init
 (function() {
   try {
-    var savedTheme = localStorage.getItem("biz_theme");
-    if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+    var savedTheme = localStorage.getItem(THEME_KEY);
+    if (savedTheme === "light" || savedTheme === "dark") document.documentElement.setAttribute("data-theme", savedTheme);
   } catch (e) {}
   initLoad();
   render();
-  document.addEventListener("input", function(e) {
-    if (e.target && e.target.id === "buy-total") e.target.dataset.touched = "1";
-  });
 })();
 </script>
 </body>
